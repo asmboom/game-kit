@@ -1,0 +1,33 @@
+﻿public class VirtualCurrencyPackDelegate : VirtualItemDelegate
+{
+    public override bool IsPurchasableType { get { return true; } }
+
+    public override bool HasBalance { get { return false; } }
+
+    public override void Buy(VirtualItem item, Purchase purchase)
+    {
+        purchase.Buy(item, Storage);
+    }
+
+    public override bool CanBuyNow(VirtualItem item) { return true; }
+
+    public override void Give(VirtualItem item, int amount)
+    {
+        Storage.AddItemBalance(item.RelatedItemID, item.RelatedItemAmount * amount);
+    }
+
+    public override void Take(VirtualItem item, int amount)
+    {
+        Storage.RemoveItemBalance(item.RelatedItemID, item.RelatedItemAmount * amount);
+    }
+
+    public override int GetGainedVirtualCurrencyCountAfterPurchase(VirtualItem item)
+    {
+        return item.RelatedItemAmount;
+    }
+
+    public override int GetCurrentLevel(VirtualItem item)
+    {
+        return 0;
+    }
+}
