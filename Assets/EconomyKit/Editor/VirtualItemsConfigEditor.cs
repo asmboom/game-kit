@@ -346,7 +346,7 @@ public class VirtualItemsConfigEditor : Editor
         string categoryId;
         if (TryParseStringCell(row.GetCell(4), out categoryId))
         {
-            string filePath = VirtualItemDataPath + "category_" + categoryId + ".asset";
+            string filePath = VirtualItemDataPath + "Category" + categoryId + ".asset";
             VirtualCategory category = AssetDatabase.LoadAssetAtPath(filePath, typeof(VirtualCategory)) as VirtualCategory;
             if (category == null)
             {
