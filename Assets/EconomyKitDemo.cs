@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-public class EconomyKitDemo : MonoBehaviour
+public class StoreKitDemo : MonoBehaviour
 {
     private void Awake()
     {
