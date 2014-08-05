@@ -3,14 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-public class StoreKitDemo : MonoBehaviour
+public class EconomyKitDemo : MonoBehaviour
 {
     private void Awake()
     {
         EconomyKit.Init(new EconomyKitDemoFactory());
 
-        _coin = EconomyKit.Config.GetItemByID("cn.ftang.coin");
-        _gem = EconomyKit.Config.GetItemByID("cn.ftang.gem");
+        _coin = EconomyKit.Config.GetItemByID("Coin");
+        _gem = EconomyKit.Config.GetItemByID("Gem");
         _purchasableItems = new List<VirtualItem>();
         for (int i = 0; i < EconomyKit.Config.Items.Count; i++)
         {
@@ -28,10 +28,10 @@ public class StoreKitDemo : MonoBehaviour
 
         Market.Instance.StartProductListRequest((list) =>
         {
-            Debug.Log("get product list succeeded");
+            Debug.Log("Get product list succeeded");
         }, () =>
         {
-            Debug.LogError("get product list failed");
+            Debug.LogError("Get product list failed");
         });
     }
 
@@ -66,8 +66,8 @@ public class StoreKitDemo : MonoBehaviour
     {
         Debug.Log("First time launch");
 
-        EconomyKit.Config.GetItemByID("cn.ftang.wuzheng").Give(1);
-        EconomyKit.Config.GetItemByID("cn.ftang.wuzheng").Equip();
+        EconomyKit.Config.GetItemByID("Wuzheng").Give(1);
+        EconomyKit.Config.GetItemByID("Wuzheng").Equip();
         _coin.Give(4000);
         _gem.Give(5);
 
@@ -84,8 +84,8 @@ public class StoreKitDemo : MonoBehaviour
         if (GUI.Button(new Rect(Screen.width - 100, 0, 100, 20), "Reset"))
         {
             PlayerPrefs.DeleteAll();
-            EconomyKit.Config.GetItemByID("cn.ftang.wuzheng").Give(1);
-            EconomyKit.Config.GetItemByID("cn.ftang.wuzheng").Equip();
+            EconomyKit.Config.GetItemByID("Wuzheng").Give(1);
+            EconomyKit.Config.GetItemByID("Wuzheng").Equip();
         }
         if (GUI.Button(new Rect(Screen.width - 100, 25, 100, 20), "Gimme Coin"))
         {
@@ -102,7 +102,7 @@ public class StoreKitDemo : MonoBehaviour
     private void DrawVirtualCurrencyIcon(string id, float x, float y)
     {
         GUI.DrawTexture(new Rect(x, y, 20, 20),
-                       Resources.Load<Texture2D>(id.Substring(9)));
+                       Resources.Load<Texture2D>(id));
     }
 
     private void DrawItems()
@@ -122,7 +122,7 @@ public class StoreKitDemo : MonoBehaviour
             Color oriColor = GUI.color;
 
             GUI.DrawTexture(new Rect(0 + productSize / 8f, y + productSize / 8f, productSize * 6f / 8f, productSize * 6f / 8f),
-                Resources.Load<Texture2D>(item.ID.Substring(9)));
+                Resources.Load<Texture2D>(item.ID));
 
             GUI.skin.label.alignment = TextAnchor.UpperLeft;
             GUI.Label(new Rect(productSize, y, Screen.width, productSize / 3f), 
@@ -141,7 +141,6 @@ public class StoreKitDemo : MonoBehaviour
                 GUI.skin.label.alignment = TextAnchor.UpperRight;
                 if (GUI.Button(new Rect(Screen.width - 120, y, 100, 50), "Click to buy") && !_isDragging)
                 {
-                    Debug.Log("Buy: " + item.Name);
                     try
                     {
                         item.Buy();

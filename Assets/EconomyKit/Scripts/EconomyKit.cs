@@ -18,13 +18,13 @@ public static class EconomyKit
         {
             if (_config == null)
             {
-                _config = Resources.Load<VirtualItemsConfig>("StoreConfig");
+                _config = Resources.Load<VirtualItemsConfig>("VirtualItemsConfig");
                 if (_config == null)
                 {
-                    Debug.LogWarning("Create empty StoreConfig at runtime");
+                    Debug.LogWarning("Create empty VirtualItemsConfig at runtime");
                     _config = ScriptableObject.CreateInstance<VirtualItemsConfig>();
 #if UNITY_EDITOR
-                    string fullPath = "Assets/StoreKit/Resources/StoreConfig.asset";
+                    string fullPath = "Assets/StoreKit/Resources/VirtualItemsConfig.asset";
                     UnityEditor.AssetDatabase.CreateAsset(_config, fullPath);
 #endif
                 }
