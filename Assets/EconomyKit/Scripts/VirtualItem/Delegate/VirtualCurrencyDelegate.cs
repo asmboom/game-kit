@@ -8,14 +8,14 @@
 
     public override void Give(VirtualItem item, int amount)
     {
-        Storage.AddItemBalance(item.ID, amount);
+        Storage.SetItemBalance(item.ID, Storage.GetItemBalance(item.ID) + amount);
     }
 
     public override bool CanBuyNow(VirtualItem item) { return false; }
 
     public override void Take(VirtualItem item, int amount)
     {
-        Storage.RemoveItemBalance(item.ID, amount);
+        Storage.SetItemBalance(item.ID, Storage.GetItemBalance(item.ID) - amount);
     }
 
     public override int GetGainedVirtualCurrencyCountAfterPurchase(VirtualItem item)

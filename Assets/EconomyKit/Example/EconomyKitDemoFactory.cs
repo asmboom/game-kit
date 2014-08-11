@@ -2,7 +2,7 @@
 
 public class EconomyKitDemoFactory : IEconomyKitFactory
 {
-    public IEconomyStorage CreatePrefs()
+    public IEconomyStorage CreateStorage()
     {
         return new PlayerPrefsEconomyStorage();
     }

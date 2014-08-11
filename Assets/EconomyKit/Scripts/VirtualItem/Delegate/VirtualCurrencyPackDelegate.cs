@@ -13,12 +13,14 @@
 
     public override void Give(VirtualItem item, int amount)
     {
-        Storage.AddItemBalance(item.RelatedItemID, item.RelatedItemAmount * amount);
+        Storage.SetItemBalance(item.RelatedItemID,
+            Storage.GetItemBalance(item.RelatedItemID) + item.RelatedItemAmount * amount);
     }
 
     public override void Take(VirtualItem item, int amount)
     {
-        Storage.RemoveItemBalance(item.RelatedItemID, item.RelatedItemAmount * amount);
+        Storage.SetItemBalance(item.RelatedItemID,
+            Storage.GetItemBalance(item.RelatedItemID) - item.RelatedItemAmount * amount);
     }
 
     public override int GetGainedVirtualCurrencyCountAfterPurchase(VirtualItem item)

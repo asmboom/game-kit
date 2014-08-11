@@ -59,11 +59,11 @@ public static class EconomyKit
         }
     }
 
-    internal static IEconomyStorage CreatePrefs()
+    internal static IEconomyStorage CreateStorage()
     {
         if (_factory != null)
         {
-            return _factory.CreatePrefs();
+            return _factory.CreateStorage();
         }
         else
         {

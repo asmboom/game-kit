@@ -1,12 +1,12 @@
 ﻿public interface IEconomyKitFactory
 {
-    IEconomyStorage CreatePrefs();
+    IEconomyStorage CreateStorage();
     Market CreateMarket();
 }
 
-public class DefaultStoreKitFactory : IEconomyKitFactory
+public class DefaultEconomyKitFactory : IEconomyKitFactory
 {
-    public IEconomyStorage CreatePrefs()
+    public IEconomyStorage CreateStorage()
     {
         return new NullableEconomyStorage();
     }

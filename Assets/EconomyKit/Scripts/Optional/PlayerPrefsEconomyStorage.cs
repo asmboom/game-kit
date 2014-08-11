@@ -27,16 +27,6 @@ public class PlayerPrefsEconomyStorage : IEconomyStorage
         PlayerPrefs.SetInt(string.Format("{0}{1}", KeyPrefixItemBalance, itemId), balance);
     }
 
-    public void AddItemBalance(string itemId, int amount)
-    {
-        SetItemBalance(itemId, GetItemBalance(itemId) + amount);
-    }
-
-    public void RemoveItemBalance(string itemId, int amount)
-    {
-        SetItemBalance(itemId, GetItemBalance(itemId) - amount);
-    }
-
     public void EquipVirtualGood(string itemId)
     {
         SetBool(string.Format("{0}{1}", KeyPrefixItemEquip, itemId), true);
@@ -57,20 +47,9 @@ public class PlayerPrefsEconomyStorage : IEconomyStorage
         return PlayerPrefs.GetInt(string.Format("{0}{1}", KeyPrefixItemLevel, goodItemId), 0);
     }
 
-    public void UpgradeGood(string goodItemId)
+    public void SetGoodCurrentLevel(string itemId, int level)
     {
-        PlayerPrefs.SetInt(string.Format("{0}{1}", KeyPrefixItemLevel, goodItemId), 
-            GetGoodCurrentLevel(goodItemId) + 1);
-    }
-
-    public void DowngradeGood(string goodItemId)
-    {
-        PlayerPrefs.SetInt(string.Format("{0}{1}", KeyPrefixItemLevel, goodItemId), 
-            Mathf.Max(0, GetGoodCurrentLevel(goodItemId) - 1));
-    }
-
-    public void RemoveGoodUpgrades(string goodItemId)
-    {
-        PlayerPrefs.SetInt(string.Format("{0}{1}", KeyPrefixItemLevel, goodItemId), 0);
+        level = Mathf.Max(0, level);
+        PlayerPrefs.SetInt(string.Format("{0}{1}", KeyPrefixItemLevel, itemId), level);
     }
 }

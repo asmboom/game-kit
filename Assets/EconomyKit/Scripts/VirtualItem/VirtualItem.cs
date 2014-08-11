@@ -218,7 +218,7 @@ public class VirtualItem : ScriptableObject, IComparable<VirtualItem>
         {
             if (_storage == null)
             {
-                _storage = EconomyKit.CreatePrefs();
+                _storage = EconomyKit.CreateStorage();
             }
             return _storage;
         }
