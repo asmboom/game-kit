@@ -59,7 +59,7 @@ public class Purchase
         EconomyKit.OnPurchaseStarted(item);
 
         _currentItemPurchasedWithMarket = item;
-        return Market.Instance.StartPurchase(AssociatedID, 1, item.GainedVirtualCurrencyCountAfterPurchase,
+        return Market.Instance.StartPurchase(AssociatedID, 1,
             OnMarketPurchaseSucceeded, OnMarketPurchaseFailed);
     }
 

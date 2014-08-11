@@ -44,11 +44,6 @@ public class VirtualItem : ScriptableObject, IComparable<VirtualItem>
 
     public bool HasBalance { get { return _delegate.HasBalance; } }
 
-    public int GainedVirtualCurrencyCountAfterPurchase
-    {
-        get { return _delegate.GetGainedVirtualCurrencyCountAfterPurchase(this); }
-    }
-
     public bool CanBuyNow { get { return _delegate.CanBuyNow(this); } }
 
     public bool IsEquippableType { get { return Type == VirtualItemType.EquippableItem; } }

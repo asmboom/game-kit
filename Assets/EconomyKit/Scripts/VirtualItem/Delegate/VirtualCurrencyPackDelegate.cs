@@ -23,11 +23,6 @@
             Storage.GetItemBalance(item.RelatedItemID) - item.RelatedItemAmount * amount);
     }
 
-    public override int GetGainedVirtualCurrencyCountAfterPurchase(VirtualItem item)
-    {
-        return item.RelatedItemAmount;
-    }
-
     public override int GetCurrentLevel(VirtualItem item)
     {
         return 0;

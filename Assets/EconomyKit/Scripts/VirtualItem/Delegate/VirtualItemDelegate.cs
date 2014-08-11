@@ -8,7 +8,6 @@ public abstract class VirtualItemDelegate
     public abstract bool CanBuyNow(VirtualItem item);
     public abstract void Give(VirtualItem item, int amount);
     public abstract void Take(VirtualItem item, int amount);
-    public abstract int GetGainedVirtualCurrencyCountAfterPurchase(VirtualItem item);
     public abstract int GetCurrentLevel(VirtualItem item);
 
     public int GetBalance(VirtualItem item)
@@ -44,6 +43,5 @@ public class NullableVirtualItemDelegate : VirtualItemDelegate
     public override bool CanBuyNow(VirtualItem item) { return false; }
     public override void Give(VirtualItem item, int amount) { }
     public override void Take(VirtualItem item, int amount) { }
-    public override int GetGainedVirtualCurrencyCountAfterPurchase(VirtualItem item) { return 0; }
     public override int GetCurrentLevel(VirtualItem item) { return 0; }
 }

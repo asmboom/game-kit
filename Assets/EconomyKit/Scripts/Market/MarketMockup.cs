@@ -9,7 +9,7 @@ public class MarketMockup : Market
         EndProductListRequest(true);
     }
 
-    protected override void PurchaseProduct(MarketProduct product, int quantity, int virtualCurrencyCount)
+    protected override void PurchaseProduct(MarketProduct product, int quantity)
     {
 #if UNITY_EDITOR
         UnityEngine.Debug.Log("Cost real currency" + product.FormattedPrice +

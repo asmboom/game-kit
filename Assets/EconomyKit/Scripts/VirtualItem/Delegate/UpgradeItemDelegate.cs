@@ -9,14 +9,14 @@
 
     public override void Give(VirtualItem item, int amount)
     {
-        Storage.SetGoodCurrentLevel(item.RelatedItem.ID, 
-            Storage.GetGoodCurrentLevel(item.RelatedItem.ID) + 1);
+        Storage.SetGoodCurrentLevel(item.RelatedItemID,
+            Storage.GetGoodCurrentLevel(item.RelatedItemID) + 1);
     }
 
     public override void Take(VirtualItem item, int amount)
     {
-        Storage.SetGoodCurrentLevel(item.RelatedItem.ID,
-            Storage.GetGoodCurrentLevel(item.RelatedItem.ID) - 1);
+        Storage.SetGoodCurrentLevel(item.RelatedItemID,
+            Storage.GetGoodCurrentLevel(item.RelatedItemID) - 1);
     }
 
     public override int GetCurrentLevel(VirtualItem item)

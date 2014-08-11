@@ -35,7 +35,7 @@ public abstract class Market
         RequestProductList();
     }
 
-    public PurchaseError StartPurchase(string productIdentifier, int quantity, int virtualCurrencyCount,
+    public PurchaseError StartPurchase(string productIdentifier, int quantity,
         Action onPurchaseSucceeded, Action onPurchaseFailed)
     {
         _onPurchaseSucceeded = onPurchaseSucceeded;
@@ -56,7 +56,7 @@ public abstract class Market
             MarketProduct product = null;
             if (_marketProducts.TryGetValue(productIdentifier, out product))
             {
-                PurchaseProduct(product, quantity, virtualCurrencyCount);
+                PurchaseProduct(product, quantity);
                 return PurchaseError.None;
             }
             else
@@ -70,7 +70,7 @@ public abstract class Market
 
     public virtual void SubscribeEvents() { }
     protected abstract void RequestProductList();
-    protected abstract void PurchaseProduct(MarketProduct product, int quantity, int virtualCurrencyCount);
+    protected abstract void PurchaseProduct(MarketProduct product, int quantity);
 
     // derived class needs to call this function to end product list request
     protected void EndProductListRequest(bool success)

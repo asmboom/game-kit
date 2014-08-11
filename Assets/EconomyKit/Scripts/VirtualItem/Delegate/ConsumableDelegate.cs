@@ -21,11 +21,6 @@
         Storage.SetItemBalance(item.ID, Storage.GetItemBalance(item.ID) - amount);
     }
 
-    public override int GetGainedVirtualCurrencyCountAfterPurchase(VirtualItem item) 
-    { 
-        return 0; 
-    }
-
     public override int GetCurrentLevel(VirtualItem item)
     {
         return Storage.GetGoodCurrentLevel(item.ID);
