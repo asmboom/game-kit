@@ -23,6 +23,12 @@ public class Purchase
         }
     }
 
+    public PurchaseError Exec(PurchasableItem purchasable, IEconomyStorage storage)
+    {
+        //TODO
+        return PurchaseError.None;
+    }
+
     public PurchaseError Buy(VirtualItem item, IEconomyStorage storage)
     {
         if (Type == PurchaseType.PurchaseWithVirtualCurrency)

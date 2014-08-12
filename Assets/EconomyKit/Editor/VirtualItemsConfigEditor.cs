@@ -23,6 +23,20 @@ public class VirtualItemsConfigEditor : Editor
         UpdateVirtualItemsConfig();
     }
 
+    //[MenuItem("Assets/Create Virtual Currency")]
+    //private static void CreateVirtualCurrency()
+    //{
+    //    string filePath = VirtualItemDataPath + "NewVirtualCurrency.asset";
+    //    CreateAsset<VirtualCurrency>(filePath);
+    //}
+
+    //[MenuItem("Assets/Create Virtual Item Pack")]
+    //private static void CreateVirtualItemPack()
+    //{
+    //    string filePath = VirtualItemDataPath + "NewVirtualItemPack.asset";
+    //    CreateAsset<VirtualItemPack>(filePath);
+    //}
+
     public override void OnInspectorGUI()
     {
         VirtualItemsConfig config = target as VirtualItemsConfig;
