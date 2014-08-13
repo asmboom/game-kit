@@ -3,9 +3,9 @@ using UnityEngine;
 
 public static class EconomyKit
 {
-    public static Action<VirtualItem> OnPurchaseStarted = delegate { };
-    public static Action<VirtualItem> OnPurchaseSucceeded = delegate { };
-    public static Action<VirtualItem> OnPurchaseFailed = delegate { };
+    public static Action<PurchasableItem> OnPurchaseStarted = delegate { };
+    public static Action<PurchasableItem> OnPurchaseSucceeded = delegate { };
+    public static Action<PurchasableItem> OnPurchaseFailed = delegate { };
 
     public static void Init(IEconomyKitFactory factory)
     {

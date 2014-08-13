@@ -11,13 +11,15 @@ public class EconomyKitDemo : MonoBehaviour
 
         _coin = EconomyKit.Config.GetItemByID("Coin");
         _gem = EconomyKit.Config.GetItemByID("Gem");
-        _purchasableItems = new List<VirtualItem>();
-        for (int i = 0; i < EconomyKit.Config.Items.Count; i++)
+        _primaryCharacterItem = EconomyKit.Config.GetItemByID("Wuzheng") as LifeTimeItem;
+
+        _items = new List<PurchasableItem>();
+        foreach(var item in EconomyKit.Config.Items)
         {
-            VirtualItem item = EconomyKit.Config.Items[i];
-            if (item.IsPurchasable && !item.IsUpgradeType)
+            if (item is PurchasableItem &&
+                !(item is UpgradeItem))
             {
-                _purchasableItems.Add(item);
+                _items.Add(item as PurchasableItem);
             }
         }
 
@@ -66,8 +68,8 @@ public class EconomyKitDemo : MonoBehaviour
     {
         Debug.Log("First time launch");
 
-        EconomyKit.Config.GetItemByID("Wuzheng").Give(1);
-        EconomyKit.Config.GetItemByID("Wuzheng").Equip();
+        _primaryCharacterItem.Give();
+        _primaryCharacterItem.Equip();
         _coin.Give(4000);
         _gem.Give(5);
 
@@ -84,8 +86,8 @@ public class EconomyKitDemo : MonoBehaviour
         if (GUI.Button(new Rect(Screen.width - 100, 0, 100, 20), "Reset"))
         {
             PlayerPrefs.DeleteAll();
-            EconomyKit.Config.GetItemByID("Wuzheng").Give(1);
-            EconomyKit.Config.GetItemByID("Wuzheng").Equip();
+            _primaryCharacterItem.Give();
+            _primaryCharacterItem.Equip();
         }
         if (GUI.Button(new Rect(Screen.width - 100, 25, 100, 20), "Gimme Coin"))
         {
@@ -108,16 +110,16 @@ public class EconomyKitDemo : MonoBehaviour
     private void DrawItems()
     {
         float productSize = Screen.width * 0.30f;
-        float totalHeight = _purchasableItems.Count * productSize;
+        float totalHeight = _items.Count * productSize;
         float y = 0;
 
         _pageScrollPosition = GUI.BeginScrollView(new Rect(0,
             Screen.height * 2f / 8f, Screen.width, Screen.height * 5f / 8f),
             _pageScrollPosition, new Rect(0, 0, Screen.width - 50, totalHeight));
 
-        for (int i = 0; i < _purchasableItems.Count; i++)
+        for (int i = 0; i < _items.Count; i++)
         {
-            VirtualItem item = _purchasableItems[i];
+            PurchasableItem item = _items[i];
 
             Color oriColor = GUI.color;
 
@@ -129,12 +131,12 @@ public class EconomyKitDemo : MonoBehaviour
                 item.Name + GetGradeString(item));
             GUI.Label(new Rect(productSize + 10f, y + productSize / 3f, Screen.width - productSize - 15f, productSize / 3f), item.Description);
 
-            if (item.HasBalance)
+            if (item is SingleUseItem)
             {
                 GUI.Label(new Rect(Screen.width * 3 / 4f, y + productSize * 2 / 3f, Screen.width, productSize / 3f), "Balance:" + item.Balance);
             }
 
-            if (item.CanBuyNow)
+            if (item.CanPurchaseNow())
             {
                 DrawPrice(item.PurchaseInfo[0], productSize, y);
 
@@ -143,7 +145,7 @@ public class EconomyKitDemo : MonoBehaviour
                 {
                     try
                     {
-                        item.Buy();
+                        item.Purchase();
                     }
                     catch (System.Exception e)
                     {
@@ -153,18 +155,19 @@ public class EconomyKitDemo : MonoBehaviour
             }
             else
             {
-                if (item.IsEquippableType)
+                LifeTimeItem lifetimeItem = item as LifeTimeItem;
+                if (lifetimeItem != null && lifetimeItem.IsEquippable)
                 {
-                    if (item.IsEquipped())
+                    if (lifetimeItem.IsEquipped())
                     {
-                        if (item.CanUpgrade)
+                        if (lifetimeItem.CanUpgrade)
                         {
                             DrawPrice(item.NextUpgradeItem.PurchaseInfo[0], productSize, y);
 
                             GUI.skin.label.alignment = TextAnchor.UpperRight;
                             if (GUI.Button(new Rect(Screen.width - 120, y, 100, 50), "Upgrade") && !_isDragging)
                             {
-                                item.Upgrade();
+                                lifetimeItem.Upgrade();
                             }
                         }
                     }
@@ -173,7 +176,7 @@ public class EconomyKitDemo : MonoBehaviour
                         GUI.skin.label.alignment = TextAnchor.UpperRight;
                         if (GUI.Button(new Rect(Screen.width - 120, y, 100, 50), "Equip") && !_isDragging)
                         {
-                            item.Equip();
+                            lifetimeItem.Equip();
                         }
                     }
                 }
@@ -218,9 +221,10 @@ public class EconomyKitDemo : MonoBehaviour
         PlayerPrefsEconomyStorage.SetBool("already_launched", true);
     }
 
-    private List<VirtualItem> _purchasableItems;
+    private List<PurchasableItem> _items;
     private VirtualItem _coin;
     private VirtualItem _gem;
+    private LifeTimeItem _primaryCharacterItem;
     private Vector2 _pageScrollPosition;
     private Vector3 _touchPosition;
     private bool _isDragging;

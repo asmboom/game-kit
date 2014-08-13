@@ -9,33 +9,26 @@ using UnityEngine;
 [CustomEditor(typeof(VirtualItemsConfig))]
 public class VirtualItemsConfigEditor : Editor
 {
-    [MenuItem("Assets/Import Virtual Items Config Spreadsheet", true)]
+    [MenuItem("Assets/Economy Kit/Import Virtual Items Config Spreadsheet", true)]
     private static bool ValidateImportVirtualItemsConfigSpreadSheet()
     {
         return Selection.objects.Length == 1 &&
                AssetDatabase.GetAssetPath(Selection.objects[0]).EndsWith("xls");
     }
 
-    [MenuItem("Assets/Import Virtual Items Config Spreadsheet")]
+    [MenuItem("Assets/Economy Kit/Import Virtual Items Config Spreadsheet")]
     private static void ImportVirtualItemsConfigSpreadSheet()
     {
         ImportXlsAndUpdateVirtualItems();
         UpdateVirtualItemsConfig();
     }
 
-    //[MenuItem("Assets/Create Virtual Currency")]
-    //private static void CreateVirtualCurrency()
-    //{
-    //    string filePath = VirtualItemDataPath + "NewVirtualCurrency.asset";
-    //    CreateAsset<VirtualCurrency>(filePath);
-    //}
-
-    //[MenuItem("Assets/Create Virtual Item Pack")]
-    //private static void CreateVirtualItemPack()
-    //{
-    //    string filePath = VirtualItemDataPath + "NewVirtualItemPack.asset";
-    //    CreateAsset<VirtualItemPack>(filePath);
-    //}
+    [MenuItem("Assets/Economy Kit/Create Virtual Currency")]
+    private static void CreateVirtualCurrency()
+    {
+        string filePath = VirtualItemDataPath + "New VirtualCurrency.asset";
+        CreateAsset<VirtualCurrency>(filePath);
+    }
 
     public override void OnInspectorGUI()
     {
@@ -55,57 +48,118 @@ public class VirtualItemsConfigEditor : Editor
     {
         string filePath = AssetDatabase.GetAssetPath(Selection.objects[0]);
 
-        using (FileStream stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
+        try
         {
-            IWorkbook workbook = new HSSFWorkbook(stream);
-
-            if (workbook.NumberOfSheets > 1)
+            using (FileStream stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
             {
-                Debug.LogWarning("Spreadsheet contains multiple sheets, we will only fetch data from 1st sheet");
-            }
-            else if (workbook.NumberOfSheets == 0)
-            {
-                Debug.LogError("Spreadsheet is empty!!!!");
-                return;
-            }
+                IWorkbook workbook = new HSSFWorkbook(stream);
 
-            ISheet sheet = workbook.GetSheetAt(0);
-
-            for (int i = 1; i <= sheet.LastRowNum; i++) // loop from 1 to skip title row
-            {
-                IRow dataRow = sheet.GetRow(i);
-
-                ICell cell = dataRow.GetCell(0);
-                if (IsValidCell(cell))
+                if (workbook.NumberOfSheets == 0)
                 {
-                    ParseVirtualItemByString(cell.StringCellValue, dataRow);
+                    Debug.LogError("Spreadsheet is empty!!!!");
+                    return;
                 }
-                else
+
+                ImportVirtualItem<VirtualCurrency>(workbook, "Virtual Currency");
+                ImportVirtualItem<SingleUseItem>(workbook, "Single Use", (dataRow, item) =>
                 {
-                    Debug.LogWarning("row [" + (i + 1) + "] is not valid");
-                }
+                    ParsePurchaseInfo(dataRow, 4, item.ID, ref item.PurchaseInfo);
+                });
+                ImportVirtualItem<LifeTimeItem>(workbook, "Life Time", (dataRow, item) =>
+                {
+                    item.IsEquippable = ParseIsEquippable(dataRow, item.ID);
+                    ParsePurchaseInfo(dataRow, 5, item.ID, ref item.PurchaseInfo);
+                });
+                ImportVirtualItem<UpgradeItem>(workbook, "Upgrade Item", (dataRow, item) =>
+                {
+                    item.RelatedItemID = ParseRelatedItemID(dataRow, item.ID);
+                    ParsePurchaseInfo(dataRow, 5, item.ID, ref item.PurchaseInfo);
+                });
+                ImportVirtualItem<VirtualItemPack>(workbook, "Pack", (dataRow, item) =>
+                {
+                    ParsePurchaseInfo(dataRow, 4, item.ID, ref item.PurchaseInfo);
+                    ParsePackElements(dataRow, 10, item.ID, ref item.PackElements);
+                });
             }
         }
+        catch (IOException)
+        {
+            EditorUtility.DisplayDialog("ERROR", "The xls file is currently opened by another program, please close it first.", "OK");
+        }
+    }
+
+    private static List<T> ImportVirtualItem<T>(IWorkbook workbook, string sheetName, Action<IRow, T> parseMore = null) where T : VirtualItem
+    {
+        List<T> items = new List<T>();
+
+        ISheet sheet = workbook.GetSheet(sheetName);
+        if (sheet == null)
+        {
+            Debug.LogError("Couldn't find sheet with name [" + sheetName + "] from xls file");
+            return items;
+        }
+
+        _currentSheetName = sheetName;
+        for (int i = 1; i <= sheet.LastRowNum; i++) // loop from 1 to skip title row
+        {
+            IRow dataRow = sheet.GetRow(i);
+            try
+            {
+                string virtualItemID = ParseID(dataRow);
+                if (!string.IsNullOrEmpty(virtualItemID))
+                {
+                    string filePath = VirtualItemDataPath + virtualItemID + ".asset";
+                    T item = AssetDatabase.LoadAssetAtPath(filePath, typeof(T)) as T;
+                    if (item == null)
+                    {
+                        item = CreateAsset<T>(filePath);
+                    }
+
+                    item.ID = virtualItemID;
+                    item.Name = ParseName(dataRow, virtualItemID);
+                    item.Description = ParseDescription(dataRow, virtualItemID);
+                    item.SortIndex = dataRow.RowNum;
+                    item.Category = ParseRelatedCategory(dataRow, virtualItemID);
+
+                    if (parseMore != null)
+                    {
+                        parseMore(dataRow, item);
+                    }
+
+                    EditorUtility.SetDirty(item);
+
+                    items.Add(item);
+                }
+            }
+            catch (Exception) { }
+        }
+
+        return items;
     }
 
     private static void UpdateVirtualItemsConfig()
     {
-        string configFilePath = VirtualItemDataPath + "VirtualItemsConfig.asset";
-        VirtualItemsConfig virtualItemsConfig = AssetDatabase.LoadAssetAtPath(configFilePath, typeof(VirtualItemsConfig)) as VirtualItemsConfig;
-        if (virtualItemsConfig == null)
-        {
-            virtualItemsConfig = CreateAsset<VirtualItemsConfig>(configFilePath);
-        }
+        VirtualItemsConfig virtualItemsConfig = GetVirtualItemsConfigAndCreateIfNonExist();
+        ClearVirtualItemConfigLists(virtualItemsConfig);
 
-        // update virtual items config
-        virtualItemsConfig.Items.Clear();
-        virtualItemsConfig.Items.AddRange(Resources.FindObjectsOfTypeAll<VirtualItem>());
-        virtualItemsConfig.Items.Sort();
+        // update virtual items list
+        virtualItemsConfig.VirtualCurrencies.AddRange(Resources.FindObjectsOfTypeAll<VirtualCurrency>());
+        virtualItemsConfig.VirtualCurrencies.Sort();
+        virtualItemsConfig.SingleUseItems.AddRange(Resources.FindObjectsOfTypeAll<SingleUseItem>());
+        virtualItemsConfig.SingleUseItems.Sort();
+        virtualItemsConfig.LifeTimeItems.AddRange(Resources.FindObjectsOfTypeAll<LifeTimeItem>());
+        virtualItemsConfig.LifeTimeItems.Sort();
+        virtualItemsConfig.UpgradeItems.AddRange(Resources.FindObjectsOfTypeAll<UpgradeItem>());
+        virtualItemsConfig.UpgradeItems.Sort();
+        virtualItemsConfig.ItemPacks.AddRange(Resources.FindObjectsOfTypeAll<VirtualItemPack>());
+        virtualItemsConfig.ItemPacks.Sort();
 
+        virtualItemsConfig.UpdateIdToItemMap();
+
+        // update categories
         virtualItemsConfig.Categories.Clear();
         virtualItemsConfig.Categories.AddRange(Resources.FindObjectsOfTypeAll<VirtualCategory>());
 
-        // update categories
         foreach (var category in virtualItemsConfig.Categories)
         {
             category.Items.Clear();
@@ -122,29 +176,26 @@ public class VirtualItemsConfigEditor : Editor
             EditorUtility.SetDirty(category);
         }
 
-        CheckIdAndReferences(virtualItemsConfig);
+        CheckIfAnyInvalidRef(virtualItemsConfig);
 
         // update upgrades in virtual items
         foreach (var item in virtualItemsConfig.Items)
         {
             item.Upgrades.Clear();
         }
-        foreach (var item in virtualItemsConfig.Items)
+        foreach (var item in virtualItemsConfig.UpgradeItems)
         {
-            if (item.IsUpgradeType)
+            VirtualItem relatedItem = item.RelatedItem;
+            if (item.RelatedItem != null)
             {
-                VirtualItem relatedItem = FindItemById(virtualItemsConfig, item.RelatedItemID);
-                if (relatedItem != null)
-                {
-                    relatedItem.Upgrades.Add(item);
-                }
-                else
-                {
-                    Debug.LogError("upgrade item [" + item.ID + 
-                        "]'s associated item id [" + item.RelatedItemID + "]'s item is null");
-                }
+                relatedItem.Upgrades.Add(item);
             }
-        } 
+            else
+            {
+                Debug.LogError("upgrade item [" + item.ID +
+                    "]'s associated item is null");
+            }
+        }
         foreach (var item in virtualItemsConfig.Items)
         {
             EditorUtility.SetDirty(item);
@@ -153,124 +204,46 @@ public class VirtualItemsConfigEditor : Editor
         EditorUtility.SetDirty(virtualItemsConfig);
     }
 
-    private static VirtualItem FindItemById(VirtualItemsConfig config, string id)
+    private static VirtualItemsConfig GetVirtualItemsConfigAndCreateIfNonExist()
     {
-        for (int i = 0; i < config.Items.Count; i++)
+        string configFilePath = VirtualItemDataPath + "VirtualItemsConfig.asset";
+        VirtualItemsConfig virtualItemsConfig = AssetDatabase.LoadAssetAtPath(configFilePath, typeof(VirtualItemsConfig)) as VirtualItemsConfig;
+        if (virtualItemsConfig == null)
         {
-            if (config.Items[i].ID.Equals(id))
-            {
-                return config.Items[i];
-            }
+            virtualItemsConfig = CreateAsset<VirtualItemsConfig>(configFilePath);
         }
-        return null;
+        return virtualItemsConfig;
     }
 
-    private static void CheckIdAndReferences(VirtualItemsConfig config)
+    private static void ClearVirtualItemConfigLists(VirtualItemsConfig virtualItemsConfig)
     {
-        VirtualItem[] virtualItems = Resources.FindObjectsOfTypeAll<VirtualItem>();
+        virtualItemsConfig.VirtualCurrencies.Clear();
+        virtualItemsConfig.SingleUseItems.Clear();
+        virtualItemsConfig.LifeTimeItems.Clear();
+        virtualItemsConfig.UpgradeItems.Clear();
+        virtualItemsConfig.ItemPacks.Clear();
+        virtualItemsConfig.Categories.Clear();
+    }
 
-        Dictionary<string, VirtualItem> idToItems = new Dictionary<string, VirtualItem>();
-        foreach (var item in virtualItems)
+    private static void CheckIfAnyInvalidRef(VirtualItemsConfig config)
+    {
+        foreach(var item in config.UpgradeItems)
         {
-            if (idToItems.ContainsKey(item.ID))
+            if (item.RelatedItem == null)
             {
-                Debug.LogError("Found duplicated key of item [" + item.ID + "]");
-            }
-            else
-            {
-                idToItems.Add(item.ID, item);
+                Debug.LogError("Upgrade item [" + item.ID + "]'s related item couldn't be found.");
             }
         }
-
-        foreach (var item in config.Items)
+        foreach (var pack in config.ItemPacks)
         {
-            if (item.Type == VirtualItemType.ConsumablePack || 
-                item.Type == VirtualItemType.VirtualCurrencyPack || 
-                item.Type == VirtualItemType.UpgradeItem)
+            foreach (var element in pack.PackElements)
             {
-                if (string.IsNullOrEmpty(item.RelatedItemID))
+                if (element.Item == null)
                 {
-                    Debug.LogError("Virtual item of type [" + item.Type + "], with id [" + item.ID +
-                        "] must have an associated item");
+                    Debug.LogError("Pack [" + pack.ID + "]'s element item [" + element.Item.ID + "] couldn't be found.");
                 }
             }
-            if (!string.IsNullOrEmpty(item.RelatedItemID) && !idToItems.ContainsKey(item.RelatedItemID))
-            {
-                Debug.LogError("Virtual item of type [" + item.Type + "], with id [" + item.ID +
-                    "]'s associated item [" + item.RelatedItemID + "] doesn't exist");
-            }
         }
-    }
-
-    private static void ParseVirtualItemByString(string typeString, IRow row)
-    {
-        try
-        {
-            VirtualItemType virtualItemType = (VirtualItemType)Enum.Parse(typeof(VirtualItemType), typeString);
-            string virtualItemID = ParseID(row);
-            if (!string.IsNullOrEmpty(virtualItemID))
-            {
-                Debug.Log("Parsing item type [" + virtualItemType + "] with id [" + virtualItemID + "]");
-                string virtualItemName = ParseName(row, virtualItemID);
-                string virtualItemDescription = ParseDescription(row, virtualItemID);
-                ParseVirtualItem(virtualItemType, virtualItemID, virtualItemName, virtualItemDescription, row);
-            }
-            else
-            {
-                throw new Exception();
-            }
-        }
-        catch (Exception e)
-        {
-            Debug.LogError("Parse virtual item type [" + typeString + "] failed: " + e.ToString());
-        }
-    }
-
-    private static void ParseVirtualItem(VirtualItemType type, string id, string name, string description, IRow row)
-    {
-        string filePath = VirtualItemDataPath + id + ".asset";
-        VirtualItem item = AssetDatabase.LoadAssetAtPath(filePath, typeof(VirtualItem)) as VirtualItem;
-        if (item == null)
-        {
-            item = CreateAsset<VirtualItem>(filePath);
-        }
-
-        item.Type = type;
-        item.ID = id;
-        item.SortIndex = row.RowNum;
-        item.Name = name;
-        item.Description = description;
-        item.Category = ParseRelatedCategory(row, id);
-
-        switch (type)
-        {
-            case VirtualItemType.VirtualCurrency:
-                break;
-            case VirtualItemType.VirtualCurrencyPack:
-            case VirtualItemType.ConsumablePack:
-                item.RelatedItemID = ParseRelatedItemID(row, id);
-                item.RelatedItemAmount = ParseRelatedAmount(row, id);
-                if (item.PurchaseInfo == null)
-                {
-                    Debug.LogWarning("purchaseinfo is null");
-                }
-                ParsePurchaseInfo(row, id, ref item.PurchaseInfo);
-                break;
-            case VirtualItemType.ConsumableItem:
-            case VirtualItemType.NonConsumableItem:
-            case VirtualItemType.EquippableItem:
-                ParsePurchaseInfo(row, id, ref item.PurchaseInfo);
-                break; 
-            case VirtualItemType.UpgradeItem:
-                item.RelatedItemID = ParseRelatedItemID(row, id);
-                ParsePurchaseInfo(row, id, ref item.PurchaseInfo);
-                break;
-            default:
-                Debug.LogError("Unsupported virtual item type");
-                break;
-        }
-
-        EditorUtility.SetDirty(item);
     }
 
     private static bool IsValidCell(ICell cell)
@@ -313,16 +286,30 @@ public class VirtualItemsConfigEditor : Editor
         }
     }
 
+    private static bool TryParseBoolCell(ICell cell, out bool cellData)
+    {
+        if (IsValidCell(cell))
+        {
+            cellData = cell.BooleanCellValue;
+            return true;
+        }
+        else
+        {
+            cellData = false;
+            return false;
+        }
+    }
+
     private static string ParseID(IRow row)
     {
         string id;
-        if (TryParseStringCell(row.GetCell(1), out id))
+        if (TryParseStringCell(row.GetCell(0), out id))
         {
             return id;
         }
         else
         {
-            Debug.Log("Row [" + row.RowNum + "]'s id is blank");
+            Debug.Log("Sheet [" + _currentSheetName + "] Row [" + (row.RowNum + 1) + "]'s id is blank");
             return string.Empty;
         }
     }
@@ -330,7 +317,7 @@ public class VirtualItemsConfigEditor : Editor
     private static string ParseName(IRow row, string itemID)
     {
         string name;
-        if (TryParseStringCell(row.GetCell(2), out name))
+        if (TryParseStringCell(row.GetCell(1), out name))
         {
             return name;
         }
@@ -344,7 +331,7 @@ public class VirtualItemsConfigEditor : Editor
     private static string ParseDescription(IRow row, string itemID)
     {
         string description;
-        if (TryParseStringCell(row.GetCell(3), out description))
+        if (TryParseStringCell(row.GetCell(2), out description))
         {
             return description;
         }
@@ -358,7 +345,7 @@ public class VirtualItemsConfigEditor : Editor
     private static VirtualCategory ParseRelatedCategory(IRow row, string itemID)
     {
         string categoryId;
-        if (TryParseStringCell(row.GetCell(4), out categoryId))
+        if (TryParseStringCell(row.GetCell(3), out categoryId))
         {
             string filePath = VirtualItemDataPath + "Category" + categoryId + ".asset";
             VirtualCategory category = AssetDatabase.LoadAssetAtPath(filePath, typeof(VirtualCategory)) as VirtualCategory;
@@ -375,10 +362,20 @@ public class VirtualItemsConfigEditor : Editor
         }
     }
 
+    private static bool ParseIsEquippable(IRow row, string itemID)
+    {
+        bool isEuippable = false;
+        if (TryParseBoolCell(row.GetCell(4), out isEuippable))
+        {
+            return isEuippable;
+        }
+        return false;
+    }
+
     private static string ParseRelatedItemID(IRow row, string itemID)
     {
         string relatedItemID;
-        if (TryParseStringCell(row.GetCell(5), out relatedItemID))
+        if (TryParseStringCell(row.GetCell(4), out relatedItemID))
         {
             return relatedItemID;
         }
@@ -389,24 +386,11 @@ public class VirtualItemsConfigEditor : Editor
         }
     }
 
-    private static int ParseRelatedAmount(IRow row, string itemID)
-    {
-        if (IsValidCell(row.GetCell(6)))
-        {
-            return (int)row.GetCell(6).NumericCellValue;
-        }
-        else
-        {
-            Debug.LogWarning("Item [" + itemID + "]'s related item amount is blank");
-            return 0;
-        }
-    }
-
-    private static void ParsePurchaseInfo(IRow row, string itemID, ref List<Purchase> purchaseInfo)
+    private static void ParsePurchaseInfo(IRow row, int cellIndex, string itemID, ref List<Purchase> purchaseInfo)
     {
         purchaseInfo.Clear();
 
-        int currentCellIndex = 7;
+        int currentCellIndex = cellIndex;
         Purchase purchase = ParseOnePurchase(row, currentCellIndex, itemID);
         while (purchase != null)
         {
@@ -414,16 +398,6 @@ public class VirtualItemsConfigEditor : Editor
             currentCellIndex += 3;
             purchase = ParseOnePurchase(row, currentCellIndex, itemID);
         }
-    }
-
-    private static void ParsePrimaryPurchase(IRow row, string itemID, ref Purchase primaryPurchase)
-    {
-        primaryPurchase = ParseOnePurchase(row, 7, itemID);
-    }
-
-    private static void ParseSecondaryPurchase(IRow row, string itemID, ref Purchase secondaryPurchase)
-    {
-        secondaryPurchase = ParseOnePurchase(row, 10, itemID);
     }
 
     private static Purchase ParseOnePurchase(IRow row, int currentCellIndex, string itemID)
@@ -469,6 +443,49 @@ public class VirtualItemsConfigEditor : Editor
         }
     }
 
+    private static void ParsePackElements(IRow row, int cellIndex, string packID, ref List<PackElement> packElements)
+    {
+        packElements.Clear();
+
+        int currentCellIndex = cellIndex;
+        PackElement element = ParseOnePackElement(row, currentCellIndex, packID);
+        while (element != null)
+        {
+            packElements.Add(element);
+            currentCellIndex += 2;
+            element = ParseOnePackElement(row, currentCellIndex, packID);
+        }
+    }
+
+    private static PackElement ParseOnePackElement(IRow row, int currentCellIndex, string packID)
+    {
+        string itemID;
+        if (TryParseStringCell(row.GetCell(currentCellIndex), out itemID))
+        {
+            PackElement element = new PackElement()
+            {
+                ItemID = itemID,
+                Amount = ParseItemAmount(row, currentCellIndex + 1, packID)
+            };
+            return element;
+        }
+        return null;
+    }
+
+    private static int ParseItemAmount(IRow row, int cellIndex, string packID)
+    {
+        double amountDouble;
+        if (TryParseDoubleCell(row.GetCell(cellIndex), out amountDouble))
+        {
+            return (int)amountDouble;
+        }
+        else
+        {
+            Debug.LogWarning("Pack [" + packID + "]'s item amount at cell [" + (cellIndex + 1) + "] is blank");
+            return 0;
+        }
+    }
+
     private static T CreateAsset<T>(string path) where T : ScriptableObject
     {
         T asset = ScriptableObject.CreateInstance<T>();
@@ -478,4 +495,5 @@ public class VirtualItemsConfigEditor : Editor
     }
 
     private static readonly string VirtualItemDataPath = "Assets/EconomyKit/Resources/";
+    private static string _currentSheetName;
 }

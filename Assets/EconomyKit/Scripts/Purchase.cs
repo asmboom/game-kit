@@ -23,25 +23,19 @@ public class Purchase
         }
     }
 
-    public PurchaseError Exec(PurchasableItem purchasable, IEconomyStorage storage)
-    {
-        //TODO
-        return PurchaseError.None;
-    }
-
-    public PurchaseError Buy(VirtualItem item, IEconomyStorage storage)
+    public PurchaseError Run(PurchasableItem purchasable, IEconomyStorage storage)
     {
         if (Type == PurchaseType.PurchaseWithVirtualCurrency)
         {
-            return BuyWithVirtualCurrency(item, storage);
+            return BuyWithVirtualCurrency(purchasable, storage);
         }
         else
         {
-            return BuyWithMarket(item, storage);
+            return BuyWithMarket(purchasable, storage);
         }
     }
 
-    private PurchaseError BuyWithVirtualCurrency(VirtualItem item, IEconomyStorage storage)
+    private PurchaseError BuyWithVirtualCurrency(PurchasableItem item, IEconomyStorage storage)
     {
         EconomyKit.OnPurchaseStarted(item);
 
@@ -60,7 +54,7 @@ public class Purchase
         }
     }
 
-    private PurchaseError BuyWithMarket(VirtualItem item, IEconomyStorage storage)
+    private PurchaseError BuyWithMarket(PurchasableItem item, IEconomyStorage storage)
     {
         EconomyKit.OnPurchaseStarted(item);
 
@@ -85,5 +79,5 @@ public class Purchase
         _currentItemPurchasedWithMarket = null;
     }
 
-    private static VirtualItem _currentItemPurchasedWithMarket = null;
+    private static PurchasableItem _currentItemPurchasedWithMarket = null;
 }

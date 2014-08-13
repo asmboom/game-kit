@@ -2,35 +2,64 @@
 using UnityEngine;
 
 [System.Serializable]
-public class ItemAmountPair
+public class PackElement
 {
-    public VirtualItemBase Item;
+    public string ItemID;
     public int Amount;
+
+    public VirtualItem Item
+    {
+        get
+        {
+            return string.IsNullOrEmpty(ItemID) ? 
+                null : EconomyKit.Config.GetItemByID(ItemID);
+        }
+    }
+
+    public void Give(int amount)
+    {
+        Item.Give(amount * Amount);
+    }
+
+    public void Take(int amount)
+    {
+        Item.Take(amount * Amount);
+    }
 }
 
 public class VirtualItemPack : PurchasableItem
 {
     [SerializeField]
-    public List<ItemAmountPair> Items;
+    public List<PackElement> PackElements;
 
-    protected override bool CanPurchaseNow()
+    public override bool CanPurchaseNow()
     {
         return true;
     }
 
     protected override void TakeBalance(int amount)
     {
-        for (int i = 0; i < Items.Count; i++)
+        for (int i = 0; i < PackElements.Count; i++)
         {
-            Items[i].Item.Take(amount);
+            PackElements[i].Take(amount);
         }
     }
 
     protected override void GiveBalance(int amount)
     {
-        for (int i = 0; i < Items.Count; i++)
+        for (int i = 0; i < PackElements.Count; i++)
         {
-            Items[i].Item.Give(amount);
+            PackElements[i].Give(amount);
+        }
+    }
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+
+        if (PackElements == null)
+        {
+            PackElements = new List<PackElement>();
         }
     }
 }

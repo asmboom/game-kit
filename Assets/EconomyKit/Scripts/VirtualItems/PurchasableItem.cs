@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class PurchasableItem : VirtualItemBase
+public abstract class PurchasableItem : VirtualItem
 {
     [SerializeField]
     public List<Purchase> PurchaseInfo;
@@ -18,7 +18,7 @@ public abstract class PurchasableItem : VirtualItemBase
         {
             if (CanPurchaseNow())
             {
-                PurchaseInfo[purchaseIndex].Exec(this, Storage);
+                PurchaseInfo[purchaseIndex].Run(this, Storage);
             }
         }
         else
@@ -27,10 +27,12 @@ public abstract class PurchasableItem : VirtualItemBase
         }
     }
 
-    protected abstract bool CanPurchaseNow();
+    public abstract bool CanPurchaseNow();
 
-    protected virtual void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
+
         if (PurchaseInfo == null)
         {
             PurchaseInfo = new List<Purchase>();

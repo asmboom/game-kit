@@ -2,7 +2,7 @@
 
 public class SingleUseItem : PurchasableItem
 {
-    protected override bool CanPurchaseNow()
+    public override bool CanPurchaseNow()
     {
         return true;
     }

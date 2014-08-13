@@ -14,9 +14,9 @@ public class MarketProduct
     {
         Dictionary<string, MarketProduct> list = new Dictionary<string, MarketProduct>();
 
-        for (int i = 0; i < config.Items.Count; i++)
+        foreach (var item in config.Items)
         {
-            MarketProduct product = TryCreateMarketProductFromVirtualItem(config.Items[i]);
+            MarketProduct product = TryCreateMarketProductFromVirtualItem(item);
             if (product != null)
             {
                 list.Add(product.ProductIdentifier, product);
@@ -28,11 +28,12 @@ public class MarketProduct
 
     public static MarketProduct TryCreateMarketProductFromVirtualItem(VirtualItem item)
     {
-        if (item.IsPurchasable)
+        if (item is PurchasableItem)
         {
-            for (int i = 0; i < item.PurchaseInfo.Count; i++)
+            PurchasableItem purchasableItem = item as PurchasableItem;
+            for (int i = 0; i < purchasableItem.PurchaseInfo.Count; i++)
             {
-                Purchase purchase = item.PurchaseInfo[i];
+                Purchase purchase = purchasableItem.PurchaseInfo[i];
                 if (purchase.IsMarketPurchase)
                 {
                     MarketProduct product = new MarketProduct();

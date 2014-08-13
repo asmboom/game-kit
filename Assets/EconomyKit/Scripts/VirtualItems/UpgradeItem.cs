@@ -3,12 +3,21 @@
 public class UpgradeItem : PurchasableItem
 {
     [SerializeField]
-    public VirtualItemBase RelatedItem;
+    public string RelatedItemID;
 
-    protected override bool CanPurchaseNow()
+    public VirtualItem RelatedItem
     {
-        VirtualItemBase associatedItem = RelatedItem;
-        VirtualItemBase nextUpgradeItem = associatedItem.NextUpgradeItem;
+        get
+        {
+            return string.IsNullOrEmpty(RelatedItemID) ?
+                null : EconomyKit.Config.GetItemByID(RelatedItemID);
+        }
+    }
+
+    public override bool CanPurchaseNow()
+    {
+        VirtualItem associatedItem = RelatedItem;
+        VirtualItem nextUpgradeItem = associatedItem.NextUpgradeItem;
         return nextUpgradeItem != null && nextUpgradeItem == this;
     }
 

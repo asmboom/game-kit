@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class VirtualItemBase : ScriptableObject, IComparable<VirtualItem>
+public abstract class VirtualItem : ScriptableObject, IComparable
 {
     public Action<int, int> OnBalanceChanged = delegate { };
 
@@ -31,6 +31,13 @@ public abstract class VirtualItemBase : ScriptableObject, IComparable<VirtualIte
         int oldBalance = Balance;
         Storage.SetItemBalance(ID, 0);
         OnBalanceChanged(oldBalance, 0);
+    }
+
+    public int CompareTo(object obj)
+    {
+        VirtualItem otherItem = obj as VirtualItem;
+        return otherItem != null ?
+            SortIndex.CompareTo(otherItem.SortIndex) : 0;
     }
 
     public int CompareTo(VirtualItem other)
@@ -88,6 +95,14 @@ public abstract class VirtualItemBase : ScriptableObject, IComparable<VirtualIte
         if (CanUpgrade)
         {
             NextUpgradeItem.Purchase();
+        }
+    }
+
+    protected virtual void OnEnable()
+    {
+        if (Upgrades == null)
+        {
+            Upgrades = new List<UpgradeItem>();
         }
     }
 
