@@ -23,7 +23,7 @@ public class Purchase
         }
     }
 
-    public PurchaseError Run(PurchasableItem purchasable, IEconomyStorage storage)
+    public PurchaseError Execute(PurchasableItem purchasable, IEconomyStorage storage)
     {
         if (Type == PurchaseType.PurchaseWithVirtualCurrency)
         {
