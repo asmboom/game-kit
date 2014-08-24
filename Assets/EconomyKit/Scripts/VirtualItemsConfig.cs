@@ -47,6 +47,18 @@ public class VirtualItemsConfig : ScriptableObject
         }
     }
 
+    public VirtualCategory GetCategoryByID(string id)
+    {
+        foreach( var category in Categories )
+        {
+            if (category.ID.Equals(id))
+            {
+                return category;
+            }
+        }
+        return null;
+    }
+
     public void UpdateIdToItemMap()
     {
         _idToItems = new Dictionary<string, VirtualItem>();
