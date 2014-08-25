@@ -63,21 +63,21 @@ public class VirtualItemsConfigEditor : Editor
                 ImportVirtualItem<VirtualCurrency>(workbook, "Virtual Currency");
                 ImportVirtualItem<SingleUseItem>(workbook, "Single Use", (dataRow, item) =>
                 {
-                    ParsePurchaseInfo(dataRow, 4, item.ID, ref item.PurchaseInfo);
+                    ParsePurchaseInfo(dataRow, 4, item.ID, ref item.PrimaryPurchase, ref item.SecondaryPurchase);
                 });
                 ImportVirtualItem<LifeTimeItem>(workbook, "Life Time", (dataRow, item) =>
                 {
                     item.IsEquippable = ParseIsEquippable(dataRow, item.ID);
-                    ParsePurchaseInfo(dataRow, 5, item.ID, ref item.PurchaseInfo);
+                    ParsePurchaseInfo(dataRow, 5, item.ID, ref item.PrimaryPurchase, ref item.SecondaryPurchase);
                 });
                 ImportVirtualItem<UpgradeItem>(workbook, "Upgrade Item", (dataRow, item) =>
                 {
                     item.RelatedItemID = ParseRelatedItemID(dataRow, item.ID);
-                    ParsePurchaseInfo(dataRow, 5, item.ID, ref item.PurchaseInfo);
+                    ParsePurchaseInfo(dataRow, 5, item.ID, ref item.PrimaryPurchase, ref item.SecondaryPurchase);
                 });
                 ImportVirtualItem<VirtualItemPack>(workbook, "Pack", (dataRow, item) =>
                 {
-                    ParsePurchaseInfo(dataRow, 4, item.ID, ref item.PurchaseInfo);
+                    ParsePurchaseInfo(dataRow, 4, item.ID, ref item.PrimaryPurchase, ref item.SecondaryPurchase);
                     ParsePackElements(dataRow, 10, item.ID, ref item.PackElements);
                 });
             }
@@ -386,18 +386,12 @@ public class VirtualItemsConfigEditor : Editor
         }
     }
 
-    private static void ParsePurchaseInfo(IRow row, int cellIndex, string itemID, ref List<Purchase> purchaseInfo)
+    private static void ParsePurchaseInfo(IRow row, int cellIndex, string itemID, 
+        ref Purchase primaryPurchase, ref Purchase secondaryPurchase)
     {
-        purchaseInfo.Clear();
-
         int currentCellIndex = cellIndex;
-        Purchase purchase = ParseOnePurchase(row, currentCellIndex, itemID);
-        while (purchase != null)
-        {
-            purchaseInfo.Add(purchase);
-            currentCellIndex += 3;
-            purchase = ParseOnePurchase(row, currentCellIndex, itemID);
-        }
+        primaryPurchase = ParseOnePurchase(row, currentCellIndex, itemID);
+        secondaryPurchase = ParseOnePurchase(row, currentCellIndex + 3, itemID);
     }
 
     private static Purchase ParseOnePurchase(IRow row, int currentCellIndex, string itemID)

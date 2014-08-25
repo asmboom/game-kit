@@ -4,38 +4,30 @@ using UnityEngine;
 public abstract class PurchasableItem : VirtualItem
 {
     [SerializeField]
-    public List<Purchase> PurchaseInfo;
+    public Purchase PrimaryPurchase;
+
+    [SerializeField]
+    public Purchase SecondaryPurchase;
 
     public void Purchase()
     {
-        Purchase(0);
+        Purchase(true);
     }
 
-    public void Purchase(int purchaseIndex)
+    public void Purchase(bool usePrimaryPurchase)
     {
-        purchaseIndex = Mathf.Max(0, purchaseIndex);
-        if (purchaseIndex < PurchaseInfo.Count)
+        if (CanPurchaseNow())
         {
-            if (CanPurchaseNow())
+            if (usePrimaryPurchase)
             {
-                PurchaseInfo[purchaseIndex].Execute(this, Storage);
+                PrimaryPurchase.Execute(this, Storage);
             }
-        }
-        else
-        {
-            Debug.LogError("Item [" + ID + "] doesn't have purchase of index [" + purchaseIndex + "]");
+            else
+            {
+                SecondaryPurchase.Execute(this, Storage);
+            }
         }
     }
 
     public abstract bool CanPurchaseNow();
-
-    protected override void OnEnable()
-    {
-        base.OnEnable();
-
-        if (PurchaseInfo == null)
-        {
-            PurchaseInfo = new List<Purchase>();
-        }
-    }
 }
