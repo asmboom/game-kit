@@ -28,7 +28,7 @@ public class PackElement
 
     public override string ToString()
     {
-        return Item != null ? string.Format("{0}x{1}", Item.ID, Amount) : "None";
+        return Item != null ? string.Format("{0}x{1}", Item.Name, Amount) : "None";
     }
 }
 

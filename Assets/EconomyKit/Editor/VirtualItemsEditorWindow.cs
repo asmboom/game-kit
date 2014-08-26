@@ -17,115 +17,38 @@ public class VirtualItemsEditorWindow : EditorWindow
             _config = EconomyKit.Config;
         }
         _selectedItemTypeIndex = -1;
-        _currentItemsInfo = new List<VirtualItemInfo>();
+        _currentItemsInfo = new List<VirtualItemDisplayInfo>();
         _itemTypes = new string[] { "Virtual Currency", "Single Use", "LifeTime Item", "Upgrade Item", "Pack" };
-        UpdateCategories();
+
+        VirtualItemsEditUtil.UpdateDisplayedOptions();
     }
 
     private void UpdateItems(List<VirtualItem> items)
     {
-        UpdateCategories();
-        UpdateVirtualCurrencyIDs();
-        UpdateItemIds();
+        VirtualItemsEditUtil.UpdateDisplayedOptions();
 
         _currentItemsInfo.Clear();
         foreach (var item in items)
         {
-            var info = new VirtualItemInfo()
+            var info = new VirtualItemDisplayInfo()
             {
                 Item = item,
-                CategoryIndex = item.Category == null ? 0 : GetCategoryIndexById(item.Category.ID),
+                CategoryIndex = item.Category == null ? 0 : VirtualItemsEditUtil.GetCategoryIndexById(item.Category.ID),
             };
             if (item is PurchasableItem)
             {
                 PurchasableItem purchasable = item as PurchasableItem;
-                info.VirtualCurrencyIndexOfPrimaryPurchase = GetVirtualCurrencyIndexById(purchasable.PrimaryPurchase.AssociatedID);
-                info.VirtualCurrencyIndexOfSecondaryPurchase = GetVirtualCurrencyIndexById(purchasable.SecondaryPurchase.AssociatedID);
+                info.VirtualCurrencyIndexOfPrimaryPurchase = VirtualItemsEditUtil.GetVirtualCurrencyIndexById(purchasable.PrimaryPurchase.AssociatedID);
+                info.VirtualCurrencyIndexOfSecondaryPurchase = VirtualItemsEditUtil.GetVirtualCurrencyIndexById(purchasable.SecondaryPurchase.AssociatedID);
             }
             if (item is UpgradeItem)
             {
                 UpgradeItem upgradeItem = item as UpgradeItem;
-                info.RelatedItemIndex = GetItemIndexById(upgradeItem.RelatedItemID);
+                info.RelatedItemIndex = VirtualItemsEditUtil.GetItemIndexById(upgradeItem.RelatedItemID);
             }
 
             _currentItemsInfo.Add(info);
         }
-    }
-
-    private int GetCategoryIndexById(string categoryId)
-    {
-        for (int i = 0; i < _categories.Length; i++)
-        {
-            if (_categories[i].Equals(categoryId))
-            {
-                return i;
-            }
-        }
-        Debug.LogError("Failed find categogy id: [" + categoryId + "]");
-        return 0;
-    }
-
-    private int GetVirtualCurrencyIndexById(string virtualCurrencyId)
-    {
-        for (int i = 0; i < _virtualCurrencyIds.Length; i++)
-        {
-            if (_virtualCurrencyIds[i].Equals(virtualCurrencyId))
-            {
-                return i;
-            }
-        }
-        return 0;
-    }
-
-    private int GetItemIndexById(string itemId)
-    {
-        for (int i = 0; i < _items.Length; i++)
-        {
-            if (_items[i].Equals(itemId))
-            {
-                return i;
-            }
-        }
-        return 0;
-    }
-
-    private void UpdateCategories()
-    {
-        List<string> categoryTitles = new List<string>();
-        categoryTitles.Add("None");
-        foreach (var category in _config.Categories)
-        {
-            categoryTitles.Add(category.ID);
-        }
-        _categories = categoryTitles.ToArray();
-    }
-
-    private void UpdateVirtualCurrencyIDs()
-    {
-        List<string> ids = new List<string>();
-        foreach (var item in _config.VirtualCurrencies)
-        {
-            ids.Add(item.ID);
-        }
-        _virtualCurrencyIds = ids.ToArray();
-    }
-
-    private void UpdateItemIds()
-    {
-        List<string> ids = new List<string>();
-        foreach (var item in _config.VirtualCurrencies)
-        {
-            ids.Add(item.ID);
-        }
-        foreach (var item in _config.SingleUseItems)
-        {
-            ids.Add(item.ID);
-        }
-        foreach (var item in _config.LifeTimeItems)
-        {
-            ids.Add(item.ID);
-        }
-        _items = ids.ToArray();
     }
 
     private void OnGUI()
@@ -142,6 +65,8 @@ public class VirtualItemsEditorWindow : EditorWindow
                     {
                         items.Add(item);
                     }
+                    _currentListView = new VirtualCurrencyListView(_config.VirtualCurrencies);
+                    _currentListView.Show();
                     break;
                 case VirtualItemType.SingleUse:
                     foreach (var item in _config.SingleUseItems)
@@ -174,7 +99,8 @@ public class VirtualItemsEditorWindow : EditorWindow
             _scrollPosition = Vector2.zero;
         }
 
-        DrawCurrentItemsInfo();
+        //DrawCurrentItemsInfo();
+        _currentListView.Draw(position);
         _selectedItemTypeIndex = newSelectedCategoryIdx;
     }
 
@@ -186,7 +112,7 @@ public class VirtualItemsEditorWindow : EditorWindow
         {
             GUILayout.BeginHorizontal(GUILayout.MaxWidth(800));
             bool drawTitle = i < 0;
-            VirtualItemInfo info = i < 0 ? null : _currentItemsInfo[i];
+            VirtualItemDisplayInfo info = i < 0 ? null : _currentItemsInfo[i];
 
             DrawDeleteButton(drawTitle, info);
             DrawID(drawTitle, info);
@@ -217,7 +143,7 @@ public class VirtualItemsEditorWindow : EditorWindow
         GUILayout.EndScrollView();
     }
 
-    private void DrawDeleteButton(bool drawTitle, VirtualItemInfo info)
+    private void DrawDeleteButton(bool drawTitle, VirtualItemDisplayInfo info)
     {
         if (drawTitle)
         {
@@ -236,7 +162,7 @@ public class VirtualItemsEditorWindow : EditorWindow
         }
     }
 
-    private void DrawID(bool drawTitle, VirtualItemInfo info)
+    private void DrawID(bool drawTitle, VirtualItemDisplayInfo info)
     {
         if (drawTitle)
         {
@@ -248,7 +174,7 @@ public class VirtualItemsEditorWindow : EditorWindow
         }
     }
 
-    private void DrawName(bool drawTitle, VirtualItemInfo info)
+    private void DrawName(bool drawTitle, VirtualItemDisplayInfo info)
     {
         if (drawTitle)
         {
@@ -260,7 +186,7 @@ public class VirtualItemsEditorWindow : EditorWindow
         }
     }
 
-    private void DrawDescription(bool drawTitle, VirtualItemInfo info)
+    private void DrawDescription(bool drawTitle, VirtualItemDisplayInfo info)
     {
         if (drawTitle)
         {
@@ -272,7 +198,7 @@ public class VirtualItemsEditorWindow : EditorWindow
         }
     }
 
-    private void DrawCategory(bool drawTitle, VirtualItemInfo info)
+    private void DrawCategory(bool drawTitle, VirtualItemDisplayInfo info)
     {
         if (drawTitle)
         {
@@ -281,16 +207,17 @@ public class VirtualItemsEditorWindow : EditorWindow
         else
         {
             GUI.changed = false;
-            info.CategoryIndex = EditorGUILayout.Popup(info.CategoryIndex, _categories, GUILayout.Width(100), GUILayout.Height(RowHeight));
+            info.CategoryIndex = EditorGUILayout.Popup(info.CategoryIndex, VirtualItemsEditUtil.DisplayedCategories, 
+                GUILayout.Width(100), GUILayout.Height(RowHeight));
             if (GUI.changed == true)
             {
-                info.UpdateItemCategory(_config, _categories);
+                VirtualItemsEditUtil.UpdateItemCategoryByIndex(info.Item, info.CategoryIndex);
                 EditorUtility.SetDirty(info.Item);
             }
         }
     }
 
-    private void DrawPurchaseInfo(bool drawTitle, VirtualItemInfo info)
+    private void DrawPurchaseInfo(bool drawTitle, VirtualItemDisplayInfo info)
     {
         PurchasableItem purchasable = drawTitle ? null : info.Item as PurchasableItem;
         Purchase primaryPurchase = purchasable != null ? purchasable.PrimaryPurchase : null;
@@ -299,7 +226,7 @@ public class VirtualItemsEditorWindow : EditorWindow
         DrawOnePurchase(drawTitle, info, secondaryPurchase, false);
     }
 
-    private void DrawOnePurchase(bool drawTitle, VirtualItemInfo info, Purchase purchase, bool isPrimaryPurchase)
+    private void DrawOnePurchase(bool drawTitle, VirtualItemDisplayInfo info, Purchase purchase, bool isPrimaryPurchase)
     {
         float typeWidth = 150, priceWidth = 150, idWidth = 200;
         if (drawTitle)
@@ -315,7 +242,8 @@ public class VirtualItemsEditorWindow : EditorWindow
             purchase.Type = (PurchaseType)EditorGUILayout.EnumPopup(purchase.Type, GUILayout.Width(typeWidth), GUILayout.Height(RowHeight));
             if (GUI.changed)
             {
-                info.UpdatePurchase(_config, _virtualCurrencyIds);
+                VirtualItemsEditUtil.UpdatePurchaseByIndex(info.Item, 
+                    info.VirtualCurrencyIndexOfPrimaryPurchase, info.VirtualCurrencyIndexOfSecondaryPurchase);
                 EditorUtility.SetDirty(info.Item);
             }
             if (purchase.Type == PurchaseType.None)
@@ -336,25 +264,26 @@ public class VirtualItemsEditorWindow : EditorWindow
                 if (isPrimaryPurchase)
                 {
                     info.VirtualCurrencyIndexOfPrimaryPurchase =
-                        EditorGUILayout.Popup(info.VirtualCurrencyIndexOfPrimaryPurchase, _virtualCurrencyIds,
+                        EditorGUILayout.Popup(info.VirtualCurrencyIndexOfPrimaryPurchase, VirtualItemsEditUtil.DisplayedVirtualCurrencyIDs,
                             GUILayout.Width(idWidth), GUILayout.Height(RowHeight));
                 }
                 else
                 {
                     info.VirtualCurrencyIndexOfSecondaryPurchase =
-                        EditorGUILayout.Popup(info.VirtualCurrencyIndexOfSecondaryPurchase, _virtualCurrencyIds,
+                        EditorGUILayout.Popup(info.VirtualCurrencyIndexOfSecondaryPurchase, VirtualItemsEditUtil.DisplayedVirtualCurrencyIDs,
                             GUILayout.Width(idWidth), GUILayout.Height(RowHeight));
                 }
                 if (GUI.changed == true)
                 {
-                    info.UpdatePurchase(_config, _virtualCurrencyIds);
+                    VirtualItemsEditUtil.UpdatePurchaseByIndex(info.Item, 
+                        info.VirtualCurrencyIndexOfPrimaryPurchase, info.VirtualCurrencyIndexOfSecondaryPurchase);
                     EditorUtility.SetDirty(info.Item);
                 }
             }
         }
     }
 
-    private void DrawIsEquippable(bool drawTitle, VirtualItemInfo info)
+    private void DrawIsEquippable(bool drawTitle, VirtualItemDisplayInfo info)
     {
         if (drawTitle)
         {
@@ -370,7 +299,7 @@ public class VirtualItemsEditorWindow : EditorWindow
         }
     }
 
-    private void DrawRelatedItem(bool drawTitle, VirtualItemInfo info)
+    private void DrawRelatedItem(bool drawTitle, VirtualItemDisplayInfo info)
     {
         if (drawTitle)
         {
@@ -379,17 +308,17 @@ public class VirtualItemsEditorWindow : EditorWindow
         else
         {
             GUI.changed = false;
-            info.RelatedItemIndex = EditorGUILayout.Popup(info.RelatedItemIndex, _items, 
+            info.RelatedItemIndex = EditorGUILayout.Popup(info.RelatedItemIndex, VirtualItemsEditUtil.DisplayedItemIDs, 
                 GUILayout.Width(100), GUILayout.Height(RowHeight));
             if (GUI.changed == true)
             {
-                info.UpdateRelatedItem(_config, _items);
+                VirtualItemsEditUtil.UpdateRelatedItemByIndex(info.Item, info.RelatedItemIndex);
                 EditorUtility.SetDirty(info.Item);
             }
         }
     }
 
-    private void DrawPackElements(bool drawTitle, VirtualItemInfo info)
+    private void DrawPackElements(bool drawTitle, VirtualItemDisplayInfo info)
     {
         if (drawTitle)
         {
@@ -400,78 +329,33 @@ public class VirtualItemsEditorWindow : EditorWindow
             VirtualItemPack pack = info.Item as VirtualItemPack;
             if (pack != null)
             {
-                GUILayout.Label(pack.ToString(), GUILayout.Width(200));
+                if (GUILayout.Button("c", GUILayout.Width(20)))
+                {
+                    PackElementsEditorWindow window = EditorWindow.GetWindow<PackElementsEditorWindow>();
+                    window.Init(pack);
+                }
+                GUILayout.Label(pack.ToString(), GUILayout.Width(190));
             }
         }
     }
 
-    private class VirtualItemInfo
+    private class VirtualItemDisplayInfo
     {
         public VirtualItem Item;
         public int CategoryIndex;
         public int VirtualCurrencyIndexOfPrimaryPurchase;
         public int VirtualCurrencyIndexOfSecondaryPurchase;
         public int RelatedItemIndex;
-        public int[] PackItemIndices;
-
-        public void UpdateItemCategory(VirtualItemsConfig config, string[] categories)
-        {
-            if (CategoryIndex == 0)
-            {
-                Item.Category = null;
-            }
-            else
-            {
-                Item.Category = config.GetCategoryByID(categories[CategoryIndex]);
-            }
-        }
-
-        public void UpdatePurchase(VirtualItemsConfig config, string[] virtualCurrencies)
-        {
-            if (Item is PurchasableItem)
-            {
-                PurchasableItem purchasable = Item as PurchasableItem;
-                purchasable.PrimaryPurchase.AssociatedID =
-                    config.GetItemByID(virtualCurrencies[VirtualCurrencyIndexOfPrimaryPurchase]).ID;
-                purchasable.SecondaryPurchase.AssociatedID =
-                    config.GetItemByID(virtualCurrencies[VirtualCurrencyIndexOfSecondaryPurchase]).ID;
-            }
-        }
-
-        public void UpdateRelatedItem(VirtualItemsConfig config, string[] items)
-        {
-            if (Item is UpgradeItem)
-            {
-                UpgradeItem upgradeItem = Item as UpgradeItem;
-                upgradeItem.RelatedItemID = config.GetItemByID(items[RelatedItemIndex]).ID;
-            }
-        }
-
-        public void UpdatePackItems(VirtualItemsConfig config, string[] items)
-        {
-            if (Item is VirtualItemPack)
-            {
-                VirtualItemPack pack = Item as VirtualItemPack;
-                for (int i = 0; i < PackItemIndices.Length; i++)
-                {
-                    if (pack.PackElements.Count >= i + 1)
-                    {
-                        pack.PackElements[i].ItemID = config.GetItemByID(items[PackItemIndices[i]]).ID;
-                    }
-                }
-            }
-        }
     }
 
     private VirtualItemsConfig _config;
     private int _selectedItemTypeIndex;
     private VirtualItemType _selectedItemType;
     private string[] _itemTypes;
-    private string[] _categories;
-    private string[] _virtualCurrencyIds;
-    private string[] _items;
-    private List<VirtualItemInfo> _currentItemsInfo;
+    private List<VirtualItemDisplayInfo> _currentItemsInfo;
     private Vector2 _scrollPosition;
+
+    private IView _currentListView;
 
     private const float RowHeight = 20;
 }
