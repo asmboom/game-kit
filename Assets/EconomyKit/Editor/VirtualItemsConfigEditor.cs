@@ -23,13 +23,6 @@ public class VirtualItemsConfigEditor : Editor
         UpdateVirtualItemsConfig();
     }
 
-    [MenuItem("Assets/Economy Kit/Create Virtual Currency")]
-    private static void CreateVirtualCurrency()
-    {
-        string filePath = VirtualItemDataPath + "New VirtualCurrency.asset";
-        CreateAsset<VirtualCurrency>(filePath);
-    }
-
     public override void OnInspectorGUI()
     {
         VirtualItemsConfig config = target as VirtualItemsConfig;

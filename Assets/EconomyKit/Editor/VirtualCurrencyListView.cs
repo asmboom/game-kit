@@ -107,12 +107,15 @@ public class VirtualCurrencyListView : IView
         VirtualItemsDrawUtil.DrawDescription(new Rect(xOffset, position.y, position.width * DescriptionWidth - 1, position.height), false, virtualCurrency);
         xOffset += position.width * DescriptionWidth;
 
-        GUI.changed = false;
-        _categoryIndices[index] = VirtualItemsDrawUtil.DrawCategory(
-            new Rect(xOffset, position.y, position.width * CategoryWidth - 1, position.height), false, _categoryIndices[index]);
-        if (GUI.changed)
+        if (index < _categoryIndices.Count)
         {
-            VirtualItemsEditUtil.UpdateItemCategoryByIndex(virtualCurrency, _categoryIndices[index]);
+            GUI.changed = false;
+            _categoryIndices[index] = VirtualItemsDrawUtil.DrawCategory(
+                new Rect(xOffset, position.y, position.width * CategoryWidth - 1, position.height), false, _categoryIndices[index]);
+            if (GUI.changed)
+            {
+                VirtualItemsEditUtil.UpdateItemCategoryByIndex(virtualCurrency, _categoryIndices[index]);
+            }
         }
 
         return virtualCurrency;
