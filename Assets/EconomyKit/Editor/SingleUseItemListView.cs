@@ -3,13 +3,13 @@ using UnityEditor;
 using System.Collections.Generic;
 using Rotorz.ReorderableList;
 
-public class VirtualCurrencyListView : IView
+public class SingleUseItemListView : IView
 {
-    public VirtualCurrencyListView(List<VirtualCurrency> list)
+    public SingleUseItemListView(List<SingleUseItem> list)
     {
         _list = list;
-        _listAdaptor = new GenericClassListAdaptor<VirtualCurrency>(list, 22, 
-            CreateVirtualCurrency, DrawItem);
+        _listAdaptor = new GenericClassListAdaptor<SingleUseItem>(list, 22, 
+            CreateSingleUseItem, DrawItem);
         _listControl = new ReorderableListControl();
 
         UpdateCategoryIndices();
@@ -63,9 +63,9 @@ public class VirtualCurrencyListView : IView
         UpdateCategoryIndices();
     }
 
-    public VirtualCurrency CreateVirtualCurrency()
+    public SingleUseItem CreateSingleUseItem()
     {
-        return VirtualItemsEditUtil.CreateNewVirtualItem<VirtualCurrency>();
+        return VirtualItemsEditUtil.CreateNewVirtualItem<SingleUseItem>();
     }
 
     private void DrawTitle(Rect position)
@@ -75,10 +75,10 @@ public class VirtualCurrencyListView : IView
         VirtualItemsDrawUtil.EndDrawTitle();
     }
 
-    public VirtualCurrency DrawItem(Rect position, VirtualCurrency virtualCurrency, int index)
+    public SingleUseItem DrawItem(Rect position, SingleUseItem item, int index)
     {
-        VirtualItemsDrawUtil.DrawVirtualItemInfo(position.x, position.y, position.height, virtualCurrency, index, _categoryIndices);
-        return virtualCurrency;
+        VirtualItemsDrawUtil.DrawVirtualItemInfo(position.x, position.y, position.height, item, index, _categoryIndices);
+        return item;
     }
 
     public void UpdateCategoryIndices()
@@ -95,9 +95,14 @@ public class VirtualCurrencyListView : IView
         }
     }
 
-    private List<VirtualCurrency> _list;
+    private List<SingleUseItem> _list;
     private ReorderableListControl _listControl;
-    private GenericClassListAdaptor<VirtualCurrency> _listAdaptor;
+    private GenericClassListAdaptor<SingleUseItem> _listAdaptor;
     private List<int> _categoryIndices;
+
+    private const float IdWidth = 0.2f;
+    private const float NameWidth = 0.2f;
+    private const float DescriptionWidth = 0.4f;
+    private const float CategoryWidth = 0.2f;
     private Vector2 _scrollPosition;
 }

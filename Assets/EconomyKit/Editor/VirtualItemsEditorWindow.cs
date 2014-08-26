@@ -65,16 +65,16 @@ public class VirtualItemsEditorWindow : EditorWindow
                     {
                         items.Add(item);
                     }
-                    _currentListView = new VirtualCurrencyListView(_config.VirtualCurrencies);
-                    _currentListView.Show();
+                    SetCurrentListView(new VirtualCurrencyListView(_config.VirtualCurrencies));
                     break;
-                case VirtualItemType.SingleUse:
+                case VirtualItemType.SingleUseItem:
                     foreach (var item in _config.SingleUseItems)
                     {
                         items.Add(item);
                     }
+                    SetCurrentListView(new SingleUseItemListView(_config.SingleUseItems));
                     break;
-                case VirtualItemType.LifeTime:
+                case VirtualItemType.LifeTimeItem:
                     foreach (var item in _config.LifeTimeItems)
                     {
                         items.Add(item);
@@ -104,6 +104,19 @@ public class VirtualItemsEditorWindow : EditorWindow
         _selectedItemTypeIndex = newSelectedCategoryIdx;
     }
 
+    private void SetCurrentListView(IView view)
+    {
+        if (_currentListView != null)
+        {
+            _currentListView.Hide();
+        }
+        _currentListView = view;
+        if (_currentListView != null)
+        {
+            _currentListView.Show();
+        }
+    }
+
     private void DrawCurrentItemsInfo()
     {
         _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, false, false);
@@ -120,7 +133,7 @@ public class VirtualItemsEditorWindow : EditorWindow
             DrawDescription(drawTitle, info);
             DrawCategory(drawTitle, info);
 
-            if (_selectedItemType == VirtualItemType.LifeTime)
+            if (_selectedItemType == VirtualItemType.LifeTimeItem)
             {
                 DrawIsEquippable(drawTitle, info);
             }
