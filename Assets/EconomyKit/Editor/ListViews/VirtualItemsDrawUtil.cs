@@ -52,13 +52,13 @@ public static class VirtualItemsDrawUtil
 
         if (index < categoryIndices.Count)
         {
-            GUI.changed = false;
-            categoryIndices[index] = DrawCategory(
+            int newIndex = DrawCategory(
                 new Rect(xOffset, y, CategoryWidth - 1, height), false, categoryIndices[index]);
-            if (GUI.changed)
+            if (newIndex != categoryIndices[index])
             {
-                VirtualItemsEditUtil.UpdateItemCategoryByIndex(item, categoryIndices[index]);
+                VirtualItemsEditUtil.UpdateItemCategoryByIndex(item, newIndex);
             }
+            categoryIndices[index] = newIndex;
         }
         xOffset += CategoryWidth;
 

@@ -113,12 +113,12 @@ public class PurchaseInfoEditorWindow : EditorWindow
 
     private void DrawType(Rect position, Purchase purchase, int index)
     {
-        GUI.changed = false;
-        purchase.Type = (PurchaseType)EditorGUI.EnumPopup(position, purchase.Type);
-        if (GUI.changed && purchase.Type == PurchaseType.PurchaseWithVirtualCurrency)
+        PurchaseType newType = (PurchaseType)EditorGUI.EnumPopup(position, purchase.Type);
+        if (newType != purchase.Type && purchase.Type == PurchaseType.PurchaseWithVirtualCurrency)
         {
             VirtualItemsEditUtil.UpdatePurchaseByIndex(purchase, _virtualCurrencyIndices[index]);
         }
+        purchase.Type = newType;
     }
 
     private void DrawMarketID(Rect position, Purchase purchase)
@@ -128,13 +128,12 @@ public class PurchaseInfoEditorWindow : EditorWindow
 
     private void DrawVirtualCurrencyPopup(Rect position, Purchase purchase, int index)
     {
-        GUI.changed = false;
-        _virtualCurrencyIndices[index] = 
-                EditorGUI.Popup(position, _virtualCurrencyIndices[index], VirtualItemsEditUtil.DisplayedVirtualCurrencyIDs);
-        if (GUI.changed == true)
+        int newIndex = EditorGUI.Popup(position, _virtualCurrencyIndices[index], VirtualItemsEditUtil.DisplayedVirtualCurrencyIDs);
+        if (newIndex != _virtualCurrencyIndices[index])
         {
-            VirtualItemsEditUtil.UpdatePurchaseByIndex(purchase, _virtualCurrencyIndices[index]);
+            VirtualItemsEditUtil.UpdatePurchaseByIndex(purchase, newIndex);
         }
+        _virtualCurrencyIndices[index] = newIndex;
     }
 
     private void DrawPrice(Rect position, Purchase purchase)

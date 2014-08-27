@@ -41,7 +41,13 @@ public class LifeTimeItemListView : IView
             _scrollPosition, new Rect(0, yOffset, width, listHeight + 20));
 
         DrawTitle(new Rect(0, yOffset, width, 20));
+
+        EditorGUI.BeginChangeCheck();
         _listControl.Draw(new Rect(0, yOffset + 20, width, listHeight), _listAdaptor);
+        if (EditorGUI.EndChangeCheck() && ReorderableListGUI.indexOfChangedItem != -1)
+        {
+            EditorUtility.SetDirty(_listAdaptor[ReorderableListGUI.indexOfChangedItem]);
+        }
 
         GUI.EndScrollView();
     }

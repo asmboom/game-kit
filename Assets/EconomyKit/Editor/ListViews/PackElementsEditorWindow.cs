@@ -96,13 +96,13 @@ public class PackElementsEditorWindow : EditorWindow
 
     private void DrawVirtualItem(Rect position, PackElement packElement, int index)
     {
-        GUI.changed = false;
-        _itemIndices[index] = EditorGUI.Popup(new Rect(position.x, position.y, position.width * 0.6f, position.height),
+        int newIndex = EditorGUI.Popup(new Rect(position.x, position.y, position.width * 0.6f, position.height),
             _itemIndices[index], VirtualItemsEditUtil.DisplayedItemIDs);
-        if (GUI.changed)
+        if (newIndex != _itemIndices[index])
         {
-            VirtualItemsEditUtil.UpdatePackElementItemByIndex(packElement, _itemIndices[index]);
+            VirtualItemsEditUtil.UpdatePackElementItemByIndex(packElement, newIndex);
         }
+        _itemIndices[index] = newIndex;
     }
 
     private void DrawAmount(Rect position, PackElement packElement)
