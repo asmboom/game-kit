@@ -3,13 +3,13 @@ using UnityEditor;
 using System.Collections.Generic;
 using Rotorz.ReorderableList;
 
-public class SingleUseItemListView : IView
+public class VirtualItemPackListView : IView
 {
-    public SingleUseItemListView(List<SingleUseItem> list)
+    public VirtualItemPackListView(List<VirtualItemPack> list)
     {
         _list = list;
-        _listAdaptor = new GenericClassListAdaptor<SingleUseItem>(list, 22, 
-            CreateSingleUseItem, DrawItem);
+        _listAdaptor = new GenericClassListAdaptor<VirtualItemPack>(list, 22, 
+            CreateVirtualItemPack, DrawItem, GetItemHeight);
         _listControl = new ReorderableListControl();
 
         UpdateCategoryIndices();
@@ -19,6 +19,8 @@ public class SingleUseItemListView : IView
     {
         _listControl.ItemInserted += OnItemInsert;
         _listControl.ItemRemoving += OnItemRemoving;
+
+        VirtualItemsEditUtil.UpdateDisplayedOptions();
     }
 
     public void Hide()
@@ -32,7 +34,7 @@ public class SingleUseItemListView : IView
         if (_list == null || _listAdaptor == null) return;
 
         float yOffset = 30;
-        float width = 800;
+        float width = 1200;
         float listHeight = _listControl.CalculateListHeight(_listAdaptor);
 
         _scrollPosition = GUI.BeginScrollView(new Rect(0, yOffset, position.width, position.height - yOffset), 
@@ -63,21 +65,30 @@ public class SingleUseItemListView : IView
         UpdateCategoryIndices();
     }
 
-    public SingleUseItem CreateSingleUseItem()
+    public VirtualItemPack CreateVirtualItemPack()
     {
-        return VirtualItemsEditUtil.CreateNewVirtualItem<SingleUseItem>();
+        return VirtualItemsEditUtil.CreateNewVirtualItem<VirtualItemPack>();
+    }
+
+    public float GetItemHeight(VirtualItemPack pack)
+    {
+        return 22 * Mathf.Max(Mathf.Max(1, pack.PurchaseInfo.Count), pack.PackElements.Count);
     }
 
     private void DrawTitle(Rect position)
     {
         VirtualItemsDrawUtil.BeginDrawTitle();
-        VirtualItemsDrawUtil.DrawVirtualItemTitle(position.x, position.y, position.height);
+        float xOffset = VirtualItemsDrawUtil.DrawVirtualItemTitle(position.x, position.y, position.height);
+        xOffset = VirtualItemsDrawUtil.DrawPackElements(xOffset, position.y, position.height, true, null);
+        VirtualItemsDrawUtil.DrawPurchase(xOffset, position.y, position.height, true, null);
         VirtualItemsDrawUtil.EndDrawTitle();
     }
 
-    public SingleUseItem DrawItem(Rect position, SingleUseItem item, int index)
+    public VirtualItemPack DrawItem(Rect position, VirtualItemPack item, int index)
     {
-        VirtualItemsDrawUtil.DrawVirtualItemInfo(position.x, position.y, position.height, item, index, _categoryIndices);
+        float xOffset = VirtualItemsDrawUtil.DrawVirtualItemInfo(position.x, position.y, position.height, item, index, _categoryIndices);
+        xOffset = VirtualItemsDrawUtil.DrawPackElements(xOffset, position.y, position.height, false, item);
+        VirtualItemsDrawUtil.DrawPurchase(xOffset, position.y, position.height, false, item);
         return item;
     }
 
@@ -95,14 +106,9 @@ public class SingleUseItemListView : IView
         }
     }
 
-    private List<SingleUseItem> _list;
+    private List<VirtualItemPack> _list;
     private ReorderableListControl _listControl;
-    private GenericClassListAdaptor<SingleUseItem> _listAdaptor;
+    private GenericClassListAdaptor<VirtualItemPack> _listAdaptor;
     private List<int> _categoryIndices;
-
-    private const float IdWidth = 0.2f;
-    private const float NameWidth = 0.2f;
-    private const float DescriptionWidth = 0.4f;
-    private const float CategoryWidth = 0.2f;
     private Vector2 _scrollPosition;
 }

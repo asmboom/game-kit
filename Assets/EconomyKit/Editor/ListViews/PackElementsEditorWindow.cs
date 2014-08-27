@@ -45,18 +45,26 @@ public class PackElementsEditorWindow : EditorWindow
         if (_currentEditPack == null || _listAdaptor == null) return;
 
         var centeredStyle = GUI.skin.GetStyle("Label");
+
+        centeredStyle.richText = true;
+        GUILayout.Label("<size=15><color=lightblue>" + _currentEditPack.Name + "</color> content</size>");
+        GUILayout.Space(5);
+
         var oldAlignment = centeredStyle.alignment;
         var oldFontSize = centeredStyle.fontSize;
         centeredStyle.alignment = TextAnchor.UpperCenter;
         centeredStyle.fontSize = 12;
         centeredStyle.fontStyle = FontStyle.Bold;
+
         GUILayout.BeginHorizontal();
         GUILayout.Label("Item", GUILayout.Width(this.position.width * 0.6f));
         GUILayout.Label("Amount", GUILayout.Width(this.position.width * 0.3f));
         GUILayout.EndHorizontal();
+
         centeredStyle.alignment = oldAlignment;
         centeredStyle.fontSize = oldFontSize;
         centeredStyle.fontStyle = FontStyle.Normal;
+        centeredStyle.richText = false;
 
         _listControl.Draw(_listAdaptor);
     }

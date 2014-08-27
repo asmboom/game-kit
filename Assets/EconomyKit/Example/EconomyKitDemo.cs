@@ -138,7 +138,7 @@ public class EconomyKitDemo : MonoBehaviour
 
             if (item.CanPurchaseNow())
             {
-                DrawPrice(item.PrimaryPurchase, productSize, y);
+                DrawPrice(item.PurchaseInfo[0], productSize, y);
 
                 GUI.skin.label.alignment = TextAnchor.UpperRight;
                 if (GUI.Button(new Rect(Screen.width - 120, y, 100, 50), "Click to buy") && !_isDragging)
@@ -162,7 +162,7 @@ public class EconomyKitDemo : MonoBehaviour
                     {
                         if (lifetimeItem.CanUpgrade)
                         {
-                            DrawPrice(item.NextUpgradeItem.PrimaryPurchase, productSize, y);
+                            DrawPrice(item.NextUpgradeItem.PurchaseInfo[i], productSize, y);
 
                             GUI.skin.label.alignment = TextAnchor.UpperRight;
                             if (GUI.Button(new Rect(Screen.width - 120, y, 100, 50), "Upgrade") && !_isDragging)

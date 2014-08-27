@@ -35,22 +35,10 @@ public static class VirtualItemsEditUtil
         }
     }
 
-    public static void UpdatePurchaseByIndex(VirtualItem item, int newPrimaryCurrencyIndex, int newSecondaryCurrencyIndex)
+    public static void UpdatePurchaseByIndex(Purchase purchase, int newCurrencyIndex)
     {
-        if (item is PurchasableItem)
-        {
-            PurchasableItem purchasable = item as PurchasableItem;
-            if (purchasable.PrimaryPurchase.Type == PurchaseType.PurchaseWithVirtualCurrency)
-            {
-                purchasable.PrimaryPurchase.AssociatedID =
-                    EconomyKit.Config.GetItemByID(DisplayedVirtualCurrencyIDs[newPrimaryCurrencyIndex]).ID;
-            }
-            if (purchasable.SecondaryPurchase.Type == PurchaseType.PurchaseWithVirtualCurrency)
-            {
-                purchasable.SecondaryPurchase.AssociatedID =
-                    EconomyKit.Config.GetItemByID(DisplayedVirtualCurrencyIDs[newSecondaryCurrencyIndex]).ID;
-            }
-        }
+        purchase.AssociatedID =
+            EconomyKit.Config.GetItemByID(DisplayedVirtualCurrencyIDs[newCurrencyIndex]).ID;
     }
 
     public static void UpdateRelatedItemByIndex(VirtualItem item, int newItemIndex)
@@ -123,7 +111,7 @@ public static class VirtualItemsEditUtil
         List<string> ids = new List<string>();
         foreach (var item in EconomyKit.Config.VirtualCurrencies)
         {
-            ids.Add(item.ID);
+            ids.Add(GetIDString(item));
         }
         DisplayedVirtualCurrencyIDs = ids.ToArray();
     }
@@ -133,16 +121,21 @@ public static class VirtualItemsEditUtil
         List<string> ids = new List<string>();
         foreach (var item in EconomyKit.Config.VirtualCurrencies)
         {
-            ids.Add(item.ID);
+            ids.Add(GetIDString(item));
         }
         foreach (var item in EconomyKit.Config.SingleUseItems)
         {
-            ids.Add(item.ID);
+            ids.Add(GetIDString(item));
         }
         foreach (var item in EconomyKit.Config.LifeTimeItems)
         {
-            ids.Add(item.ID);
+            ids.Add(GetIDString(item));
         }
         DisplayedItemIDs = ids.ToArray();
+    }
+
+    private static string GetIDString(VirtualItem item)
+    {
+        return item.ID;
     }
 }

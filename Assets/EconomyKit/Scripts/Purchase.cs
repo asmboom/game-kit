@@ -2,7 +2,6 @@
 
 public enum PurchaseType
 {
-    None = 0,
     PurchaseWithMarket,
     PurchaseWithVirtualCurrency
 }

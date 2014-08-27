@@ -31,22 +31,20 @@ public class MarketProduct
         if (item is PurchasableItem)
         {
             PurchasableItem purchasableItem = item as PurchasableItem;
-            Purchase purchase = purchasableItem.PrimaryPurchase.IsMarketPurchase ?
-                purchasableItem.PrimaryPurchase :
-                purchasableItem.SecondaryPurchase.IsMarketPurchase ?
-                    purchasableItem.SecondaryPurchase : null;
-
-            if (purchase != null)
+            foreach (Purchase purchase in purchasableItem.PurchaseInfo)
             {
-                MarketProduct product = new MarketProduct();
-                product.ProductIdentifier = purchase.AssociatedID;
-                product.Title = item.Name;
-                product.Price = purchase.Price.ToString();
-                product.Description = item.Description;
-                product.CurrencySymbol = "￥";
-                product.CurrencyCode = "RMB";
-                product.FormattedPrice = string.Format("{0}{1}.00", product.CurrencySymbol, product.Price);
-                return product;
+                if (purchase.IsMarketPurchase)
+                {
+                    MarketProduct product = new MarketProduct();
+                    product.ProductIdentifier = purchase.AssociatedID;
+                    product.Title = item.Name;
+                    product.Price = purchase.Price.ToString();
+                    product.Description = item.Description;
+                    product.CurrencySymbol = "￥";
+                    product.CurrencyCode = "RMB";
+                    product.FormattedPrice = string.Format("{0}{1}.00", product.CurrencySymbol, product.Price);
+                    return product;
+                }
             }
         }
         return null;
