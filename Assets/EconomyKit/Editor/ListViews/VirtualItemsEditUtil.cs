@@ -16,6 +16,14 @@ public static class VirtualItemsEditUtil
         return asset;
     }
 
+    public static VirtualCategory CreateNewCategory()
+    {
+        VirtualCategory asset = ScriptableObject.CreateInstance<VirtualCategory>();
+        AssetDatabase.CreateAsset(asset, "Assets/EconomyKit/Resources/NewVirtualCategory.asset");
+        AssetDatabase.SaveAssets();
+        return asset;
+    }
+
     public static void UpdateDisplayedOptions()
     {
         UpdateDisplayedCategories();

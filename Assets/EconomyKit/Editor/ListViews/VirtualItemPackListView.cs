@@ -7,7 +7,6 @@ public class VirtualItemPackListView : IView
 {
     public VirtualItemPackListView(List<VirtualItemPack> list)
     {
-        _list = list;
         _listAdaptor = new GenericClassListAdaptor<VirtualItemPack>(list, 22, 
             CreateVirtualItemPack, DrawItem, GetItemHeight);
         _listControl = new ReorderableListControl();
@@ -31,7 +30,7 @@ public class VirtualItemPackListView : IView
 
     public void Draw(Rect position) 
     {
-        if (_list == null || _listAdaptor == null) return;
+        if (_listAdaptor == null) return;
 
         float yOffset = 30;
         float width = 1200;
@@ -112,7 +111,6 @@ public class VirtualItemPackListView : IView
         }
     }
 
-    private List<VirtualItemPack> _list;
     private ReorderableListControl _listControl;
     private GenericClassListAdaptor<VirtualItemPack> _listAdaptor;
     private List<int> _categoryIndices;

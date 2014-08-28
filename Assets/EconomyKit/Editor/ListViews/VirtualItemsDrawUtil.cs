@@ -218,7 +218,7 @@ public static class VirtualItemsDrawUtil
     {
         _oldAlignment = _labelStyle.alignment;
         _oldFontSize = _labelStyle.fontSize;
-        _labelStyle.alignment = TextAnchor.UpperCenter;
+        _labelStyle.alignment = TextAnchor.MiddleCenter;
         _labelStyle.fontSize = 12;
         _labelStyle.fontStyle = FontStyle.Bold;
     }

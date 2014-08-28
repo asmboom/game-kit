@@ -7,7 +7,6 @@ public class VirtualCurrencyListView : IView
 {
     public VirtualCurrencyListView(List<VirtualCurrency> list)
     {
-        _list = list;
         _listAdaptor = new GenericClassListAdaptor<VirtualCurrency>(list, 22, 
             CreateVirtualCurrency, DrawItem);
         _listControl = new ReorderableListControl();
@@ -29,7 +28,7 @@ public class VirtualCurrencyListView : IView
 
     public void Draw(Rect position) 
     {
-        if (_list == null || _listAdaptor == null) return;
+        if (_listAdaptor == null) return;
 
         float yOffset = 30;
         float width = 800;
@@ -100,7 +99,6 @@ public class VirtualCurrencyListView : IView
         }
     }
 
-    private List<VirtualCurrency> _list;
     private ReorderableListControl _listControl;
     private GenericClassListAdaptor<VirtualCurrency> _listAdaptor;
     private List<int> _categoryIndices;

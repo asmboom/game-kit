@@ -17,7 +17,7 @@ public class VirtualItemsEditorWindow : EditorWindow
             _config = EconomyKit.Config;
         }
         _selectedItemTypeIndex = -1;
-        _itemTypes = new string[] { "Virtual Currency", "Single Use", "LifeTime Item", "Pack" };
+        _itemTypes = new string[] { "Virtual Currency", "Single Use", "LifeTime Item", "Pack", "Categories" };
 
         VirtualItemsEditUtil.UpdateDisplayedOptions();
     }
@@ -57,6 +57,9 @@ public class VirtualItemsEditorWindow : EditorWindow
                         items.Add(item);
                     }
                     SetCurrentListView(new VirtualItemPackListView(_config.ItemPacks));
+                    break;
+                case 4:
+                    SetCurrentListView(new CategoryListView(_config.Categories));
                     break;
                 default:
                     break;

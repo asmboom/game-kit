@@ -7,7 +7,6 @@ public class LifeTimeItemListView : IView
 {
     public LifeTimeItemListView(List<LifeTimeItem> list)
     {
-        _list = list;
         _listAdaptor = new GenericClassListAdaptor<LifeTimeItem>(list, 22, 
             CreateLifeTimeItem, DrawItem, GetItemHeight);
         _listControl = new ReorderableListControl();
@@ -31,7 +30,7 @@ public class LifeTimeItemListView : IView
 
     public void Draw(Rect position) 
     {
-        if (_list == null || _listAdaptor == null) return;
+        if (_listAdaptor == null) return;
 
         float yOffset = 30;
         float width = 1080;
@@ -112,7 +111,6 @@ public class LifeTimeItemListView : IView
         }
     }
 
-    private List<LifeTimeItem> _list;
     private ReorderableListControl _listControl;
     private GenericClassListAdaptor<LifeTimeItem> _listAdaptor;
     private List<int> _categoryIndices;

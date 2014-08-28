@@ -7,7 +7,6 @@ public class SingleUseItemListView : IView
 {
     public SingleUseItemListView(List<SingleUseItem> list)
     {
-        _list = list;
         _listAdaptor = new GenericClassListAdaptor<SingleUseItem>(list, 22, 
             CreateSingleUseItem, DrawItem, GetItemHeight);
         _listControl = new ReorderableListControl();
@@ -31,7 +30,7 @@ public class SingleUseItemListView : IView
 
     public void Draw(Rect position) 
     {
-        if (_list == null || _listAdaptor == null) return;
+        if (_listAdaptor == null) return;
 
         float yOffset = 30;
         float width = 1000;
@@ -109,7 +108,6 @@ public class SingleUseItemListView : IView
         }
     }
 
-    private List<SingleUseItem> _list;
     private ReorderableListControl _listControl;
     private GenericClassListAdaptor<SingleUseItem> _listAdaptor;
     private List<int> _categoryIndices;
