@@ -64,6 +64,11 @@ public class VirtualItemsConfig : ScriptableObject
         return null;
     }
 
+    public VirtualCategory GetItemCategory(string id)
+    {
+        return _idToCategory.ContainsKey(id) ? _idToCategory[id] : null;
+    }
+
     public void UpdateIdToItemMap()
     {
         _idToItems = new Dictionary<string, VirtualItem>();
@@ -86,6 +91,21 @@ public class VirtualItemsConfig : ScriptableObject
         for (int i = 0; i < UpgradeItems.Count; i++)
         {
             _idToItems.Add(UpgradeItems[i].ID, UpgradeItems[i]);
+        }
+    }
+
+    public void UpdateIdToCategoryMap()
+    {
+        _idToCategory = new Dictionary<string, VirtualCategory>();
+        for (int i = 0; i < Categories.Count; i++)
+        {
+            foreach (var item in Categories[i].Items)
+            {
+                if (item != null)
+                {
+                    _idToCategory.Add(item.ID, Categories[i]);
+                }
+            }
         }
     }
 
@@ -117,7 +137,9 @@ public class VirtualItemsConfig : ScriptableObject
         }
 
         UpdateIdToItemMap();
+        UpdateIdToCategoryMap();
     }
 
     private Dictionary<string, VirtualItem> _idToItems;
+    private Dictionary<string, VirtualCategory> _idToCategory;
 }

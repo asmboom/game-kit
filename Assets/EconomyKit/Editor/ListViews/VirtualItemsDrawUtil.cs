@@ -18,7 +18,7 @@ public static class VirtualItemsDrawUtil
         }
     }
 
-    public static float DrawVirtualItemTitle(float x, float y, float height, bool drawCategory = true)
+    public static float DrawVirtualItemTitle(float x, float y, float height)
     {
         float xOffset = x;
         DrawID(new Rect(xOffset, y, IdWidth - 1, height), true, null);
@@ -30,18 +30,11 @@ public static class VirtualItemsDrawUtil
         DrawDescription(new Rect(xOffset, y, DescriptionWidth - 1, height), true, null);
         xOffset += DescriptionWidth;
 
-        if (drawCategory)
-        {
-            DrawCategory(
-                new Rect(xOffset, y, CategoryWidth - 1, height), true, 0);
-            xOffset += CategoryWidth;
-        }
-
         return xOffset;
     }
 
     public static float DrawVirtualItemInfo(float x, float y, float height, VirtualItem item, int index,
-        System.Collections.Generic.List<int> categoryIndices, bool drawCategory = true)
+        System.Collections.Generic.List<int> categoryIndices)
     {
         float xOffset = x;
         DrawID(new Rect(xOffset, y, IdWidth - 1, height), false, item);
@@ -52,21 +45,6 @@ public static class VirtualItemsDrawUtil
 
         DrawDescription(new Rect(xOffset, y, DescriptionWidth - 1, height), false, item);
         xOffset += DescriptionWidth;
-
-        if (drawCategory)
-        {
-            if (index < categoryIndices.Count)
-            {
-                int newIndex = DrawCategory(
-                    new Rect(xOffset, y, CategoryWidth - 1, height), false, categoryIndices[index]);
-                if (newIndex != categoryIndices[index])
-                {
-                    VirtualItemsEditUtil.UpdateItemCategoryByIndex(item, newIndex);
-                }
-                categoryIndices[index] = newIndex;
-            }
-            xOffset += CategoryWidth;
-        }
 
         return xOffset;
     }
@@ -268,7 +246,6 @@ public static class VirtualItemsDrawUtil
     private const float IdWidth = 150;
     private const float NameWidth = 150;
     private const float DescriptionWidth = 300;
-    private const float CategoryWidth = 150;
     private const float PurchaseInfoWidth = 200;
     private const float EquippableWidth = 80;
     private const float PackDetailWidth = 200;

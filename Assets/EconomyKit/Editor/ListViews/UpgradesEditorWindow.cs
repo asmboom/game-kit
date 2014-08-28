@@ -86,7 +86,7 @@ public class UpgradesEditorWindow : EditorWindow
 
     public UpgradeItem DrawItem(Rect position, UpgradeItem item, int index)
     {
-        float xOffset = VirtualItemsDrawUtil.DrawVirtualItemInfo(position.x, position.y, position.height, item, index, null, false);
+        float xOffset = VirtualItemsDrawUtil.DrawVirtualItemInfo(position.x, position.y, position.height, item, index, null);
         VirtualItemsDrawUtil.DrawPurchase(xOffset, position.y, position.height, false, item);
         return item;
     }
@@ -94,7 +94,7 @@ public class UpgradesEditorWindow : EditorWindow
     private void DrawTitle(Rect position)
     {
         VirtualItemsDrawUtil.BeginDrawTitle();
-        float xOffset = VirtualItemsDrawUtil.DrawVirtualItemTitle(position.x, position.y, position.height, false);
+        float xOffset = VirtualItemsDrawUtil.DrawVirtualItemTitle(position.x, position.y, position.height);
         VirtualItemsDrawUtil.DrawPurchase(xOffset, position.y, position.height, true, null);
         VirtualItemsDrawUtil.EndDrawTitle();
     }

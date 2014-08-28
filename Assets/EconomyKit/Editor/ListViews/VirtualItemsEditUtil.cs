@@ -38,21 +38,8 @@ public static class VirtualItemsEditUtil
 
     public static void UpdateDisplayedOptions()
     {
-        UpdateDisplayedCategories();
         UpdateDisplayedVirtualCurrencyIDs();
         UpdateDisplayedItemIDs();
-    }
-
-    public static void UpdateItemCategoryByIndex(VirtualItem item, int newCategoryIndex)
-    {
-        if (newCategoryIndex == 0)
-        {
-            item.Category = null;
-        }
-        else
-        {
-            item.Category = EconomyKit.Config.GetCategoryByID(DisplayedCategories[newCategoryIndex]);
-        }
     }
 
     public static void UpdatePurchaseByIndex(Purchase purchase, int newCurrencyIndex)
@@ -113,17 +100,6 @@ public static class VirtualItemsEditUtil
             }
         }
         return 0;
-    }
-
-    private static void UpdateDisplayedCategories()
-    {
-        List<string> categoryTitles = new List<string>();
-        categoryTitles.Add("None");
-        foreach (var category in EconomyKit.Config.Categories)
-        {
-            categoryTitles.Add(category.ID);
-        }
-        DisplayedCategories = categoryTitles.ToArray();
     }
 
     private static void UpdateDisplayedVirtualCurrencyIDs()

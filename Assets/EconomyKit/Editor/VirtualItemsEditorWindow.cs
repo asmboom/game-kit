@@ -18,6 +18,10 @@ public class VirtualItemsEditorWindow : EditorWindow
         {
             _config = EconomyKit.Config;
         }
+        if (_itemsExplorer == null)
+        {
+            _itemsExplorer = new VirtualItemsTreeExplorer(_config);
+        }
         _selectedItemTypeIndex = -1;
         _itemTypes = new string[] { "Virtual Currency", "Single Use", "LifeTime Item", "Pack", "Categories" };
 
@@ -40,35 +44,18 @@ public class VirtualItemsEditorWindow : EditorWindow
         int newSelectedCategoryIdx = Mathf.Max(0, GUILayout.SelectionGrid(_selectedItemTypeIndex, _itemTypes, _itemTypes.Length));
         if (newSelectedCategoryIdx != _selectedItemTypeIndex)
         {
-            var items = new List<VirtualItem>();
             switch (newSelectedCategoryIdx)
             {
                 case 0:
-                    foreach (var item in _config.VirtualCurrencies)
-                    {
-                        items.Add(item);
-                    }
                     SetCurrentListView(new VirtualCurrencyListView(_config.VirtualCurrencies));
                     break;
                 case 1:
-                    foreach (var item in _config.SingleUseItems)
-                    {
-                        items.Add(item);
-                    }
                     SetCurrentListView(new SingleUseItemListView(_config.SingleUseItems));
                     break;
                 case 2:
-                    foreach (var item in _config.LifeTimeItems)
-                    {
-                        items.Add(item);
-                    }
                     SetCurrentListView(new LifeTimeItemListView(_config.LifeTimeItems));
                     break;
                 case 3:
-                    foreach (var item in _config.ItemPacks)
-                    {
-                        items.Add(item);
-                    }
                     SetCurrentListView(new VirtualItemPackListView(_config.ItemPacks));
                     break;
                 case 4:
@@ -81,8 +68,9 @@ public class VirtualItemsEditorWindow : EditorWindow
 
         if (_currentListView != null)
         {
-            _currentListView.Draw(position);
+            //_currentListView.Draw(position);
         }
+        _itemsExplorer.Draw(new Rect(10, 30, 200, position.height));
         _selectedItemTypeIndex = newSelectedCategoryIdx;
     }
 
@@ -103,6 +91,7 @@ public class VirtualItemsEditorWindow : EditorWindow
     private int _selectedItemTypeIndex;
     private string[] _itemTypes;
     private IView _currentListView;
+    private VirtualItemsTreeExplorer _itemsExplorer;
 
     private const float RowHeight = 20;
 }

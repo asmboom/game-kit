@@ -33,7 +33,7 @@ public class VirtualItemPackListView : IView
         if (_listAdaptor == null) return;
 
         float yOffset = 30;
-        float width = 1200;
+        float width = 1050;
         float listHeight = _listControl.CalculateListHeight(_listAdaptor);
 
         _scrollPosition = GUI.BeginScrollView(new Rect(0, yOffset, position.width, position.height - yOffset), 

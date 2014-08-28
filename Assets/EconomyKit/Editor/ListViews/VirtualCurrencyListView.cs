@@ -31,7 +31,7 @@ public class VirtualCurrencyListView : IView
         if (_listAdaptor == null) return;
 
         float yOffset = 30;
-        float width = 800;
+        float width = 650;
         float listHeight = _listControl.CalculateListHeight(_listAdaptor);
 
         _scrollPosition = GUI.BeginScrollView(new Rect(0, yOffset, position.width, position.height - yOffset), 
@@ -94,7 +94,7 @@ public class VirtualCurrencyListView : IView
             for (var i = 0; i < _listAdaptor.Count; i++)
             {
                 var item = _listAdaptor[i];
-                _categoryIndices.Add(item.Category == null ? 0 : VirtualItemsEditUtil.GetCategoryIndexById(item.Category.ID));
+                _categoryIndices.Add(item == null || item.Category == null ? 0 : VirtualItemsEditUtil.GetCategoryIndexById(item.Category.ID));
             }
         }
     }
