@@ -27,4 +27,14 @@ public abstract class PurchasableItem : VirtualItem
     }
 
     public abstract bool CanPurchaseNow();
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+
+        if (PurchaseInfo == null)
+        {
+            PurchaseInfo = new List<Purchase>();
+        }
+    }
 }

@@ -12,6 +12,8 @@ public class VirtualItemsEditorWindow : EditorWindow
 
     private void OnEnable()
     {
+        GetVirtualItemsConfigAndCreateIfNonExist();
+
         if (_config == null)
         {
             _config = EconomyKit.Config;
@@ -20,6 +22,17 @@ public class VirtualItemsEditorWindow : EditorWindow
         _itemTypes = new string[] { "Virtual Currency", "Single Use", "LifeTime Item", "Pack", "Categories" };
 
         VirtualItemsEditUtil.UpdateDisplayedOptions();
+    }
+
+    private static VirtualItemsConfig GetVirtualItemsConfigAndCreateIfNonExist()
+    {
+        string configFilePath = VirtualItemsEditUtil.DefaultVirtualItemDataPath + "/VirtualItemsConfig.asset";
+        VirtualItemsConfig virtualItemsConfig = AssetDatabase.LoadAssetAtPath(configFilePath, typeof(VirtualItemsConfig)) as VirtualItemsConfig;
+        if (virtualItemsConfig == null)
+        {
+            virtualItemsConfig = VirtualItemsEditUtil.CreateAsset<VirtualItemsConfig>(configFilePath);
+        }
+        return virtualItemsConfig;
     }
 
     private void OnGUI()
@@ -66,7 +79,10 @@ public class VirtualItemsEditorWindow : EditorWindow
             }
         }
 
-        _currentListView.Draw(position);
+        if (_currentListView != null)
+        {
+            _currentListView.Draw(position);
+        }
         _selectedItemTypeIndex = newSelectedCategoryIdx;
     }
 
@@ -86,7 +102,6 @@ public class VirtualItemsEditorWindow : EditorWindow
     private VirtualItemsConfig _config;
     private int _selectedItemTypeIndex;
     private string[] _itemTypes;
-
     private IView _currentListView;
 
     private const float RowHeight = 20;

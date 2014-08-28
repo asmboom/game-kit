@@ -4,22 +4,34 @@ using System.Collections.Generic;
 
 public static class VirtualItemsEditUtil
 {
+    public static readonly string DefaultVirtualItemDataPath = "Assets/EconomyKit/Resources";
+
     public static string[] DisplayedCategories { get; private set; }
     public static string[] DisplayedVirtualCurrencyIDs { get; private set; }
     public static string[] DisplayedItemIDs { get; private set; }
 
-    public static T CreateNewVirtualItem<T>() where T : VirtualItem
+    public static T CreateAsset<T>(string path) where T : ScriptableObject
     {
         T asset = ScriptableObject.CreateInstance<T>();
-        AssetDatabase.CreateAsset(asset, "Assets/EconomyKit/Resources/NewVirtualItem.asset");
+        AssetDatabase.CreateAsset(asset, path);
         AssetDatabase.SaveAssets();
         return asset;
     }
 
-    public static VirtualCategory CreateNewCategory()
+    public static T CreateNewVirtualItem<T>(string path = null) where T : VirtualItem
+    {
+        T asset = ScriptableObject.CreateInstance<T>();
+        path = string.IsNullOrEmpty(path) ? DefaultVirtualItemDataPath : path;
+        AssetDatabase.CreateAsset(asset, path + "/NewVirtualItem" + EconomyKit.Config.ItemsCount + ".asset");
+        AssetDatabase.SaveAssets();
+        return asset;
+    }
+
+    public static VirtualCategory CreateNewCategory(string path = null)
     {
         VirtualCategory asset = ScriptableObject.CreateInstance<VirtualCategory>();
-        AssetDatabase.CreateAsset(asset, "Assets/EconomyKit/Resources/NewVirtualCategory.asset");
+        path = string.IsNullOrEmpty(path) ? DefaultVirtualItemDataPath : path;
+        AssetDatabase.CreateAsset(asset, path + "/NewVirtualCategory" + EconomyKit.Config.Categories.Count + ".asset");
         AssetDatabase.SaveAssets();
         return asset;
     }
@@ -54,7 +66,7 @@ public static class VirtualItemsEditUtil
         if (item is UpgradeItem)
         {
             UpgradeItem upgradeItem = item as UpgradeItem;
-            upgradeItem.RelatedItemID = EconomyKit.Config.GetItemByID(DisplayedItemIDs[newItemIndex]).ID;
+            upgradeItem.RelatedItem = EconomyKit.Config.GetItemByID(DisplayedItemIDs[newItemIndex]);
         }
     }
 
@@ -62,7 +74,7 @@ public static class VirtualItemsEditUtil
     {
         if (element != null)
         {
-            element.ItemID = EconomyKit.Config.GetItemByID(DisplayedItemIDs[newItemIndex]).ID;
+            element.Item = EconomyKit.Config.GetItemByID(DisplayedItemIDs[newItemIndex]);
         }
     }
 

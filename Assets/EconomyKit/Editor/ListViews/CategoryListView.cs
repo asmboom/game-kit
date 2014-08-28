@@ -62,16 +62,16 @@ public class CategoryListView : IView
         return VirtualItemsEditUtil.CreateNewCategory();
     }
 
-    public VirtualCategory DrawItem(Rect position, VirtualCategory item, int index)
+    public VirtualCategory DrawItem(Rect position, VirtualCategory category, int index)
     {
-        string controlName = item.GetInstanceID() + "_input_field";
+        string controlName = category.GetInstanceID() + "_input_field";
         GUI.SetNextControlName(controlName);
 
-        if (EditorGUI.TextField(position, item.ID).KeyPressed<string>(controlName, KeyCode.Return, out item.ID))
+        if (EditorGUI.TextField(position, category.ID).KeyPressed<string>(controlName, KeyCode.Return, out category.ID))
         {
-            AssetDatabase.RenameAsset(AssetDatabase.GetAssetPath(item), string.Format("Category{0}", item.ID));
+            AssetDatabase.RenameAsset(AssetDatabase.GetAssetPath(category), string.Format("Category{0}", category.ID));
         }
-        return item;
+        return category;
     }
 
     private ReorderableListControl _listControl;

@@ -30,6 +30,14 @@ public class PackElementsEditorWindow : EditorWindow
         }
     }
 
+    private void OnDestroy()
+    {
+        for(var i = 0; i < _listAdaptor.Count; i++)
+        {
+            VirtualItemsEditUtil.UpdatePackElementItemByIndex(_listAdaptor[i], _itemIndices[i]);
+        }
+    }
+
     private void OnItemRemoving(object sender, ItemRemovingEventArgs args)
     {
         UpdateItemIndices();
@@ -89,7 +97,8 @@ public class PackElementsEditorWindow : EditorWindow
 
             for (var i = 0; i < _listAdaptor.Count; i++)
             {
-                _itemIndices.Add(VirtualItemsEditUtil.GetItemIndexById(_listAdaptor[i].ItemID));
+                _itemIndices.Add(_listAdaptor[i].Item != null ? 
+                    VirtualItemsEditUtil.GetItemIndexById(_listAdaptor[i].Item.ID) : 0);
             }
         }
     }

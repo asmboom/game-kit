@@ -3,16 +3,7 @@
 public class UpgradeItem : PurchasableItem
 {
     [SerializeField]
-    public string RelatedItemID;
-
-    public VirtualItem RelatedItem
-    {
-        get
-        {
-            return string.IsNullOrEmpty(RelatedItemID) ?
-                null : EconomyKit.Config.GetItemByID(RelatedItemID);
-        }
-    }
+    public VirtualItem RelatedItem;
 
     public override bool CanPurchaseNow()
     {

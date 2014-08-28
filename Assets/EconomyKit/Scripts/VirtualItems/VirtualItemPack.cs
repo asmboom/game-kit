@@ -4,17 +4,8 @@ using UnityEngine;
 [System.Serializable]
 public class PackElement
 {
-    public string ItemID;
+    public VirtualItem Item;
     public int Amount;
-
-    public VirtualItem Item
-    {
-        get
-        {
-            return string.IsNullOrEmpty(ItemID) ? 
-                null : EconomyKit.Config.GetItemByID(ItemID);
-        }
-    }
 
     public void Give(int amount)
     {

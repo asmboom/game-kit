@@ -18,7 +18,7 @@ public static class VirtualItemsDrawUtil
         }
     }
 
-    public static float DrawVirtualItemTitle(float x, float y, float height)
+    public static float DrawVirtualItemTitle(float x, float y, float height, bool drawCategory = true)
     {
         float xOffset = x;
         DrawID(new Rect(xOffset, y, IdWidth - 1, height), true, null);
@@ -30,15 +30,18 @@ public static class VirtualItemsDrawUtil
         DrawDescription(new Rect(xOffset, y, DescriptionWidth - 1, height), true, null);
         xOffset += DescriptionWidth;
 
-        DrawCategory(
-            new Rect(xOffset, y, CategoryWidth - 1, height), true, 0);
-        xOffset += CategoryWidth;
+        if (drawCategory)
+        {
+            DrawCategory(
+                new Rect(xOffset, y, CategoryWidth - 1, height), true, 0);
+            xOffset += CategoryWidth;
+        }
 
         return xOffset;
     }
 
     public static float DrawVirtualItemInfo(float x, float y, float height, VirtualItem item, int index,
-        System.Collections.Generic.List<int> categoryIndices)
+        System.Collections.Generic.List<int> categoryIndices, bool drawCategory = true)
     {
         float xOffset = x;
         DrawID(new Rect(xOffset, y, IdWidth - 1, height), false, item);
@@ -50,17 +53,20 @@ public static class VirtualItemsDrawUtil
         DrawDescription(new Rect(xOffset, y, DescriptionWidth - 1, height), false, item);
         xOffset += DescriptionWidth;
 
-        if (index < categoryIndices.Count)
+        if (drawCategory)
         {
-            int newIndex = DrawCategory(
-                new Rect(xOffset, y, CategoryWidth - 1, height), false, categoryIndices[index]);
-            if (newIndex != categoryIndices[index])
+            if (index < categoryIndices.Count)
             {
-                VirtualItemsEditUtil.UpdateItemCategoryByIndex(item, newIndex);
+                int newIndex = DrawCategory(
+                    new Rect(xOffset, y, CategoryWidth - 1, height), false, categoryIndices[index]);
+                if (newIndex != categoryIndices[index])
+                {
+                    VirtualItemsEditUtil.UpdateItemCategoryByIndex(item, newIndex);
+                }
+                categoryIndices[index] = newIndex;
             }
-            categoryIndices[index] = newIndex;
+            xOffset += CategoryWidth;
         }
-        xOffset += CategoryWidth;
 
         return xOffset;
     }
@@ -72,7 +78,7 @@ public static class VirtualItemsDrawUtil
 
         if (drawTitle)
         {
-            GUI.Label(new Rect(position.x + 30, position.y, position.width, position.height), "Purchase Info");
+            GUI.Label(new Rect(position.x + 30, position.y, position.width, position.height), "Price");
         }
         else
         {
@@ -133,6 +139,30 @@ public static class VirtualItemsDrawUtil
         }
 
         xOffset += PackDetailWidth;
+        return xOffset;
+    }
+
+    public static float DrawUpgradeInfo(float x, float y, float height, bool drawTitle, VirtualItem item)
+    {
+        float xOffset = x;
+        Rect position = new Rect(xOffset, y, UpgradesWidth - 1, height);
+
+        if (drawTitle)
+        {
+            GUI.Label(new Rect(position.x + 30, position.y, position.width, position.height), "Upgrades");
+        }
+        else
+        {
+            GUI.Label(position, item.HasUpgrades ? string.Format("{0} Upgrades", item.MaxLevel) : "None");
+
+            if (GUI.Button(new Rect(position.x + position.width - 30, position.y, 30, position.height), "..."))
+            {
+                UpgradesEditorWindow window = EditorWindow.GetWindow<UpgradesEditorWindow>();
+                window.Init(item);
+            }
+        }
+
+        xOffset += UpgradesWidth;
         return xOffset;
     }
 
@@ -212,7 +242,7 @@ public static class VirtualItemsDrawUtil
     {
         return purchase.Type == PurchaseType.PurchaseWithVirtualCurrency ?
             string.Format("{0}x{1}", purchase.VirtualCurrency != null ? purchase.VirtualCurrency.ID : "Null", purchase.Price) : 
-            string.Format("Market({0}):{1}", purchase.MarketID, purchase.Price);
+            string.Format("{0:F2}({1})", purchase.Price, purchase.MarketID);
     }
 
     public static void BeginDrawTitle()
@@ -242,4 +272,5 @@ public static class VirtualItemsDrawUtil
     private const float PurchaseInfoWidth = 200;
     private const float EquippableWidth = 80;
     private const float PackDetailWidth = 200;
+    private const float UpgradesWidth = 150;
 }

@@ -30,6 +30,11 @@ public class VirtualItemsConfig : ScriptableObject
         }
     }
 
+    public int ItemsCount
+    {
+        get { return _idToItems.Count; }
+    }
+
     public bool TryGetItemByID(string id, out VirtualItem item)
     {
         return _idToItems.TryGetValue(id, out item);

@@ -33,7 +33,7 @@ public class SingleUseItemListView : IView
         if (_listAdaptor == null) return;
 
         float yOffset = 30;
-        float width = 1000;
+        float width = 1150;
         float listHeight = _listControl.CalculateListHeight(_listAdaptor);
 
         _scrollPosition = GUI.BeginScrollView(new Rect(0, yOffset, position.width, position.height - yOffset), 
@@ -83,14 +83,16 @@ public class SingleUseItemListView : IView
     {
         VirtualItemsDrawUtil.BeginDrawTitle();
         float xOffset = VirtualItemsDrawUtil.DrawVirtualItemTitle(position.x, position.y, position.height);
-        VirtualItemsDrawUtil.DrawPurchase(xOffset, position.y, position.height, true, null);
+        xOffset = VirtualItemsDrawUtil.DrawPurchase(xOffset, position.y, position.height, true, null);
+        VirtualItemsDrawUtil.DrawUpgradeInfo(xOffset, position.y, position.height, true, null);
         VirtualItemsDrawUtil.EndDrawTitle();
     }
 
     public SingleUseItem DrawItem(Rect position, SingleUseItem item, int index)
     {
         float xOffset = VirtualItemsDrawUtil.DrawVirtualItemInfo(position.x, position.y, position.height, item, index, _categoryIndices);
-        VirtualItemsDrawUtil.DrawPurchase(xOffset, position.y, position.height, false, item);
+        xOffset  = VirtualItemsDrawUtil.DrawPurchase(xOffset, position.y, position.height, false, item);
+        VirtualItemsDrawUtil.DrawUpgradeInfo(xOffset, position.y, position.height, false, item);
         return item;
     }
 
