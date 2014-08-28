@@ -45,8 +45,8 @@ public static class VirtualItemsEditUtil
 
     public static void UpdatePurchaseByIndex(Purchase purchase, int newCurrencyIndex)
     {
-        purchase.AssociatedID =
-            EconomyKit.Config.GetItemByID(DisplayedVirtualCurrencyIDs[newCurrencyIndex]).ID;
+        purchase.VirtualCurrency =
+            EconomyKit.Config.GetItemByID(DisplayedVirtualCurrencyIDs[newCurrencyIndex]) as VirtualCurrency;
     }
 
     public static void UpdateRelatedItemByIndex(VirtualItem item, int newItemIndex)

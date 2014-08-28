@@ -36,7 +36,7 @@ public class MarketProduct
                 if (purchase.IsMarketPurchase)
                 {
                     MarketProduct product = new MarketProduct();
-                    product.ProductIdentifier = purchase.AssociatedID;
+                    product.ProductIdentifier = purchase.MarketID;
                     product.Title = item.Name;
                     product.Price = purchase.Price.ToString();
                     product.Description = item.Description;

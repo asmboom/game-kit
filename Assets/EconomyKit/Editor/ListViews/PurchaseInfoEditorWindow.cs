@@ -8,7 +8,7 @@ public class PurchaseInfoEditorWindow : EditorWindow
     public void Init(PurchasableItem item)
     {
         _currentEditItem = item;
-        _listAdaptor = new GenericClassListAdaptor<Purchase>(_currentEditItem.PurchaseInfo, 22, 
+        _listAdaptor = new GenericClassListAdaptor<Purchase>(_currentEditItem.PurchaseInfo, 22,
             CreatePurchase, DrawItem);
 
         UpdateVirtualCurrencyIndices();
@@ -27,6 +27,14 @@ public class PurchaseInfoEditorWindow : EditorWindow
         {
             _listControl.ItemInserted -= OnItemInsert;
             _listControl.ItemRemoving -= OnItemRemoving;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        for(var i = 0; i < _listAdaptor.Count; i++)
+        {
+            VirtualItemsEditUtil.UpdatePurchaseByIndex(_listAdaptor[i], _virtualCurrencyIndices[i]);
         }
     }
 
@@ -80,17 +88,17 @@ public class PurchaseInfoEditorWindow : EditorWindow
         if (purchase == null) return null;
 
         float xOffset = position.x;
-        DrawType(new Rect(xOffset, position.y, position.width * TypeWidth - 1, position.height), 
+        DrawType(new Rect(xOffset, position.y, position.width * TypeWidth - 1, position.height),
             purchase, index);
         xOffset += position.width * TypeWidth;
         if (purchase.Type == PurchaseType.PurchaseWithMarket)
         {
-            DrawMarketID(new Rect(xOffset, position.y, position.width * AssociatedWidth - 1, position.height), 
+            DrawMarketID(new Rect(xOffset, position.y, position.width * AssociatedWidth - 1, position.height),
                 purchase);
         }
         else
         {
-            DrawVirtualCurrencyPopup(new Rect(xOffset, position.y, position.width * AssociatedWidth - 1, position.height), 
+            DrawVirtualCurrencyPopup(new Rect(xOffset, position.y, position.width * AssociatedWidth - 1, position.height),
                 purchase, index);
         }
         xOffset += position.width * AssociatedWidth;
@@ -106,7 +114,8 @@ public class PurchaseInfoEditorWindow : EditorWindow
 
             for (var i = 0; i < _listAdaptor.Count; i++)
             {
-                _virtualCurrencyIndices.Add(VirtualItemsEditUtil.GetVirtualCurrencyIndexById(_listAdaptor[i].AssociatedID));
+                _virtualCurrencyIndices.Add(_listAdaptor[i].VirtualCurrency == null ? 0 :
+                    VirtualItemsEditUtil.GetVirtualCurrencyIndexById(_listAdaptor[i].VirtualCurrency.ID));
             }
         }
     }
@@ -123,7 +132,7 @@ public class PurchaseInfoEditorWindow : EditorWindow
 
     private void DrawMarketID(Rect position, Purchase purchase)
     {
-        purchase.AssociatedID = EditorGUI.TextField(position, purchase.AssociatedID);
+        purchase.MarketID = EditorGUI.TextField(position, purchase.MarketID);
     }
 
     private void DrawVirtualCurrencyPopup(Rect position, Purchase purchase, int index)

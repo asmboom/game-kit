@@ -403,7 +403,7 @@ public class VirtualItemsConfigEditor : Editor
             Purchase purchase = new Purchase();
             purchase.Type = purchaseType;
             purchase.Price = ParsePurchasePrice(row, currentCellIndex + 1, itemID);
-            purchase.AssociatedID = ParsePurchaseAssociatedID(row, currentCellIndex + 2, itemID);
+            purchase.MarketID = ParsePurchaseAssociatedID(row, currentCellIndex + 2, itemID);
             return purchase;
         }
         return null;

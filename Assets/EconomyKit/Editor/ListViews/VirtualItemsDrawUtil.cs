@@ -211,7 +211,8 @@ public static class VirtualItemsDrawUtil
     private static string GetOnePurchaseString(Purchase purchase)
     {
         return purchase.Type == PurchaseType.PurchaseWithVirtualCurrency ?
-            string.Format("{0}x{1}", purchase.AssociatedID, purchase.Price) : string.Format("Real money:{0}", purchase.Price);
+            string.Format("{0}x{1}", purchase.VirtualCurrency != null ? purchase.VirtualCurrency.ID : "Null", purchase.Price) : 
+            string.Format("Market({0}):{1}", purchase.MarketID, purchase.Price);
     }
 
     public static void BeginDrawTitle()

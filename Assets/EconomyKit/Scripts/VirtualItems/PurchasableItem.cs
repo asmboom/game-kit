@@ -17,7 +17,7 @@ public abstract class PurchasableItem : VirtualItem
         {
             if (CanPurchaseNow())
             {
-                PurchaseInfo[index].Execute(this, Storage);
+                PurchaseInfo[index].Execute(this);
             }
         }
         else

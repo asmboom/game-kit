@@ -11,9 +11,8 @@ public class Purchase
 {
     public PurchaseType Type;
     public float Price;
-    // if purchasing with market, this is the market product id;
-    // if purchaing with virtual currency, this is the virutal currency item id
-    public string AssociatedID;
+    public string MarketID; // only useful if purchasing with market
+    public VirtualCurrency VirtualCurrency; // only useful if purchaing with virtual currency
 
     public bool IsMarketPurchase
     {
@@ -23,43 +22,43 @@ public class Purchase
         }
     }
 
-    public PurchaseError Execute(PurchasableItem purchasable, IEconomyStorage storage)
+    public PurchaseError Execute(PurchasableItem purchasable)
     {
         if (Type == PurchaseType.PurchaseWithVirtualCurrency)
         {
-            return BuyWithVirtualCurrency(purchasable, storage);
+            return BuyWithVirtualCurrency(purchasable);
         }
         else
         {
-            return BuyWithMarket(purchasable, storage);
+            return BuyWithMarket(purchasable);
         }
     }
 
-    private PurchaseError BuyWithVirtualCurrency(PurchasableItem item, IEconomyStorage storage)
+    private PurchaseError BuyWithVirtualCurrency(PurchasableItem item)
     {
         EconomyKit.OnPurchaseStarted(item);
 
         int priceInVirtualCurrency = (int)Price;
-        int balance = storage.GetItemBalance(AssociatedID);
+        int balance = VirtualCurrency.Balance;
         if (balance < priceInVirtualCurrency)
         {
             return PurchaseError.InsufficientVirtualCurrency;
         }
         else
         {
-            EconomyKit.Config.GetItemByID(AssociatedID).Take(priceInVirtualCurrency);
+            VirtualCurrency.Take(priceInVirtualCurrency);
             item.Give(1);
             EconomyKit.OnPurchaseSucceeded(item);
             return PurchaseError.None;
         }
     }
 
-    private PurchaseError BuyWithMarket(PurchasableItem item, IEconomyStorage storage)
+    private PurchaseError BuyWithMarket(PurchasableItem item)
     {
         EconomyKit.OnPurchaseStarted(item);
 
         _currentItemPurchasedWithMarket = item;
-        return Market.Instance.StartPurchase(AssociatedID, 1,
+        return Market.Instance.StartPurchase(MarketID, 1,
             OnMarketPurchaseSucceeded, OnMarketPurchaseFailed);
     }
 
