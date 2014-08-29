@@ -22,6 +22,7 @@ public class GenericClassListAdaptor<T> : IReorderableListAdaptor where T : clas
     public IList<T> List
     {
         get { return _list; }
+        set { _list = value; }
     }
 
     public T this[int index]
@@ -45,7 +46,7 @@ public class GenericClassListAdaptor<T> : IReorderableListAdaptor where T : clas
 
     public int Count
     {
-        get { return _list.Count; }
+        get { return _list == null ? 0 : _list.Count; }
     }
 
     public virtual bool CanDrag(int index)
@@ -60,47 +61,75 @@ public class GenericClassListAdaptor<T> : IReorderableListAdaptor where T : clas
 
     public void Add()
     {
-        _list.Add(Create());
+        if (_list != null)
+        {
+            _list.Add(Create());
+        }
     }
 
     public void Insert(int index)
     {
-        _list.Insert(index, Create());
+        if (_list != null)
+        {
+            _list.Insert(index, Create());
+        }
     }
 
     public void Duplicate(int index)
     {
-        _list.Insert(index + 1, _list[index]);
+        if (_list != null)
+        {
+            _list.Insert(index + 1, _list[index]);
+        }
     }
 
     public void Remove(int index)
     {
-        _list.RemoveAt(index);
+        if (_list != null)
+        {
+            _list.RemoveAt(index);
+        }
     }
 
     public void Move(int sourceIndex, int destIndex)
     {
-        if (destIndex > sourceIndex)
-            --destIndex;
+        if (_list != null)
+        {
+            if (destIndex > sourceIndex)
+                --destIndex;
 
-        T item = _list[sourceIndex];
-        _list.RemoveAt(sourceIndex);
-        _list.Insert(destIndex, item);
+            T item = _list[sourceIndex];
+            _list.RemoveAt(sourceIndex);
+            _list.Insert(destIndex, item);
+        }
     }
 
     public void Clear()
     {
-        _list.Clear();
+        if (_list != null)
+        {
+            _list.Clear();
+        }
     }
 
     public void DrawItem(Rect position, int index)
     {
-        _list[index] = _itemDrawer(position, _list[index], index);
+        if (_list != null)
+        {
+            _list[index] = _itemDrawer(position, _list[index], index);
+        }
     }
 
     public virtual float GetItemHeight(int index)
     {
-        return _itemHeightGetter == null ? FixedItemHeight : _itemHeightGetter(_list[index]);
+        if (_list != null)
+        {
+            return _itemHeightGetter == null ? FixedItemHeight : _itemHeightGetter(_list[index]);
+        }
+        else
+        {
+            return 0;
+        }
     }
 
     private T Create()

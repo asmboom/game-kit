@@ -16,6 +16,9 @@ public abstract class VirtualItem : ScriptableObject, IComparable
     public string ID;
 
     [SerializeField]
+    public Sprite Icon;
+
+    [SerializeField]
     [HideInInspector]
     public int SortIndex;
 

@@ -22,10 +22,18 @@ public class VirtualItemsEditorWindow : EditorWindow
         {
             _itemsExplorer = new VirtualItemsTreeExplorer(_config);
         }
-        _selectedItemTypeIndex = -1;
-        _itemTypes = new string[] { "Virtual Currency", "Single Use", "LifeTime Item", "Pack", "Categories" };
+        if (_itemInspector == null)
+        {
+            _itemInspector = new VirtualItemsPropertyInspector(_itemsExplorer.CurrentSelectedItem);
+            _itemsExplorer.OnSelectionChange += _itemInspector.OnExplorerSelectionChange;
+        }
 
         VirtualItemsEditUtil.UpdateDisplayedOptions();
+    }
+
+    private void OnDisable()
+    {
+        _itemsExplorer.OnSelectionChange -= _itemInspector.OnExplorerSelectionChange;
     }
 
     private static VirtualItemsConfig GetVirtualItemsConfigAndCreateIfNonExist()
@@ -41,57 +49,16 @@ public class VirtualItemsEditorWindow : EditorWindow
 
     private void OnGUI()
     {
-        int newSelectedCategoryIdx = Mathf.Max(0, GUILayout.SelectionGrid(_selectedItemTypeIndex, _itemTypes, _itemTypes.Length));
-        if (newSelectedCategoryIdx != _selectedItemTypeIndex)
+        _itemsExplorer.Draw(new Rect(10, 5, 250, position.height - 10));
+        if (_itemInspector != null)
         {
-            switch (newSelectedCategoryIdx)
-            {
-                case 0:
-                    SetCurrentListView(new VirtualCurrencyListView(_config.VirtualCurrencies));
-                    break;
-                case 1:
-                    SetCurrentListView(new SingleUseItemListView(_config.SingleUseItems));
-                    break;
-                case 2:
-                    SetCurrentListView(new LifeTimeItemListView(_config.LifeTimeItems));
-                    break;
-                case 3:
-                    SetCurrentListView(new VirtualItemPackListView(_config.ItemPacks));
-                    break;
-                case 4:
-                    SetCurrentListView(new CategoryListView(_config.Categories));
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        if (_currentListView != null)
-        {
-            //_currentListView.Draw(position);
-        }
-        _itemsExplorer.Draw(new Rect(10, 30, 200, position.height));
-        _selectedItemTypeIndex = newSelectedCategoryIdx;
-    }
-
-    private void SetCurrentListView(IView view)
-    {
-        if (_currentListView != null)
-        {
-            _currentListView.Hide();
-        }
-        _currentListView = view;
-        if (_currentListView != null)
-        {
-            _currentListView.Show();
+            _itemInspector.Draw(new Rect(270, 5, position.width - 280, position.height - 10));
         }
     }
 
     private VirtualItemsConfig _config;
-    private int _selectedItemTypeIndex;
-    private string[] _itemTypes;
-    private IView _currentListView;
     private VirtualItemsTreeExplorer _itemsExplorer;
+    private VirtualItemsPropertyInspector _itemInspector;
 
     private const float RowHeight = 20;
 }
