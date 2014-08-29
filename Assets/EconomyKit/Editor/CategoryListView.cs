@@ -3,7 +3,7 @@ using UnityEditor;
 using System.Collections.Generic;
 using Rotorz.ReorderableList;
 
-public class CategoryListView : IView
+public class CategoryListView
 {
     public CategoryListView(List<VirtualCategory> list)
     {
