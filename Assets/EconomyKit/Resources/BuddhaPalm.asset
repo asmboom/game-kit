@@ -20,6 +20,6 @@ MonoBehaviour:
   Upgrades: []
   PurchaseInfo:
   - Type: 1
-    Price: 1500
+    Price: 2000
     MarketID: 
-    VirtualCurrency: {fileID: 11400000, guid: f801a488561815140925ca32fb172746, type: 2}
+    VirtualCurrency: {fileID: 0}

@@ -27,14 +27,19 @@ public class CategoryPropertyView
         float itemHeight = 20;
         float width = position.width * 0.4f;
         float height = position.height - 30;
-        GUI.BeginGroup(new Rect(position.x, position.y + 30, width, height), string.Empty, "Box");
+
+        GUI.BeginGroup(new Rect(position.x, position.y + 30, width, height));
         _scrollPositionOfCategory = GUI.BeginScrollView(new Rect(0, 0, width, height),
             _scrollPositionOfCategory, new Rect(0, 0, width - 20, 20 * category.Items.Count));
-        _categoryItemListControl.Draw(new Rect(0, 0, width, height), _categoryItemListAdaptor);
+        GUI.Label(new Rect(0, 0, width, 20), "In Category", VirtualItemsDrawUtil.TitleStyle);
+        _categoryItemListControl.Draw(new Rect(0, 20, width, height - 20), _categoryItemListAdaptor);
         GUI.EndScrollView();
         GUI.EndGroup();
-        GUI.BeginGroup(new Rect(position.x + position.width - width, position.y + 30, width, height), string.Empty, "Box");
-        _scrollPositionOfNonCategory = GUI.BeginScrollView(new Rect(0, 0, width, height),
+
+        GUI.BeginGroup(new Rect(position.x + position.width - width - 20, position.y + 30, width, height));
+        GUI.Label(new Rect(0, 0, width, 20), "Not in Category", VirtualItemsDrawUtil.TitleStyle);
+        GUI.BeginGroup(new Rect(0, 20, width, height - 20), string.Empty, "Box");
+        _scrollPositionOfNonCategory = GUI.BeginScrollView(new Rect(0, 0, width, height - 20),
             _scrollPositionOfNonCategory, new Rect(0, 0, width - 20, 20 * _itemsWithoutCategory.Count));
         float yOffset = 0;
         foreach (var item in _itemsWithoutCategory)
@@ -48,6 +53,7 @@ public class CategoryPropertyView
             yOffset += itemHeight;
         }
         GUI.EndScrollView();
+        GUI.EndGroup();
         GUI.EndGroup();
 
         GUI.enabled = _currentSelectedNonCategoryItem != null;
@@ -93,7 +99,8 @@ public class CategoryPropertyView
             if (categoryWithID != null && categoryWithID != category)
             {
                 GUIUtility.keyboardControl = 0;
-                EditorUtility.DisplayDialog("Duplicate ID", "An category with ID[" + _currentCategoryID + "] already exists!!!", "OK");
+                EditorUtility.DisplayDialog("Duplicate ID", "An category with ID[" + 
+                    _currentCategoryID + "] already exists!!!", "OK");
                 _currentCategoryID = category.ID;
             }
             else

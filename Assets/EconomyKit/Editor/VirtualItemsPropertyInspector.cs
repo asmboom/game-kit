@@ -20,7 +20,7 @@ public class VirtualItemsPropertyInspector
 
         if (item is VirtualItem)
         {
-            _currentItemID = (item as VirtualItem).ID;
+            _currentDisplayedItemID = (item as VirtualItem).ID;
             if (item is SingleUseItem || item is LifeTimeItem)
             {
                 _upgradesListView.UpdateDisplayItem(item as VirtualItem);
@@ -42,36 +42,36 @@ public class VirtualItemsPropertyInspector
 
     public void Draw(Rect position)
     {
-        GUILayout.BeginArea(position, string.Empty, "Box");
-
-        _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
-
         VirtualItem item = _currentDisplayedItem as VirtualItem;
         if (item != null)
         {
-            DrawVirtualItem(new Rect(0, 0, position.width, position.height), item);
+            GUI.BeginGroup(position, string.Empty, "Box");
+            DrawVirtualItem(new Rect(10, 0, position.width - 10, position.height), item);
+            GUI.EndGroup();
         }
         else
         {
             VirtualCategory category = _currentDisplayedItem as VirtualCategory;
             if (category != null)
             {
-                _categoryPropertyView.Draw(new Rect(0, 0, position.width, position.height), category);
+                GUILayout.BeginArea(position, string.Empty, "Box");
+                _categoryPropertyView.Draw(new Rect(10, 0, position.width, position.height), category);
+                GUILayout.EndArea();
             }
         }
-
-        GUILayout.EndScrollView();
-
-        GUILayout.EndArea();
     }
 
     private void DrawVirtualItem(Rect position, VirtualItem item)
     {
         EditorGUI.BeginChangeCheck();
 
+        GUI.BeginGroup(position);
+        _scrollPosition = GUI.BeginScrollView(new Rect(0, 0, position.width, position.height),
+            _scrollPosition, new Rect(0, 0, position.width - 20, _currentYOffset));
+
         float yOffset = 0;
-        float width = position.width - 10;
-        GUI.BeginGroup(new Rect(position.x, position.y, width, position.height * 0.3f));
+        bool showScrollbar = position.height < _currentYOffset;
+        float width = position.width - (showScrollbar ? 20 : 10);
         _isVirtualItemPropertiesExpanded = EditorGUI.Foldout(new Rect(0, 0, width, 20), 
             _isVirtualItemPropertiesExpanded, "Basic Property");
         yOffset += 20;
@@ -79,8 +79,8 @@ public class VirtualItemsPropertyInspector
         {
             DrawID(new Rect(0, yOffset, width, 20), item);
             yOffset += 20;
-            EditorGUI.LabelField(new Rect(0, yOffset, width, 20), "Sort index", item.SortIndex.ToString());
-            yOffset += 20;
+            //EditorGUI.LabelField(new Rect(0, yOffset, width, 20), "Sort index", item.SortIndex.ToString());
+            //yOffset += 20;
             item.Name = EditorGUI.TextField(new Rect(0, yOffset, width, 20), "Name", item.Name);
             yOffset += 20;
             item.Description = EditorGUI.TextField(new Rect(0, yOffset, width, 20), "Desription", item.Description);
@@ -90,7 +90,6 @@ public class VirtualItemsPropertyInspector
             item.Icon = EditorGUI.ObjectField(new Rect(0, yOffset, width, 20), "Icon", item.Icon, typeof(Sprite), false) as Sprite;
             yOffset += 20;
         }
-        GUI.EndGroup();
 
         if (item is LifeTimeItem)
         {
@@ -103,10 +102,11 @@ public class VirtualItemsPropertyInspector
         {
             yOffset += 20;
             _isPackInfoExpanded = EditorGUI.Foldout(new Rect(0, yOffset, width, 20), _isPackInfoExpanded, "Pack Info");
+            yOffset += 20;
             if (_isPackInfoExpanded)
             {
-                _packListView.Draw(new Rect(0, yOffset, width, 200));
-                yOffset += 200;
+                _packListView.Draw(new Rect(0, yOffset, width, 100));
+                yOffset += 100;
             }
         }
         if (item is PurchasableItem)
@@ -132,6 +132,10 @@ public class VirtualItemsPropertyInspector
                 yOffset += 200;
             }
         }
+        _currentYOffset = yOffset;
+
+        GUI.EndScrollView();
+        GUI.EndGroup();
 
         if (EditorGUI.EndChangeCheck())
         {
@@ -142,36 +146,40 @@ public class VirtualItemsPropertyInspector
     private void DrawID(Rect position, VirtualItem item)
     {
         GUI.SetNextControlName(item.HashID);
-        if (EditorGUI.TextField(position, "Unique ID", _currentItemID).KeyPressed<string>(item.HashID, KeyCode.Return, out _currentItemID))
+        if (EditorGUI.TextField(position, "Unique ID", 
+            _currentDisplayedItemID).KeyPressed<string>(item.HashID, KeyCode.Return, out _currentDisplayedItemID))
         {
             EconomyKit.Config.UpdateIdToItemMap();
-            VirtualItem itemWithID = EconomyKit.Config.GetItemByID(_currentItemID);
+            VirtualItem itemWithID = EconomyKit.Config.GetItemByID(_currentDisplayedItemID);
             if (itemWithID != null && itemWithID != item)
             {
                 GUIUtility.keyboardControl = 0;
-                EditorUtility.DisplayDialog("Duplicate ID", "An item with ID[" + _currentItemID + "] already exists!!!", "OK");
-                _currentItemID = item.ID;
+                EditorUtility.DisplayDialog("Duplicate ID", "An item with ID[" + 
+                    _currentDisplayedItemID + "] already exists!!!", "OK");
+                _currentDisplayedItemID = item.ID;
             }
             else
             {
-                item.ID = _currentItemID;
+                item.ID = _currentDisplayedItemID;
                 AssetDatabase.RenameAsset(AssetDatabase.GetAssetPath(item), item.ID);
                 VirtualItemsEditorWindow.GetInstance().Repaint();
             }
         }
     }
 
-    private string _currentItemID;
-    private Vector2 _scrollPosition;
     private bool _isVirtualItemPropertiesExpanded = true;
     private bool _isPackInfoExpanded = true;
     private bool _isPurchaseInfoExpanded = true;
     private bool _isUpgradeInfoExpanded = false;
 
+    private string _currentDisplayedItemID;
     private object _currentDisplayedItem;
 
     private PurchaseInfoListView _purchaseListView;
     private PackInfoListView _packListView;
     private UpgradesListView _upgradesListView;
     private CategoryPropertyView _categoryPropertyView;
+
+    private Vector2 _scrollPosition;
+    private float _currentYOffset;
 }

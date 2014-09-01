@@ -7,7 +7,10 @@ public class PurchaseInfoListView
 {
     public PurchaseInfoListView(PurchasableItem item)
     {
-        _listControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand | ReorderableListFlags.ShowIndices);
+        _listControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand | 
+            ReorderableListFlags.ShowIndices);
+        _listControl.ItemInserted += OnItemInsert;
+        _listControl.ItemRemoving += OnItemRemoving;
 
         UpdateVirtualCurrencyIndices();
     }
@@ -26,13 +29,15 @@ public class PurchaseInfoListView
     public void Draw(Rect position)
     {
         GUI.BeginGroup(position, string.Empty, "Box");
+        float listHeight = _listControl.CalculateListHeight(_listAdaptor);
+        bool hasScrollBar = listHeight + 20 > position.height;
         _scrollPosition = GUI.BeginScrollView(new Rect(0, 0, position.width, position.height), _scrollPosition, 
-            new Rect(0, 0, position.width - 20, _listControl.CalculateListHeight(_listAdaptor) + 20));
+            new Rect(0, 0, position.width - 20, listHeight + 20));
 
         float xOffset = 0;
         GUI.Label(new Rect(0, 0, position.width * PurchaseTypeWidth, 20), 
             "Purchase Type", VirtualItemsDrawUtil.TitleStyle);
-        xOffset += position.width * PurchasePriceWidth;
+        xOffset += position.width * PurchaseTypeWidth;
         GUI.Label(new Rect(xOffset, 0, position.width * PurchaseAssociatedWidth, 20), 
             "Associated ID/Item", VirtualItemsDrawUtil.TitleStyle);
         xOffset += position.width * PurchaseAssociatedWidth;
@@ -41,7 +46,8 @@ public class PurchaseInfoListView
 
         if (_listAdaptor != null)
         {
-            _listControl.Draw(new Rect(0, 20, position.width, position.height - 20), _listAdaptor);
+            _listControl.Draw(new Rect(0, 20, 
+                position.width - (hasScrollBar ? 10 : 0), listHeight), _listAdaptor);
         }
 
         GUI.EndScrollView();
@@ -51,6 +57,16 @@ public class PurchaseInfoListView
     private Purchase CreatePurchase()
     {
         return new Purchase();
+    }
+
+    private void OnItemRemoving(object sender, ItemRemovingEventArgs args)
+    {
+        UpdateVirtualCurrencyIndices();
+    }
+
+    private void OnItemInsert(object sender, ItemInsertedEventArgs args)
+    {
+        UpdateVirtualCurrencyIndices();
     }
 
     private Purchase DrawOnePurchase(Rect position, Purchase purchase, int index)
@@ -96,7 +112,8 @@ public class PurchaseInfoListView
     {
         if (index < _virtualCurrencyIndicesForPurchase.Count)
         {
-            int newIndex = EditorGUI.Popup(position, _virtualCurrencyIndicesForPurchase[index], VirtualItemsEditUtil.DisplayedVirtualCurrencyIDs);
+            int newIndex = EditorGUI.Popup(position, 
+                _virtualCurrencyIndicesForPurchase[index], VirtualItemsEditUtil.DisplayedVirtualCurrencyIDs);
             if (newIndex != _virtualCurrencyIndicesForPurchase[index])
             {
                 VirtualItemsEditUtil.UpdatePurchaseByIndex(purchase, newIndex);
@@ -136,7 +153,7 @@ public class PurchaseInfoListView
     private List<int> _virtualCurrencyIndicesForPurchase;
 
     private const float PurchaseTypeWidth = 0.4f;
-    private const float PurchaseAssociatedWidth = 0.35f;
-    private const float PurchasePriceWidth = 0.25f;
+    private const float PurchaseAssociatedWidth = 0.4f;
+    private const float PurchasePriceWidth = 0.2f;
     private Vector2 _scrollPosition;
 }

@@ -7,7 +7,10 @@ public class PackInfoListView
 {
     public PackInfoListView(VirtualItemPack pack)
     {
-        _listControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand | ReorderableListFlags.ShowIndices);
+        _listControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand | 
+            ReorderableListFlags.ShowIndices);
+        _listControl.ItemInserted += OnItemInsert;
+        _listControl.ItemRemoving += OnItemRemoving;
 
         UpdateItemIndices();
     }
@@ -26,8 +29,10 @@ public class PackInfoListView
     public void Draw(Rect position)
     {
         GUI.BeginGroup(position, string.Empty, "Box");
+        float listHeight = _listControl.CalculateListHeight(_listAdaptor);
+        bool hasScrollBar = listHeight + 20 > position.height;
         _scrollPosition = GUI.BeginScrollView(new Rect(0, 0, position.width, position.height), _scrollPosition, 
-            new Rect(0, 0, position.width - 20, _listControl.CalculateListHeight(_listAdaptor) + 20));
+            new Rect(0, 0, position.width - 20, listHeight + 20));
 
         float xOffset = 0;
         GUI.Label(new Rect(0, 0, position.width * 0.5f, 20), 
@@ -38,7 +43,8 @@ public class PackInfoListView
 
         if (_listAdaptor != null)
         {
-            _listControl.Draw(new Rect(0, 20, position.width, position.height - 20), _listAdaptor);
+            _listControl.Draw(new Rect(0, 20, 
+                position.width - (hasScrollBar ? 10 : 0), listHeight), _listAdaptor);
         }
 
         GUI.EndScrollView();
@@ -48,6 +54,16 @@ public class PackInfoListView
     private PackElement CreatePackElement()
     {
         return new PackElement();
+    }
+
+    private void OnItemRemoving(object sender, ItemRemovingEventArgs args)
+    {
+        UpdateItemIndices();
+    }
+
+    private void OnItemInsert(object sender, ItemInsertedEventArgs args)
+    {
+        UpdateItemIndices();
     }
 
     public PackElement DrawPackElement(Rect position, PackElement element, int index)
@@ -73,19 +89,22 @@ public class PackInfoListView
 
     private void DrawVirtualItem(Rect position, PackElement packElement, int index)
     {
-        int newIndex = EditorGUI.Popup(new Rect(position.x, position.y, position.width * 0.5f, position.height),
-            _itemIndices[index], VirtualItemsEditUtil.DisplayedItemIDs);
-        if (newIndex != _itemIndices[index])
+        if (index < _itemIndices.Count)
         {
-            VirtualItemsEditUtil.UpdatePackElementItemByIndex(packElement, newIndex);
+            int newIndex = EditorGUI.Popup(new Rect(position.x, position.y, position.width * 0.5f - 1, position.height),
+                _itemIndices[index], VirtualItemsEditUtil.DisplayedItemIDs);
+            if (newIndex != _itemIndices[index])
+            {
+                VirtualItemsEditUtil.UpdatePackElementItemByIndex(packElement, newIndex);
+            }
+            _itemIndices[index] = newIndex;
         }
-        _itemIndices[index] = newIndex;
     }
 
     private void DrawAmount(Rect position, PackElement packElement)
     {
         Rect rect = new Rect(position.x + position.width * 0.5f,
-                position.y, position.width * 0.4f, position.height);
+                position.y, position.width * 0.5f - 1, position.height);
         if (packElement.Item is LifeTimeItem)
         {
             packElement.Amount = 1;

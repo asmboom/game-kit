@@ -22,4 +22,4 @@ MonoBehaviour:
   - Type: 1
     Price: 1
     MarketID: 
-    VirtualCurrency: {fileID: 0}
+    VirtualCurrency: {fileID: 11400000, guid: 84fc3c21350dc7a4a897d0f587509fd7, type: 2}

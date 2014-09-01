@@ -15,11 +15,9 @@ MonoBehaviour:
   Description: "\u4E8C\u5E08\u5144"
   ID: Wubao
   Icon: {fileID: 0}
-  SortIndex: 1
+  SortIndex: 2
   HashID: c49b51c6-e87b-4561-95ab-ee54e804d4bd
-  Upgrades:
-  - {fileID: 11400000, guid: 645bb37871e34e6408c8e0cc06e8088a, type: 2}
-  - {fileID: 11400000, guid: f23a697c921f1194cb444d84a8319279, type: 2}
+  Upgrades: []
   PurchaseInfo:
   - Type: 1
     Price: 10

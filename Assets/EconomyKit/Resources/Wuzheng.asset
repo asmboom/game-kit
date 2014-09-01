@@ -15,7 +15,7 @@ MonoBehaviour:
   Description: "\u5C0F\u5E08\u5F1F"
   ID: Wuzheng
   Icon: {fileID: 0}
-  SortIndex: 2
+  SortIndex: 1
   HashID: 314e1d9e-0328-4bc0-9760-66ead263739a
   Upgrades: []
   PurchaseInfo:

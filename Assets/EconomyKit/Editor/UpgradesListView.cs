@@ -35,10 +35,10 @@ public class UpgradesListView
 
         if (_currentItem != null && _currentItem.HasUpgrades)
         {
-            SelectItem(_currentItem.Upgrades[0]);
+            SelecteUpgradeItem(_currentItem.Upgrades[0]);
         }
 
-        _purchaseListView = new PurchaseInfoListView(_currentSelectedItem);
+        _purchaseListView = new PurchaseInfoListView(_currentSelectedUpgrade);
     }
 
     public void UpdateDisplayItem(VirtualItem item)
@@ -51,11 +51,11 @@ public class UpgradesListView
 
             if (_currentItem.HasUpgrades)
             {
-                SelectItem(_currentItem.Upgrades[0]);
+                SelecteUpgradeItem(_currentItem.Upgrades[0]);
             }
             else
             {
-                SelectItem(null);
+                SelecteUpgradeItem(null);
             }
         }
     }
@@ -63,28 +63,34 @@ public class UpgradesListView
     public void Draw(Rect position)
     {
         GUI.BeginGroup(position, string.Empty, "Box");
-        _scrollPosition = GUI.BeginScrollView(new Rect(0, 0, position.width, position.height), _scrollPosition,
-            new Rect(0, 0, position.width - 20, _listControl.CalculateListHeight(_listAdaptor) + 20));
+
+        float listHeight = _listControl.CalculateListHeight(_listAdaptor);
+        bool hasScrollBar = listHeight + 20 > position.height;
+        _scrollPosition = GUI.BeginScrollView(new Rect(0, 0, position.width * 0.3f, position.height), _scrollPosition,
+            new Rect(0, 0, position.width * 0.3f - 20, listHeight));
 
         float xOffset = 0;
         if (_listAdaptor != null)
         {
-            _listControl.Draw(new Rect(0, 0, position.width * 0.3f, position.height), _listAdaptor);
+            _listControl.Draw(new Rect(0, 0, 
+                position.width * 0.3f - (hasScrollBar ? 10 : 0), listHeight), _listAdaptor);
         }
+
+        GUI.EndScrollView();
+
         xOffset += position.width * 0.3f;
 
-        if (_currentSelectedItem != null)
+        if (_currentSelectedUpgrade != null)
         {
             GUI.Label(new Rect(xOffset, 0, position.width * 0.7f, 20), "Upgrade price", VirtualItemsDrawUtil.TitleStyle);
             EditorGUI.BeginChangeCheck();
             _purchaseListView.Draw(new Rect(xOffset, 20, position.width * 0.7f, position.height - 20));
             if (EditorGUI.EndChangeCheck())
             {
-                EditorUtility.SetDirty(_currentSelectedItem);
+                EditorUtility.SetDirty(_currentSelectedUpgrade);
             }
         }
 
-        GUI.EndScrollView();
         GUI.EndGroup();
     }
 
@@ -117,6 +123,7 @@ public class UpgradesListView
         AssetDatabase.RenameAsset(AssetDatabase.GetAssetPath(_listAdaptor[args.itemIndex]), _listAdaptor[args.itemIndex].ID);
         _listAdaptor[args.itemIndex].Name = string.Format("Upgrade {0} to level {1}", _currentItem.Name, args.itemIndex + 2);
         _listAdaptor[args.itemIndex].Description = _listAdaptor[args.itemIndex].Name;
+        _listAdaptor[args.itemIndex].RelatedItem = _currentItem;
         EditorUtility.SetDirty(_listAdaptor[args.itemIndex]);
     }
 
@@ -128,20 +135,20 @@ public class UpgradesListView
     private UpgradeItem DrawUpgradeItem(Rect position, UpgradeItem item, int index)
     {
         if (item == null) return null;
-        if (GUI.Button(position, item.ID, item == _currentSelectedItem ?
+        if (GUI.Button(position, item.ID, item == _currentSelectedUpgrade ?
                 VirtualItemsDrawUtil.ItemSelectedStyle : VirtualItemsDrawUtil.ItemStyle))
         {
-            SelectItem(item);
+            SelecteUpgradeItem(item);
         }
         return item;
     }
 
-    private void SelectItem(UpgradeItem item)
+    private void SelecteUpgradeItem(UpgradeItem item)
     {
-        if (item != _currentSelectedItem)
+        if (item != _currentSelectedUpgrade)
         {
-            _currentSelectedItem = item;
-            _purchaseListView.UpdateDisplayItem(_currentSelectedItem);
+            _currentSelectedUpgrade = item;
+            _purchaseListView.UpdateDisplayItem(_currentSelectedUpgrade);
         }
     }
 
@@ -149,7 +156,7 @@ public class UpgradesListView
     private ReorderableListControl _listControl;
     private UpgradeItemListAdaptor _listAdaptor;
     private List<int> _virtualCurrencyIndicesForPurchase;
-    private UpgradeItem _currentSelectedItem;
+    private UpgradeItem _currentSelectedUpgrade;
     private PurchaseInfoListView _purchaseListView;
     private Vector2 _scrollPosition;
     private Vector2 _purchaseScrollPosition;

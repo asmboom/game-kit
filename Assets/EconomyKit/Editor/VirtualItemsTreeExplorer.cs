@@ -228,11 +228,11 @@ public class VirtualItemsTreeExplorer
     }
 
     private VirtualItemsConfig _config;
-    private bool _isVirtualCurrencyExpanded;
-    private bool _isSingleUseItemExpanded;
-    private bool _isLifeTimeItemExpanded;
-    private bool _isPackExpanded;
-    private bool _isCategoryExpanded;
+    private bool _isVirtualCurrencyExpanded = true;
+    private bool _isSingleUseItemExpanded = true;
+    private bool _isLifeTimeItemExpanded = true;
+    private bool _isPackExpanded = true;
+    private bool _isCategoryExpanded = true;
 
     private ReorderableListControl _virtualCurrencyListControl;
     private GenericClassListAdaptor<VirtualCurrency> _virtualCurrencyListAdaptor;
