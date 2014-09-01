@@ -1,23 +1,14 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class VirtualCategory : ScriptableObject
+[System.Serializable]
+public class VirtualCategory
 {
-    [SerializeField]
     public string ID;
-
-    [SerializeField]
-    [HideInInspector]
-    public string HashID;
-
-    [SerializeField]
     public List<VirtualItem> Items;
 
-    private void OnEnable()
+    public VirtualCategory()
     {
-        if (Items == null)
-        {
-            Items = new List<VirtualItem>();
-        }
+        Items = new List<VirtualItem>();
     }
 }

@@ -88,6 +88,7 @@ public class UpgradesListView
                     500, 200), string.Empty, "Box");
                 _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
 
+                GUILayout.Label("Upgrade price");
                 EditorGUI.BeginChangeCheck();
                 _purchaseListView.Draw();
                 if (EditorGUI.EndChangeCheck())

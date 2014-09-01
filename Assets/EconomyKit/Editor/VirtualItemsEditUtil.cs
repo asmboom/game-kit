@@ -27,15 +27,6 @@ public static class VirtualItemsEditUtil
         return asset;
     }
 
-    public static VirtualCategory CreateNewCategory(string path = null)
-    {
-        VirtualCategory asset = ScriptableObject.CreateInstance<VirtualCategory>();
-        path = string.IsNullOrEmpty(path) ? DefaultVirtualItemDataPath : path;
-        AssetDatabase.CreateAsset(asset, path + "/NewVirtualCategory" + EconomyKit.Config.Categories.Count + ".asset");
-        AssetDatabase.SaveAssets();
-        return asset;
-    }
-
     public static void UpdateDisplayedOptions()
     {
         UpdateDisplayedVirtualCurrencyIDs();

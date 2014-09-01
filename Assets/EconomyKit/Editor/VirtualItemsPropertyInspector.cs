@@ -5,15 +5,16 @@ using System.Collections.Generic;
 
 public class VirtualItemsPropertyInspector
 {
-    public VirtualItemsPropertyInspector(ScriptableObject currentDisplayedItem)
+    public VirtualItemsPropertyInspector(object currentDisplayedItem)
     {
         _currentDisplayedItem = currentDisplayedItem;
         _purchaseListView = new PurchaseInfoListView(currentDisplayedItem as PurchasableItem);
         _packListView = new PackInfoListView(currentDisplayedItem as VirtualItemPack);
         _upgradesListView = new UpgradesListView(currentDisplayedItem as VirtualItem);
+        _categoryPropertyView = new CategoryPropertyView(currentDisplayedItem as VirtualCategory);
     }
 
-    public void OnExplorerSelectionChange(ScriptableObject item)
+    public void OnExplorerSelectionChange(object item)
     {
         _currentDisplayedItem = item;
 
@@ -33,6 +34,10 @@ public class VirtualItemsPropertyInspector
                 _purchaseListView.UpdateDisplayItem(item as PurchasableItem);
             }
         }
+        else if (item is VirtualCategory)
+        {
+            _categoryPropertyView.UpdateDisplayItem(item as VirtualCategory);
+        }
     }
 
     public void Draw(Rect position)
@@ -51,7 +56,7 @@ public class VirtualItemsPropertyInspector
             VirtualCategory category = _currentDisplayedItem as VirtualCategory;
             if (category != null)
             {
-                DrawVirtualCategory(category);
+                _categoryPropertyView.Draw(new Rect(0, 0, position.width, position.height), category);
             }
         }
 
@@ -140,34 +145,6 @@ public class VirtualItemsPropertyInspector
         }
     }
 
-    private void DrawCategoryID(VirtualCategory category)
-    {
-        GUI.SetNextControlName(category.HashID);
-        if (EditorGUILayout.TextField("Unique ID", _currentItemID).KeyPressed<string>(
-            category.HashID, KeyCode.Return, out _currentItemID))
-        {
-            VirtualCategory categoryWithID = EconomyKit.Config.GetCategoryByID(_currentItemID);
-            if (categoryWithID != null && categoryWithID != category)
-            {
-                GUIUtility.keyboardControl = 0;
-                EditorUtility.DisplayDialog("Duplicate ID", "An category with ID[" + 
-                    _currentItemID + "] already exists!!!", "OK");
-                _currentItemID = category.ID;
-            }
-            else
-            {
-                category.ID = _currentItemID;
-                AssetDatabase.RenameAsset(AssetDatabase.GetAssetPath(category), category.ID);
-                VirtualItemsEditorWindow.GetInstance().Repaint();
-            }
-        }
-    }
-
-    private void DrawVirtualCategory(VirtualCategory category)
-    {
-        DrawCategoryID(category);
-    }
-
     private string _currentItemID;
     private Vector2 _scrollPosition;
     private bool _isVirtualItemPropertiesExpanded = true;
@@ -175,9 +152,10 @@ public class VirtualItemsPropertyInspector
     private bool _isPurchaseInfoExpanded = true;
     private bool _isUpgradeInfoExpanded = false;
 
-    private ScriptableObject _currentDisplayedItem;
+    private object _currentDisplayedItem;
 
     private PurchaseInfoListView _purchaseListView;
     private PackInfoListView _packListView;
     private UpgradesListView _upgradesListView;
+    private CategoryPropertyView _categoryPropertyView;
 }

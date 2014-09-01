@@ -39,26 +39,6 @@ public class VirtualItemsConfigEditor : Editor
 
         virtualItemsConfig.UpdateIdToItemMap();
 
-        // update categories
-        virtualItemsConfig.Categories.Clear();
-        virtualItemsConfig.Categories.AddRange(Resources.FindObjectsOfTypeAll<VirtualCategory>());
-
-        foreach (var category in virtualItemsConfig.Categories)
-        {
-            category.Items.Clear();
-        }
-        foreach (var item in virtualItemsConfig.Items)
-        {
-            if (item.Category != null)
-            {
-                item.Category.Items.Add(item);
-            }
-        }
-        foreach (var category in virtualItemsConfig.Categories)
-        {
-            EditorUtility.SetDirty(category);
-        }
-
         CheckIfAnyInvalidRef(virtualItemsConfig);
 
         // update upgrades in virtual items
@@ -94,7 +74,6 @@ public class VirtualItemsConfigEditor : Editor
         virtualItemsConfig.LifeTimeItems.Clear();
         virtualItemsConfig.UpgradeItems.Clear();
         virtualItemsConfig.ItemPacks.Clear();
-        virtualItemsConfig.Categories.Clear();
     }
 
     private static void CheckIfAnyInvalidRef(VirtualItemsConfig config)

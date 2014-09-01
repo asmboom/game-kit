@@ -26,11 +26,9 @@ public class PurchaseInfoListView
     public void Draw()
     {
         GUILayout.BeginHorizontal();
-        VirtualItemsDrawUtil.BeginDrawTitle();
-        GUILayout.Label("Purchase Type");
-        GUILayout.Label("Associated ID/Item");
-        GUILayout.Label("Price");
-        VirtualItemsDrawUtil.EndDrawTitle();
+        GUILayout.Label("Purchase Type", VirtualItemsDrawUtil.TitleStyle);
+        GUILayout.Label("Associated ID/Item", VirtualItemsDrawUtil.TitleStyle);
+        GUILayout.Label("Price", VirtualItemsDrawUtil.TitleStyle);
         GUILayout.EndHorizontal();
 
         if (_listAdaptor != null)
@@ -126,7 +124,7 @@ public class PurchaseInfoListView
     private GenericClassListAdaptor<Purchase> _listAdaptor;
     private List<int> _virtualCurrencyIndicesForPurchase;
 
-    private const float PurchaseTypeWidth = 0.33f;
-    private const float PurchaseAssociatedWidth = 0.33f;
-    private const float PurchasePriceWidth = 0.33f;
+    private const float PurchaseTypeWidth = 0.4f;
+    private const float PurchaseAssociatedWidth = 0.35f;
+    private const float PurchasePriceWidth = 0.25f;
 }

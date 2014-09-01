@@ -26,10 +26,8 @@ public class PackInfoListView
     public void Draw()
     {
         GUILayout.BeginHorizontal();
-        VirtualItemsDrawUtil.BeginDrawTitle();
-        GUILayout.Label("Item");
-        GUILayout.Label("Amount");
-        VirtualItemsDrawUtil.EndDrawTitle();
+        GUILayout.Label("Item", VirtualItemsDrawUtil.TitleStyle);
+        GUILayout.Label("Amount", VirtualItemsDrawUtil.TitleStyle);
         GUILayout.EndHorizontal();
 
         if (_listAdaptor != null)

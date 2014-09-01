@@ -6,8 +6,8 @@ using System;
 
 public class VirtualItemsTreeExplorer
 {
-    public Action<ScriptableObject> OnSelectionChange = delegate { };
-    public ScriptableObject CurrentSelectedItem { get; private set; }
+    public Action<object> OnSelectionChange = delegate { };
+    public object CurrentSelectedItem { get; private set; }
 
     public VirtualItemsTreeExplorer(VirtualItemsConfig config)
     {
@@ -94,7 +94,7 @@ public class VirtualItemsTreeExplorer
 
         if (EditorGUI.EndChangeCheck())
         {
-            EditorUtility.SetDirty(_config);   
+            EditorUtility.SetDirty(_config);
         }
 
         GUILayout.Space(30);
@@ -104,7 +104,7 @@ public class VirtualItemsTreeExplorer
         GUILayout.EndArea();
     }
 
-    private T DrawItem<T>(Rect position, T item, int index) where T : ScriptableObject
+    private T DrawItem<T>(Rect position, T item, int index) where T : class
     {
         string id = string.Empty;
         if (item is VirtualItem)
@@ -135,7 +135,7 @@ public class VirtualItemsTreeExplorer
         return item;
     }
 
-    private void OnItemInsert<T>(object sender, ItemInsertedEventArgs args) where T : ScriptableObject
+    private void OnItemInsert<T>(object sender, ItemInsertedEventArgs args) where T : class
     {
         GenericClassListAdaptor<T> listAdaptor = args.adaptor as GenericClassListAdaptor<T>;
         if (listAdaptor != null)
@@ -156,41 +156,61 @@ public class VirtualItemsTreeExplorer
         }
     }
 
-    private void OnItemRemoving<T>(object sender, ItemRemovingEventArgs args) where T : ScriptableObject
+    private void OnItemRemoving<T>(object sender, ItemRemovingEventArgs args) where T : class
     {
         GenericClassListAdaptor<T> listAdaptor = args.adaptor as GenericClassListAdaptor<T>;
+        T item = listAdaptor[args.itemIndex];
         if (listAdaptor != null)
         {
-            if (EditorUtility.DisplayDialog("Confirm to delete",
-                    "Confirm to delete asset [" + listAdaptor[args.itemIndex].name + ".asset]?", "OK", "Cancel"))
+            if (item is ScriptableObject)
             {
-                args.Cancel = false;
-                AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(listAdaptor[args.itemIndex]));
+                ScriptableObject assetItem = item as ScriptableObject;
+                if (EditorUtility.DisplayDialog("Confirm to delete",
+                        "Confirm to delete asset [" + assetItem.name + ".asset]?", "OK", "Cancel"))
+                {
+                    args.Cancel = false;
+                    AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(assetItem));
+                }
+                else
+                {
+                    args.Cancel = true;
+                }
             }
-            else
+            else if (item is VirtualCategory)
             {
-                args.Cancel = true;
+                VirtualCategory category = item as VirtualCategory;
+                if (EditorUtility.DisplayDialog("Confirm to delete",
+                        "Confirm to delete category [" + category.ID + "]?", "OK", "Cancel"))
+                {
+                    args.Cancel = false;
+                }
+                else
+                {
+                    args.Cancel = true;
+                }
             }
         }
     }
 
     private GenericClassListAdaptor<T> CreateVirtualItemListAdaptor<T>(List<T> items) where T : VirtualItem
     {
-        return new GenericClassListAdaptor<T>(items, 15, 
-            ()=>{
+        return new GenericClassListAdaptor<T>(items, 15,
+            () =>
+            {
                 return VirtualItemsEditUtil.CreateNewVirtualItem<T>();
             }, DrawItem<T>);
     }
 
     private GenericClassListAdaptor<VirtualCategory> CreateVirtualCategoryListAdaptor(List<VirtualCategory> categories)
     {
-        return new GenericClassListAdaptor<VirtualCategory>(categories, 15, 
-                                ()=>{
-                                    return VirtualItemsEditUtil.CreateNewCategory();
+        return new GenericClassListAdaptor<VirtualCategory>(categories, 15,
+                                () =>
+                                {
+                                    return new VirtualCategory();
                                 }, DrawItem<VirtualCategory>);
     }
 
-    private void SelectItem(ScriptableObject item)
+    private void SelectItem(object item)
     {
         if (item != CurrentSelectedItem)
         {

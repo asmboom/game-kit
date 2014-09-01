@@ -30,7 +30,7 @@ public abstract class VirtualItem : ScriptableObject, IComparable
     public List<UpgradeItem> Upgrades;
 
     public int Balance { get { return Storage.GetItemBalance(ID); } }
-
+    
     public VirtualCategory Category
     {
         get
