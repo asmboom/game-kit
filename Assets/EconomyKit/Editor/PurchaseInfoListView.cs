@@ -23,18 +23,29 @@ public class PurchaseInfoListView
         UpdateVirtualCurrencyIndices();
     }
 
-    public void Draw()
+    public void Draw(Rect position)
     {
-        GUILayout.BeginHorizontal();
-        GUILayout.Label("Purchase Type", VirtualItemsDrawUtil.TitleStyle);
-        GUILayout.Label("Associated ID/Item", VirtualItemsDrawUtil.TitleStyle);
-        GUILayout.Label("Price", VirtualItemsDrawUtil.TitleStyle);
-        GUILayout.EndHorizontal();
+        GUI.BeginGroup(position, string.Empty, "Box");
+        _scrollPosition = GUI.BeginScrollView(new Rect(0, 0, position.width, position.height), _scrollPosition, 
+            new Rect(0, 0, position.width - 20, _listControl.CalculateListHeight(_listAdaptor) + 20));
+
+        float xOffset = 0;
+        GUI.Label(new Rect(0, 0, position.width * PurchaseTypeWidth, 20), 
+            "Purchase Type", VirtualItemsDrawUtil.TitleStyle);
+        xOffset += position.width * PurchasePriceWidth;
+        GUI.Label(new Rect(xOffset, 0, position.width * PurchaseAssociatedWidth, 20), 
+            "Associated ID/Item", VirtualItemsDrawUtil.TitleStyle);
+        xOffset += position.width * PurchaseAssociatedWidth;
+        GUI.Label(new Rect(xOffset, 0, position.width * PurchasePriceWidth, 20), 
+            "Price", VirtualItemsDrawUtil.TitleStyle);
 
         if (_listAdaptor != null)
         {
-            _listControl.Draw(_listAdaptor);
+            _listControl.Draw(new Rect(0, 20, position.width, position.height - 20), _listAdaptor);
         }
+
+        GUI.EndScrollView();
+        GUI.EndGroup();
     }
 
     private Purchase CreatePurchase()
@@ -127,4 +138,5 @@ public class PurchaseInfoListView
     private const float PurchaseTypeWidth = 0.4f;
     private const float PurchaseAssociatedWidth = 0.35f;
     private const float PurchasePriceWidth = 0.25f;
+    private Vector2 _scrollPosition;
 }

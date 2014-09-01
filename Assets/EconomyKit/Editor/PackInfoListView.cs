@@ -23,17 +23,26 @@ public class PackInfoListView
         }
     }
 
-    public void Draw()
+    public void Draw(Rect position)
     {
-        GUILayout.BeginHorizontal();
-        GUILayout.Label("Item", VirtualItemsDrawUtil.TitleStyle);
-        GUILayout.Label("Amount", VirtualItemsDrawUtil.TitleStyle);
-        GUILayout.EndHorizontal();
+        GUI.BeginGroup(position, string.Empty, "Box");
+        _scrollPosition = GUI.BeginScrollView(new Rect(0, 0, position.width, position.height), _scrollPosition, 
+            new Rect(0, 0, position.width - 20, _listControl.CalculateListHeight(_listAdaptor) + 20));
+
+        float xOffset = 0;
+        GUI.Label(new Rect(0, 0, position.width * 0.5f, 20), 
+            "Item", VirtualItemsDrawUtil.TitleStyle);
+        xOffset += position.width * 0.5f;
+        GUI.Label(new Rect(xOffset, 0, position.width * 0.5f, 20), 
+            "Amount", VirtualItemsDrawUtil.TitleStyle);
 
         if (_listAdaptor != null)
         {
-            _listControl.Draw(_listAdaptor);
+            _listControl.Draw(new Rect(0, 20, position.width, position.height - 20), _listAdaptor);
         }
+
+        GUI.EndScrollView();
+        GUI.EndGroup();
     }
 
     private PackElement CreatePackElement()
@@ -91,8 +100,5 @@ public class PackInfoListView
     private ReorderableListControl _listControl;
     private GenericClassListAdaptor<PackElement> _listAdaptor;
     private List<int> _itemIndices;
-
-    private const float PurchaseTypeWidth = 0.33f;
-    private const float PurchaseAssociatedWidth = 0.33f;
-    private const float PurchasePriceWidth = 0.33f;
+    private Vector2 _scrollPosition;
 }

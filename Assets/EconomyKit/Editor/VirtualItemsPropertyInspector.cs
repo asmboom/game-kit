@@ -69,51 +69,67 @@ public class VirtualItemsPropertyInspector
     {
         EditorGUI.BeginChangeCheck();
 
-        _isVirtualItemPropertiesExpanded = EditorGUILayout.Foldout(_isVirtualItemPropertiesExpanded, "Basic Property");
+        float yOffset = 0;
+        float width = position.width - 10;
+        GUI.BeginGroup(new Rect(position.x, position.y, width, position.height * 0.3f));
+        _isVirtualItemPropertiesExpanded = EditorGUI.Foldout(new Rect(0, 0, width, 20), 
+            _isVirtualItemPropertiesExpanded, "Basic Property");
+        yOffset += 20;
         if (_isVirtualItemPropertiesExpanded)
         {
-            DrawID(item);
-            EditorGUILayout.LabelField("Sort index", item.SortIndex.ToString());
-            item.Name = EditorGUILayout.TextField("Name", item.Name);
-            item.Description = EditorGUILayout.TextField("Desription", item.Description);
-            EditorGUILayout.LabelField("Category", item.Category == null ? "None" : item.Category.ID);
-            item.Icon = EditorGUILayout.ObjectField("Icon", item.Icon, typeof(Sprite), false) as Sprite;
+            DrawID(new Rect(0, yOffset, width, 20), item);
+            yOffset += 20;
+            EditorGUI.LabelField(new Rect(0, yOffset, width, 20), "Sort index", item.SortIndex.ToString());
+            yOffset += 20;
+            item.Name = EditorGUI.TextField(new Rect(0, yOffset, width, 20), "Name", item.Name);
+            yOffset += 20;
+            item.Description = EditorGUI.TextField(new Rect(0, yOffset, width, 20), "Desription", item.Description);
+            yOffset += 20;
+            EditorGUI.LabelField(new Rect(0, yOffset, width, 20), "Category", item.Category == null ? "None" : item.Category.ID);
+            yOffset += 20;
+            item.Icon = EditorGUI.ObjectField(new Rect(0, yOffset, width, 20), "Icon", item.Icon, typeof(Sprite), false) as Sprite;
+            yOffset += 20;
         }
+        GUI.EndGroup();
+
         if (item is LifeTimeItem)
         {
-            GUILayout.Space(10);
-
+            yOffset += 20;
             LifeTimeItem lifetimeItem = item as LifeTimeItem;
-            lifetimeItem.IsEquippable = EditorGUILayout.Toggle("Is Equippable", lifetimeItem.IsEquippable);
+            lifetimeItem.IsEquippable = EditorGUI.Toggle(new Rect(0, yOffset, width, 20), "Is Equippable", lifetimeItem.IsEquippable);
+            yOffset += 20;
         }
         else if (item is VirtualItemPack)
         {
-            GUILayout.Space(10);
-
-            _isPackInfoExpanded = EditorGUILayout.Foldout(_isPackInfoExpanded, "Pack Info");
+            yOffset += 20;
+            _isPackInfoExpanded = EditorGUI.Foldout(new Rect(0, yOffset, width, 20), _isPackInfoExpanded, "Pack Info");
             if (_isPackInfoExpanded)
             {
-                _packListView.Draw();
+                _packListView.Draw(new Rect(0, yOffset, width, 200));
+                yOffset += 200;
             }
         }
         if (item is PurchasableItem)
         {
-            GUILayout.Space(10);
-
-            _isPurchaseInfoExpanded = EditorGUILayout.Foldout(_isPurchaseInfoExpanded, "Purchase Info");
+            yOffset += 20;
+            _isPurchaseInfoExpanded = EditorGUI.Foldout(new Rect(0, yOffset, width, 20), _isPurchaseInfoExpanded, "Purchase Info");
+            yOffset += 20;
             if (_isPurchaseInfoExpanded)
             {
-                _purchaseListView.Draw();
+                _purchaseListView.Draw(new Rect(0, yOffset, width, 100));
+                yOffset += 100;
             }
         }
         if (item is SingleUseItem || item is LifeTimeItem)
         {
-            GUILayout.Space(10);
-
-            _isUpgradeInfoExpanded = EditorGUILayout.Foldout(_isUpgradeInfoExpanded, "Upgrade Info (" + item.Upgrades.Count + " levels)");
+            yOffset += 20;
+            _isUpgradeInfoExpanded = EditorGUI.Foldout(new Rect(0, yOffset, width, 20), 
+                _isUpgradeInfoExpanded, "Upgrade Info (" + item.Upgrades.Count + " levels)");
+            yOffset += 20;
             if (_isUpgradeInfoExpanded)
             {
-                _upgradesListView.Draw();
+                _upgradesListView.Draw(new Rect(0, yOffset, width, 200));
+                yOffset += 200;
             }
         }
 
@@ -123,10 +139,10 @@ public class VirtualItemsPropertyInspector
         }
     }
 
-    private void DrawID(VirtualItem item)
+    private void DrawID(Rect position, VirtualItem item)
     {
         GUI.SetNextControlName(item.HashID);
-        if (EditorGUILayout.TextField("Unique ID", _currentItemID).KeyPressed<string>(item.HashID, KeyCode.Return, out _currentItemID))
+        if (EditorGUI.TextField(position, "Unique ID", _currentItemID).KeyPressed<string>(item.HashID, KeyCode.Return, out _currentItemID))
         {
             EconomyKit.Config.UpdateIdToItemMap();
             VirtualItem itemWithID = EconomyKit.Config.GetItemByID(_currentItemID);

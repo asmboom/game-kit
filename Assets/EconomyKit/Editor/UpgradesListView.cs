@@ -28,7 +28,7 @@ public class UpgradesListView
     public UpgradesListView(VirtualItem item)
     {
         _currentItem = item;
-        _listControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand | 
+        _listControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand |
             ReorderableListFlags.ShowIndices | ReorderableListFlags.DisableReordering);
         _listControl.ItemInserted += OnItemInsert;
         _listControl.ItemRemoving += OnItemRemoving;
@@ -60,47 +60,32 @@ public class UpgradesListView
         }
     }
 
-    public void Draw()
+    public void Draw(Rect position)
     {
-        if (Event.current.type == EventType.Repaint)
+        GUI.BeginGroup(position, string.Empty, "Box");
+        _scrollPosition = GUI.BeginScrollView(new Rect(0, 0, position.width, position.height), _scrollPosition,
+            new Rect(0, 0, position.width - 20, _listControl.CalculateListHeight(_listAdaptor) + 20));
+
+        float xOffset = 0;
+        if (_listAdaptor != null)
         {
-            _upgradeInfoRect = GUILayoutUtility.GetLastRect();
-            if (!_rectInitialized)
+            _listControl.Draw(new Rect(0, 0, position.width * 0.3f, position.height), _listAdaptor);
+        }
+        xOffset += position.width * 0.3f;
+
+        if (_currentSelectedItem != null)
+        {
+            GUI.Label(new Rect(xOffset, 0, position.width * 0.7f, 20), "Upgrade price", VirtualItemsDrawUtil.TitleStyle);
+            EditorGUI.BeginChangeCheck();
+            _purchaseListView.Draw(new Rect(xOffset, 20, position.width * 0.7f, position.height - 20));
+            if (EditorGUI.EndChangeCheck())
             {
-                _rectInitialized = true;
-                return;
+                EditorUtility.SetDirty(_currentSelectedItem);
             }
         }
 
-        if (GUI.changed == false && _rectInitialized && _listAdaptor != null)
-        {
-            GUILayout.BeginArea(new Rect(0, _upgradeInfoRect.y + _upgradeInfoRect.height,
-                250, 200), string.Empty, "Box");
-            _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
-
-            _listControl.Draw(_listAdaptor);
-
-            GUILayout.EndScrollView();
-            GUILayout.EndArea();
-
-            if (_currentSelectedItem != null)
-            {
-                GUILayout.BeginArea(new Rect(270, _upgradeInfoRect.y + _upgradeInfoRect.height,
-                    500, 200), string.Empty, "Box");
-                _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
-
-                GUILayout.Label("Upgrade price");
-                EditorGUI.BeginChangeCheck();
-                _purchaseListView.Draw();
-                if (EditorGUI.EndChangeCheck())
-                {
-                    EditorUtility.SetDirty(_currentSelectedItem);   
-                }
-
-                GUILayout.EndScrollView();
-                GUILayout.EndArea();
-            }
-        }
+        GUI.EndScrollView();
+        GUI.EndGroup();
     }
 
     private void OnItemRemoving(object sender, ItemRemovingEventArgs args)
@@ -143,7 +128,7 @@ public class UpgradesListView
     private UpgradeItem DrawUpgradeItem(Rect position, UpgradeItem item, int index)
     {
         if (item == null) return null;
-        if (GUI.Button(position, item.ID, item == _currentSelectedItem ? 
+        if (GUI.Button(position, item.ID, item == _currentSelectedItem ?
                 VirtualItemsDrawUtil.ItemSelectedStyle : VirtualItemsDrawUtil.ItemStyle))
         {
             SelectItem(item);
@@ -165,13 +150,7 @@ public class UpgradesListView
     private UpgradeItemListAdaptor _listAdaptor;
     private List<int> _virtualCurrencyIndicesForPurchase;
     private UpgradeItem _currentSelectedItem;
-    private Rect _upgradeInfoRect;
-    private bool _rectInitialized = false;
-
     private PurchaseInfoListView _purchaseListView;
-
-    private const float PurchaseTypeWidth = 0.33f;
-    private const float PurchaseAssociatedWidth = 0.33f;
-    private const float PurchasePriceWidth = 0.33f;
     private Vector2 _scrollPosition;
+    private Vector2 _purchaseScrollPosition;
 }
