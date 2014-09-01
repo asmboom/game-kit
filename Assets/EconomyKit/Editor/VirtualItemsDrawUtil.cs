@@ -8,9 +8,17 @@ public static class VirtualItemsDrawUtil
         TitleStyle = new GUIStyle(GUI.skin.GetStyle("Label"));
         TitleStyle.alignment = TextAnchor.MiddleCenter;
         TitleStyle.fontStyle = FontStyle.Bold;
+
+        ItemStyle = new GUIStyle(GUI.skin.GetStyle("Label"));
+        ItemStyle.alignment = TextAnchor.MiddleCenter;
+
+        ItemSelectedStyle = new GUIStyle(GUI.skin.GetStyle("Box"));
+        ItemSelectedStyle.normal.textColor = Color.red;
     }
 
     public static GUIStyle TitleStyle { get; private set; }
+    public static GUIStyle ItemStyle { get; private set; }
+    public static GUIStyle ItemSelectedStyle { get; private set; }
 
     public static bool KeyPressed<T>(this T s, string controlName, KeyCode key, out T fieldValue)
     {

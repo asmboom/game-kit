@@ -72,7 +72,6 @@ public class VirtualItemsPropertyInspector
         _isVirtualItemPropertiesExpanded = EditorGUILayout.Foldout(_isVirtualItemPropertiesExpanded, "Basic Property");
         if (_isVirtualItemPropertiesExpanded)
         {
-            EditorGUILayout.LabelField("Hash", item.HashID);
             DrawID(item);
             item.Name = EditorGUILayout.TextField("Name", item.Name);
             item.Description = EditorGUILayout.TextField("Desription", item.Description);

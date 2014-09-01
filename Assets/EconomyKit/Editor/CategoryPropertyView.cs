@@ -30,7 +30,8 @@ public class CategoryPropertyView
         foreach (var item in _itemsWithoutCategory)
         {
             if (GUI.Button(new Rect(0, yOffset, position.width * 0.4f, itemHeight), item.ID, 
-                item == _currentSelectedNonCategoryItem ? "Box" : "Label"))
+                item == _currentSelectedNonCategoryItem ? 
+                    VirtualItemsDrawUtil.ItemSelectedStyle : VirtualItemsDrawUtil.ItemStyle))
             {
                 _currentSelectedNonCategoryItem = item;
             }
@@ -39,6 +40,7 @@ public class CategoryPropertyView
         GUI.EndScrollView();
         GUI.EndGroup();
 
+        GUI.enabled = _currentSelectedNonCategoryItem != null;
         if (GUI.Button(new Rect(position.width * 0.5f - 50, position.height * 0.5f - 30, 100, 20), "Add>"))
         {
             category.Items.Add(_currentSelectedNonCategoryItem);
@@ -47,7 +49,9 @@ public class CategoryPropertyView
             UpdateListAndSelection();
             EditorUtility.SetDirty(EconomyKit.Config);
         }
-        if (GUI.Button(new Rect(position.width * 0.5f - 50, position.height * 0.5f + 30, 100, 20), "<Remove"))
+        GUI.enabled = _currentSelectedCategoryItem != null;
+        if (_currentSelectedCategoryItem != null &&
+            GUI.Button(new Rect(position.width * 0.5f - 50, position.height * 0.5f + 30, 100, 20), "<Remove"))
         {
             category.Items.Remove(_currentSelectedCategoryItem);
             _currentSelectedNonCategoryItem = _currentSelectedCategoryItem;
@@ -55,6 +59,7 @@ public class CategoryPropertyView
             UpdateListAndSelection();
             EditorUtility.SetDirty(EconomyKit.Config);
         }
+        GUI.enabled = true;
 
         GUI.BeginGroup(new Rect(position.x + position.width - width, position.y + 30, width, height), string.Empty, "Box");
         _scrollPositionOfCategory = GUI.BeginScrollView(new Rect(0, 0, width, height),
@@ -63,7 +68,8 @@ public class CategoryPropertyView
         foreach (var item in category.Items)
         {
             if (GUI.Button(new Rect(0, yOffset, position.width * 0.4f, itemHeight), item.ID, 
-                _currentSelectedCategoryItem == item ? "Box" : "Label"))
+                item == _currentSelectedNonCategoryItem ? 
+                    VirtualItemsDrawUtil.ItemSelectedStyle : VirtualItemsDrawUtil.ItemStyle))
             {
                 _currentSelectedCategoryItem = item;
             }

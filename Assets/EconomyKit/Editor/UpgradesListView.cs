@@ -142,20 +142,11 @@ public class UpgradesListView
     private UpgradeItem DrawUpgradeItem(Rect position, UpgradeItem item, int index)
     {
         if (item == null) return null;
-
-        GUIStyle labelStyle = GUI.skin.GetStyle("Label");
-        labelStyle.richText = true;
-        string caption = item.ID;
-        if (item == _currentSelectedItem)
-        {
-            caption = "<color=red>" + caption + "</color>";
-        }
-        if (GUI.Button(position, caption, "Label"))
+        if (GUI.Button(position, item.ID, item == _currentSelectedItem ? 
+                VirtualItemsDrawUtil.ItemSelectedStyle : VirtualItemsDrawUtil.ItemStyle))
         {
             SelectItem(item);
         }
-        labelStyle.richText = false;
-
         return item;
     }
 

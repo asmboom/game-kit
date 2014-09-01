@@ -120,18 +120,12 @@ public class VirtualItemsTreeExplorer
             return item;
         }
 
-        GUIStyle labelStyle = GUI.skin.GetStyle("Label");
-        labelStyle.richText = true;
-        string caption = Tab + id;
-        if (item == CurrentSelectedItem)
-        {
-            caption = "<color=red>" + caption + "</color>";
-        }
-        if (GUI.Button(position, caption, "Label"))
+        if (GUI.Button(position, id, 
+                item == CurrentSelectedItem ? 
+                    VirtualItemsDrawUtil.ItemSelectedStyle : VirtualItemsDrawUtil.ItemStyle))
         {
             SelectItem(item);
         }
-        labelStyle.richText = false;
         return item;
     }
 
@@ -194,7 +188,7 @@ public class VirtualItemsTreeExplorer
 
     private GenericClassListAdaptor<T> CreateVirtualItemListAdaptor<T>(List<T> items) where T : VirtualItem
     {
-        return new GenericClassListAdaptor<T>(items, 15,
+        return new GenericClassListAdaptor<T>(items, 20,
             () =>
             {
                 return VirtualItemsEditUtil.CreateNewVirtualItem<T>();
@@ -203,7 +197,7 @@ public class VirtualItemsTreeExplorer
 
     private GenericClassListAdaptor<VirtualCategory> CreateVirtualCategoryListAdaptor(List<VirtualCategory> categories)
     {
-        return new GenericClassListAdaptor<VirtualCategory>(categories, 15,
+        return new GenericClassListAdaptor<VirtualCategory>(categories, 20,
                                 () =>
                                 {
                                     return new VirtualCategory();
@@ -237,6 +231,5 @@ public class VirtualItemsTreeExplorer
     private ReorderableListControl _categoryListControl;
     private GenericClassListAdaptor<VirtualCategory> _categoryListAdaptor;
 
-    private const string Tab = "        ";
     private Vector2 _scrollPosition;
 }
