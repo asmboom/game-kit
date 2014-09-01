@@ -74,23 +74,23 @@ public class VirtualItemsConfig : ScriptableObject
         _idToItems = new Dictionary<string, VirtualItem>();
         for (int i = 0; i < VirtualCurrencies.Count; i++)
         {
-            _idToItems.Add(VirtualCurrencies[i].ID, VirtualCurrencies[i]);
+            TryAddToIdItemMap(VirtualCurrencies[i].ID, VirtualCurrencies[i]);
         }
         for (int i = 0; i < SingleUseItems.Count; i++)
         {
-            _idToItems.Add(SingleUseItems[i].ID, SingleUseItems[i]);
+            TryAddToIdItemMap(SingleUseItems[i].ID, SingleUseItems[i]);
         }
         for (int i = 0; i < LifeTimeItems.Count; i++)
         {
-            _idToItems.Add(LifeTimeItems[i].ID, LifeTimeItems[i]);
+            TryAddToIdItemMap(LifeTimeItems[i].ID, LifeTimeItems[i]);
         }
         for (int i = 0; i < ItemPacks.Count; i++)
         {
-            _idToItems.Add(ItemPacks[i].ID, ItemPacks[i]);
+            TryAddToIdItemMap(ItemPacks[i].ID, ItemPacks[i]);
         }
         for (int i = 0; i < UpgradeItems.Count; i++)
         {
-            _idToItems.Add(UpgradeItems[i].ID, UpgradeItems[i]);
+            TryAddToIdItemMap(UpgradeItems[i].ID, UpgradeItems[i]);
         }
     }
 
@@ -105,6 +105,21 @@ public class VirtualItemsConfig : ScriptableObject
                 {
                     _idToCategory.Add(item.ID, Categories[i]);
                 }
+            }
+        }
+    }
+
+    private void TryAddToIdItemMap(string id, VirtualItem item)
+    {
+        if (!string.IsNullOrEmpty(id))
+        {
+            if (!_idToItems.ContainsKey(id))
+            {
+                _idToItems.Add(id, item);
+            }
+            else
+            {
+                Debug.LogWarning("Found duplicated id " + id + " for item.");;
             }
         }
     }

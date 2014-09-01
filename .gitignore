@@ -21,6 +21,12 @@ ExportedObj/
 *.unityproj
 *.booproj
 *.DotSettings
+
+# ===================================== #
+# Sublime project files #
+# ===================================== #
+*.sublime-project
+*.sublime-workspace
  
 # ============ #
 # OS generated #

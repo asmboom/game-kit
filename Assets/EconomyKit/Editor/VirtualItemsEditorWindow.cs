@@ -7,8 +7,19 @@ public class VirtualItemsEditorWindow : EditorWindow
     [MenuItem("Window/Virtual Items Editor Window")]
     private static void OpenVirutalItemEditorWindow()
     {
-        EditorWindow.GetWindow<VirtualItemsEditorWindow>("Virtual Item Edit Window");
+        VirtualItemsEditorWindow.GetInstance(); 
     }
+
+    public static VirtualItemsEditorWindow GetInstance()
+    {
+        if (_instance == null)
+        {
+            _instance = EditorWindow.GetWindow<VirtualItemsEditorWindow>("Virtual Item Edit Window");
+        }
+        return _instance;
+    }
+
+    private static VirtualItemsEditorWindow _instance;
 
     private void OnEnable()
     {

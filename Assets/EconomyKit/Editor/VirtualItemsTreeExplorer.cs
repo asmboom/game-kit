@@ -11,6 +11,8 @@ public class VirtualItemsTreeExplorer
 
     public VirtualItemsTreeExplorer(VirtualItemsConfig config)
     {
+        _config = config;
+
         _virtualCurrencyListAdaptor = CreateVirtualItemListAdaptor<VirtualCurrency>(config.VirtualCurrencies);
         _virtualCurrencyListControl = new ReorderableListControl();
         _virtualCurrencyListControl.ItemRemoving += OnItemRemoving<VirtualCurrency>;
@@ -62,6 +64,8 @@ public class VirtualItemsTreeExplorer
 
         _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
 
+        EditorGUI.BeginChangeCheck();
+
         _isVirtualCurrencyExpanded = EditorGUILayout.Foldout(_isVirtualCurrencyExpanded, "Virtual Currencies");
         if (_isVirtualCurrencyExpanded)
         {
@@ -86,6 +90,11 @@ public class VirtualItemsTreeExplorer
         if (_isCategoryExpanded)
         {
             _categoryListControl.Draw(_categoryListAdaptor);
+        }
+
+        if (EditorGUI.EndChangeCheck())
+        {
+            EditorUtility.SetDirty(_config);   
         }
 
         GUILayout.Space(30);
@@ -190,6 +199,7 @@ public class VirtualItemsTreeExplorer
         }
     }
 
+    private VirtualItemsConfig _config;
     private bool _isVirtualCurrencyExpanded;
     private bool _isSingleUseItemExpanded;
     private bool _isLifeTimeItemExpanded;

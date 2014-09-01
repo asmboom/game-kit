@@ -18,9 +18,9 @@ public class PurchaseInfoListView
         {
             _listAdaptor = new GenericClassListAdaptor<Purchase>(item.PurchaseInfo, 18,
                 CreatePurchase, DrawOnePurchase);
-
-            UpdateVirtualCurrencyIndices();
         }
+
+        UpdateVirtualCurrencyIndices();
     }
 
     public void Draw()

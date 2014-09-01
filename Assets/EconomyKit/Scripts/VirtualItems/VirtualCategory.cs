@@ -7,6 +7,10 @@ public class VirtualCategory : ScriptableObject
     public string ID;
 
     [SerializeField]
+    [HideInInspector]
+    public string HashID;
+
+    [SerializeField]
     public List<VirtualItem> Items;
 
     private void OnEnable()

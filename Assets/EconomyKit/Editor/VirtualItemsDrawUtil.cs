@@ -9,29 +9,14 @@ public static class VirtualItemsDrawUtil
         if (GUI.GetNameOfFocusedControl() == controlName)
         {
             if ((Event.current.type == EventType.KeyUp) && (Event.current.keyCode == key))
-                return true;
-            return false;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    private static void DrawID(Rect position, bool drawTitle, VirtualItem item)
-    {
-        if (drawTitle)
-        {
-            GUI.Label(position, "Unique ID");
-        }
-        else
-        {
-            string controlName = item.GetInstanceID() + "_input_field";
-            GUI.SetNextControlName(controlName);
-            if (EditorGUI.TextField(position, item.ID).KeyPressed<string>(controlName, KeyCode.Return, out item.ID))
             {
-                AssetDatabase.RenameAsset(AssetDatabase.GetAssetPath(item), item.ID);
+                return true;
             }
+            return false;
+        }
+        else
+        {
+            return false;
         }
     }
 
@@ -54,12 +39,4 @@ public static class VirtualItemsDrawUtil
     private static GUIStyle _labelStyle = GUI.skin.GetStyle("Label");
     private static TextAnchor _oldAlignment;
     private static int _oldFontSize;
-
-    private const float IdWidth = 150;
-    private const float NameWidth = 150;
-    private const float DescriptionWidth = 300;
-    private const float PurchaseInfoWidth = 200;
-    private const float EquippableWidth = 80;
-    private const float PackDetailWidth = 200;
-    private const float UpgradesWidth = 150;
 }

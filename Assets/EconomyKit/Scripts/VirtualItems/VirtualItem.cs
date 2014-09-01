@@ -23,6 +23,10 @@ public abstract class VirtualItem : ScriptableObject, IComparable
     public int SortIndex;
 
     [SerializeField]
+    [HideInInspector]
+    public string HashID;
+
+    [SerializeField]
     public List<UpgradeItem> Upgrades;
 
     public int Balance { get { return Storage.GetItemBalance(ID); } }
@@ -109,6 +113,10 @@ public abstract class VirtualItem : ScriptableObject, IComparable
 
     protected virtual void OnEnable()
     {
+        if (string.IsNullOrEmpty(HashID))
+        {
+            HashID = Guid.NewGuid().ToString();
+        }
         if (Upgrades == null)
         {
             Upgrades = new List<UpgradeItem>();

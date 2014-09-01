@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEditor;
 using Rotorz.ReorderableList;
 using System.Collections.Generic;
@@ -76,7 +76,9 @@ public class UpgradesListView
             GUILayout.BeginArea(new Rect(0, _upgradeInfoRect.y + _upgradeInfoRect.height,
                 250, 200), string.Empty, "Box");
             _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
+
             _listControl.Draw(_listAdaptor);
+
             GUILayout.EndScrollView();
             GUILayout.EndArea();
 
@@ -85,7 +87,14 @@ public class UpgradesListView
                 GUILayout.BeginArea(new Rect(270, _upgradeInfoRect.y + _upgradeInfoRect.height,
                     500, 200), string.Empty, "Box");
                 _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
+
+                EditorGUI.BeginChangeCheck();
                 _purchaseListView.Draw();
+                if (EditorGUI.EndChangeCheck())
+                {
+                    EditorUtility.SetDirty(_currentSelectedItem);   
+                }
+
                 GUILayout.EndScrollView();
                 GUILayout.EndArea();
             }
@@ -110,9 +119,18 @@ public class UpgradesListView
     {
         string prefix = (args.itemIndex + 1) < 10 ? "0" + (args.itemIndex + 1) : (args.itemIndex + 1).ToString();
         _listAdaptor[args.itemIndex].ID = string.Format("{0}Upgrade0{1}", _currentItem.ID, prefix);
+        string oldAssetFileName = AssetDatabase.GetAssetPath(_listAdaptor[args.itemIndex]);
+        string directoryName = System.IO.Path.GetDirectoryName(oldAssetFileName);
+        string newAssetFileName = directoryName + "/" + _listAdaptor[args.itemIndex].ID + ".asset";
+        if (!AssetDatabase.GenerateUniqueAssetPath(newAssetFileName).Equals(newAssetFileName))
+        {
+            Debug.LogWarning("Upgrade item with same name [" + newAssetFileName + "] already exists, deleted old one");
+            AssetDatabase.DeleteAsset(newAssetFileName);
+        }
         AssetDatabase.RenameAsset(AssetDatabase.GetAssetPath(_listAdaptor[args.itemIndex]), _listAdaptor[args.itemIndex].ID);
         _listAdaptor[args.itemIndex].Name = string.Format("Upgrade {0} to level {1}", _currentItem.Name, args.itemIndex + 2);
         _listAdaptor[args.itemIndex].Description = _listAdaptor[args.itemIndex].Name;
+        EditorUtility.SetDirty(_listAdaptor[args.itemIndex]);
     }
 
     private UpgradeItem CreateUpgradeItem()

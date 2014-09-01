@@ -17,18 +17,21 @@ public class VirtualItemsPropertyInspector
     {
         _currentDisplayedItem = item;
 
-        if (item is VirtualItem &&
-            !(item is VirtualItemPack || item is UpgradeItem))
+        if (item is VirtualItem)
         {
-            _upgradesListView.UpdateDisplayItem(item as VirtualItem);
-        }
-        if (item is PurchasableItem)
-        {
-            if (item is VirtualItemPack)
+            _currentItemID = (item as VirtualItem).ID;
+            if (item is SingleUseItem || item is LifeTimeItem)
             {
-                _packListView.UpdateDisplayItem(item as VirtualItemPack);
+                _upgradesListView.UpdateDisplayItem(item as VirtualItem);
             }
-            _purchaseListView.UpdateDisplayItem(item as PurchasableItem);
+            if (item is PurchasableItem)
+            {
+                if (item is VirtualItemPack)
+                {
+                    _packListView.UpdateDisplayItem(item as VirtualItemPack);
+                }
+                _purchaseListView.UpdateDisplayItem(item as PurchasableItem);
+            }
         }
     }
 
@@ -59,21 +62,24 @@ public class VirtualItemsPropertyInspector
 
     private void DrawVirtualItem(VirtualItem item)
     {
+        EditorGUI.BeginChangeCheck();
+
         _isVirtualItemPropertiesExpanded = EditorGUILayout.Foldout(_isVirtualItemPropertiesExpanded, "Basic Property");
         if (_isVirtualItemPropertiesExpanded)
         {
+            EditorGUILayout.LabelField("Hash", item.HashID);
             DrawID(item);
-            DrawName(item);
-            DrawDesciption(item);
-            DrawItemCategory(item);
-            DrawIcon(item);
+            item.Name = EditorGUILayout.TextField("Name", item.Name);
+            item.Description = EditorGUILayout.TextField("Desription", item.Description);
+            EditorGUILayout.LabelField("Category", item.Category == null ? "None" : item.Category.ID);
+            item.Icon = EditorGUILayout.ObjectField("Icon", item.Icon, typeof(Sprite), false) as Sprite;
         }
         if (item is LifeTimeItem)
         {
             GUILayout.Space(10);
 
             LifeTimeItem lifetimeItem = item as LifeTimeItem;
-            DrawIsEquippable(lifetimeItem);
+            lifetimeItem.IsEquippable = EditorGUILayout.Toggle("Is Equippable", lifetimeItem.IsEquippable);
         }
         else if (item is VirtualItemPack)
         {
@@ -95,7 +101,7 @@ public class VirtualItemsPropertyInspector
                 _purchaseListView.Draw();
             }
         }
-        if (!(item is VirtualItemPack || item is UpgradeItem))
+        if (item is SingleUseItem || item is LifeTimeItem)
         {
             GUILayout.Space(10);
 
@@ -105,48 +111,64 @@ public class VirtualItemsPropertyInspector
                 _upgradesListView.Draw();
             }
         }
-    }
 
-    private static void DrawID(VirtualItem item)
-    {
-        string controlName = item.GetInstanceID() + "_input_field";
-        GUI.SetNextControlName(controlName);
-        if (EditorGUILayout.TextField("Unique ID", item.ID).KeyPressed<string>(controlName, KeyCode.Return, out item.ID))
+        if (EditorGUI.EndChangeCheck())
         {
-            AssetDatabase.RenameAsset(AssetDatabase.GetAssetPath(item), item.ID);
+            EditorUtility.SetDirty(item);
         }
     }
 
-    private static void DrawName(VirtualItem item)
+    private void DrawID(VirtualItem item)
     {
-        item.Name = EditorGUILayout.TextField("Name", item.Name);
+        GUI.SetNextControlName(item.HashID);
+        if (EditorGUILayout.TextField("Unique ID", _currentItemID).KeyPressed<string>(item.HashID, KeyCode.Return, out _currentItemID))
+        {
+            EconomyKit.Config.UpdateIdToItemMap();
+            VirtualItem itemWithID = EconomyKit.Config.GetItemByID(_currentItemID);
+            if (itemWithID != null && itemWithID != item)
+            {
+                GUIUtility.keyboardControl = 0;
+                EditorUtility.DisplayDialog("Duplicate ID", "An item with ID[" + _currentItemID + "] already exists!!!", "OK");
+                _currentItemID = item.ID;
+            }
+            else
+            {
+                item.ID = _currentItemID;
+                AssetDatabase.RenameAsset(AssetDatabase.GetAssetPath(item), item.ID);
+                VirtualItemsEditorWindow.GetInstance().Repaint();
+            }
+        }
     }
 
-    private static void DrawDesciption(VirtualItem item)
+    private void DrawCategoryID(VirtualCategory category)
     {
-        item.Description = EditorGUILayout.TextField("Desription", item.Description);
-    }
-
-    private void DrawItemCategory(VirtualItem item)
-    {
-        EditorGUILayout.LabelField("Category", item.Category == null ? "None" : item.Category.ID);
-    }
-
-    private void DrawIcon(VirtualItem item)
-    {
-        item.Icon = EditorGUILayout.ObjectField("Icon", item.Icon, typeof(Sprite), false) as Sprite;
-    }
-
-    private void DrawIsEquippable(LifeTimeItem item)
-    {
-        item.IsEquippable = EditorGUILayout.Toggle("Is Equippable", item.IsEquippable);
+        GUI.SetNextControlName(category.HashID);
+        if (EditorGUILayout.TextField("Unique ID", _currentItemID).KeyPressed<string>(
+            category.HashID, KeyCode.Return, out _currentItemID))
+        {
+            VirtualCategory categoryWithID = EconomyKit.Config.GetCategoryByID(_currentItemID);
+            if (categoryWithID != null && categoryWithID != category)
+            {
+                GUIUtility.keyboardControl = 0;
+                EditorUtility.DisplayDialog("Duplicate ID", "An category with ID[" + 
+                    _currentItemID + "] already exists!!!", "OK");
+                _currentItemID = category.ID;
+            }
+            else
+            {
+                category.ID = _currentItemID;
+                AssetDatabase.RenameAsset(AssetDatabase.GetAssetPath(category), category.ID);
+                VirtualItemsEditorWindow.GetInstance().Repaint();
+            }
+        }
     }
 
     private void DrawVirtualCategory(VirtualCategory category)
     {
-
+        DrawCategoryID(category);
     }
 
+    private string _currentItemID;
     private Vector2 _scrollPosition;
     private bool _isVirtualItemPropertiesExpanded = true;
     private bool _isPackInfoExpanded = true;
