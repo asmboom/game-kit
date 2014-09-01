@@ -8,7 +8,14 @@ public abstract class PurchasableItem : VirtualItem
 
     public void Purchase()
     {
-        Purchase(0);
+        if (PurchaseInfo.Count > 0)
+        {
+            Purchase(0);
+        }
+        {
+            // if the item doesn't contain any purchase, it is free
+            Give(1);
+        }
     }
 
     public void Purchase(int index)

@@ -18,9 +18,5 @@ MonoBehaviour:
   SortIndex: 1
   HashID: 314e1d9e-0328-4bc0-9760-66ead263739a
   Upgrades: []
-  PurchaseInfo:
-  - Type: 1
-    Price: 0
-    MarketID: 
-    VirtualCurrency: {fileID: 11400000, guid: f801a488561815140925ca32fb172746, type: 2}
+  PurchaseInfo: []
   IsEquippable: 1

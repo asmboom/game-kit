@@ -22,7 +22,7 @@ MonoBehaviour:
   - Type: 1
     Price: 10
     MarketID: 
-    VirtualCurrency: {fileID: 0}
+    VirtualCurrency: {fileID: 11400000, guid: f801a488561815140925ca32fb172746, type: 2}
   PackElements:
   - Item: {fileID: 11400000, guid: f801a488561815140925ca32fb172746, type: 2}
     Amount: 10000
