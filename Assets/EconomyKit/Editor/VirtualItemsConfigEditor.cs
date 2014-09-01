@@ -32,38 +32,11 @@ public class VirtualItemsConfigEditor : Editor
         virtualItemsConfig.SingleUseItems.Sort();
         virtualItemsConfig.LifeTimeItems.AddRange(Resources.FindObjectsOfTypeAll<LifeTimeItem>());
         virtualItemsConfig.LifeTimeItems.Sort();
-        virtualItemsConfig.UpgradeItems.AddRange(Resources.FindObjectsOfTypeAll<UpgradeItem>());
-        virtualItemsConfig.UpgradeItems.Sort();
         virtualItemsConfig.ItemPacks.AddRange(Resources.FindObjectsOfTypeAll<VirtualItemPack>());
         virtualItemsConfig.ItemPacks.Sort();
 
         virtualItemsConfig.UpdateIdToItemMap();
-
         CheckIfAnyInvalidRef(virtualItemsConfig);
-
-        // update upgrades in virtual items
-        foreach (var item in virtualItemsConfig.Items)
-        {
-            item.Upgrades.Clear();
-        }
-        foreach (var item in virtualItemsConfig.UpgradeItems)
-        {
-            VirtualItem relatedItem = item.RelatedItem;
-            if (item.RelatedItem != null)
-            {
-                relatedItem.Upgrades.Add(item);
-            }
-            else
-            {
-                Debug.LogError("upgrade item [" + item.ID +
-                    "]'s associated item is null");
-            }
-        }
-        foreach (var item in virtualItemsConfig.Items)
-        {
-            EditorUtility.SetDirty(item);
-        }
-
         EditorUtility.SetDirty(virtualItemsConfig);
     }
 
@@ -72,19 +45,11 @@ public class VirtualItemsConfigEditor : Editor
         virtualItemsConfig.VirtualCurrencies.Clear();
         virtualItemsConfig.SingleUseItems.Clear();
         virtualItemsConfig.LifeTimeItems.Clear();
-        virtualItemsConfig.UpgradeItems.Clear();
         virtualItemsConfig.ItemPacks.Clear();
     }
 
     private static void CheckIfAnyInvalidRef(VirtualItemsConfig config)
     {
-        foreach(var item in config.UpgradeItems)
-        {
-            if (item.RelatedItem == null)
-            {
-                Debug.LogError("Upgrade item [" + item.ID + "]'s related item is null.");
-            }
-        }
         foreach (var pack in config.ItemPacks)
         {
             foreach (var element in pack.PackElements)

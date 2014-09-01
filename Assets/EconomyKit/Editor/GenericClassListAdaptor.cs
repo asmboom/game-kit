@@ -30,6 +30,8 @@ public class GenericClassListAdaptor<T> : IReorderableListAdaptor where T : clas
         get { return _list[index]; }
     }
 
+    public System.Action<IList<T>> OnOrderChagne = delegate { };
+
     public GenericClassListAdaptor(IList<T> list, float itemHeight,
         GenericListAdaptorDelegate.ItemCreator<T> itemCreator, 
         GenericListAdaptorDelegate.ClassItemDrawer<T> itemDrawer,
@@ -71,7 +73,7 @@ public class GenericClassListAdaptor<T> : IReorderableListAdaptor where T : clas
     {
         if (_list != null)
         {
-            _list.Insert(index, Create());
+            Insert(index, Create());
         }
     }
 
@@ -79,7 +81,7 @@ public class GenericClassListAdaptor<T> : IReorderableListAdaptor where T : clas
     {
         if (_list != null)
         {
-            _list.Insert(index + 1, _list[index]);
+            Insert(index + 1, _list[index]);
         }
     }
 
@@ -100,8 +102,14 @@ public class GenericClassListAdaptor<T> : IReorderableListAdaptor where T : clas
 
             T item = _list[sourceIndex];
             _list.RemoveAt(sourceIndex);
-            _list.Insert(destIndex, item);
+            Insert(destIndex, item);
         }
+    }
+
+    private void Insert(int destIndex, T item)
+    {
+        _list.Insert(destIndex, item);
+        OnOrderChagne(List);
     }
 
     public void Clear()

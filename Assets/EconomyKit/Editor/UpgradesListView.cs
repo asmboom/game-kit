@@ -28,7 +28,8 @@ public class UpgradesListView
     public UpgradesListView(VirtualItem item)
     {
         _currentItem = item;
-        _listControl = new ReorderableListControl();
+        _listControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand | 
+            ReorderableListFlags.ShowIndices | ReorderableListFlags.DisableReordering);
         _listControl.ItemInserted += OnItemInsert;
         _listControl.ItemRemoving += OnItemRemoving;
 

@@ -49,7 +49,7 @@ public class VirtualItemsPropertyInspector
         VirtualItem item = _currentDisplayedItem as VirtualItem;
         if (item != null)
         {
-            DrawVirtualItem(item);
+            DrawVirtualItem(new Rect(0, 0, position.width, position.height), item);
         }
         else
         {
@@ -65,7 +65,7 @@ public class VirtualItemsPropertyInspector
         GUILayout.EndArea();
     }
 
-    private void DrawVirtualItem(VirtualItem item)
+    private void DrawVirtualItem(Rect position, VirtualItem item)
     {
         EditorGUI.BeginChangeCheck();
 
@@ -73,6 +73,7 @@ public class VirtualItemsPropertyInspector
         if (_isVirtualItemPropertiesExpanded)
         {
             DrawID(item);
+            EditorGUILayout.LabelField("Sort index", item.SortIndex.ToString());
             item.Name = EditorGUILayout.TextField("Name", item.Name);
             item.Description = EditorGUILayout.TextField("Desription", item.Description);
             EditorGUILayout.LabelField("Category", item.Category == null ? "None" : item.Category.ID);

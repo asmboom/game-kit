@@ -6,7 +6,7 @@ public class VirtualCurrencyEditor : Editor
 {
     public override void OnInspectorGUI()
     {
-        VirtualCurrency item = target as VirtualCurrency;
+        VirtualItem item = target as VirtualItem;
         EditorGUILayout.LabelField("ID", item.ID);
         EditorGUILayout.LabelField("Name", item.Name);
         EditorGUILayout.LabelField("Description", item.Description);

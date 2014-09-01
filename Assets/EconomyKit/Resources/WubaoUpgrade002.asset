@@ -9,14 +9,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 14094c5a82c44bd4db9e6c33ecf9c5ca, type: 3}
-  m_Name: WubaoUpgrade001
+  m_Name: WubaoUpgrade002
   m_EditorClassIdentifier: 
-  Name: "Upgrade \u609F\u5B9D to level 2"
-  Description: "Upgrade \u609F\u5B9D to level 2"
-  ID: WubaoUpgrade001
+  Name: "Upgrade \u609F\u5B9D to level 3"
+  Description: "Upgrade \u609F\u5B9D to level 3"
+  ID: WubaoUpgrade002
   Icon: {fileID: 0}
   SortIndex: 0
-  HashID: 432d0413-8ed4-4619-bb48-9417af6c31f8
+  HashID: 9140c0ac-581d-4621-9558-f802b3ca1a35
   Upgrades: []
   PurchaseInfo: []
   RelatedItem: {fileID: 0}

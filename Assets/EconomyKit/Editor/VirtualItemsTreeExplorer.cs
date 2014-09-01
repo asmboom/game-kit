@@ -14,27 +14,31 @@ public class VirtualItemsTreeExplorer
         _config = config;
 
         _virtualCurrencyListAdaptor = CreateVirtualItemListAdaptor<VirtualCurrency>(config.VirtualCurrencies);
-        _virtualCurrencyListControl = new ReorderableListControl();
+        _virtualCurrencyListAdaptor.OnOrderChagne += OnListOrderChange<VirtualCurrency>;
+        _virtualCurrencyListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand);
         _virtualCurrencyListControl.ItemRemoving += OnItemRemoving<VirtualCurrency>;
         _virtualCurrencyListControl.ItemInserted += OnItemInsert<VirtualCurrency>;
 
         _singleuseItemListAdaptor = CreateVirtualItemListAdaptor<SingleUseItem>(config.SingleUseItems);
-        _singleuseItemListControl = new ReorderableListControl();
+        _singleuseItemListAdaptor.OnOrderChagne += OnListOrderChange<SingleUseItem>;
+        _singleuseItemListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand);
         _singleuseItemListControl.ItemRemoving += OnItemRemoving<SingleUseItem>;
         _singleuseItemListControl.ItemInserted += OnItemInsert<SingleUseItem>;
 
         _lifetimeItemListAdaptor = CreateVirtualItemListAdaptor<LifeTimeItem>(config.LifeTimeItems);
-        _lifetimeItemListControl = new ReorderableListControl();
+        _lifetimeItemListAdaptor.OnOrderChagne += OnListOrderChange<LifeTimeItem>;
+        _lifetimeItemListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand);
         _lifetimeItemListControl.ItemRemoving += OnItemRemoving<LifeTimeItem>;
         _lifetimeItemListControl.ItemInserted += OnItemInsert<LifeTimeItem>;
 
         _packListAdaptor = CreateVirtualItemListAdaptor<VirtualItemPack>(config.ItemPacks);
-        _packListControl = new ReorderableListControl();
+        _packListAdaptor.OnOrderChagne += OnListOrderChange<VirtualItemPack>;
+        _packListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand);
         _packListControl.ItemRemoving += OnItemRemoving<VirtualItemPack>;
         _packListControl.ItemInserted += OnItemInsert<VirtualItemPack>;
 
         _categoryListAdaptor = CreateVirtualCategoryListAdaptor(config.Categories);
-        _categoryListControl = new ReorderableListControl();
+        _categoryListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand);
         _categoryListControl.ItemInserted += OnItemInsert<VirtualCategory>;
         _categoryListControl.ItemRemoving += OnItemRemoving<VirtualCategory>;
     }
@@ -138,6 +142,7 @@ public class VirtualItemsTreeExplorer
             if (item != null)
             {
                 item.ID = item.name;
+                item.SortIndex = listAdaptor.Count - 1;
             }
             else
             {
@@ -156,14 +161,14 @@ public class VirtualItemsTreeExplorer
         T item = listAdaptor[args.itemIndex];
         if (listAdaptor != null)
         {
-            if (item is ScriptableObject)
+            if (item is VirtualItem)
             {
-                ScriptableObject assetItem = item as ScriptableObject;
+                VirtualItem virtualItem = item as VirtualItem;
                 if (EditorUtility.DisplayDialog("Confirm to delete",
-                        "Confirm to delete asset [" + assetItem.name + ".asset]?", "OK", "Cancel"))
+                        "Confirm to delete asset [" + virtualItem.name + ".asset]?", "OK", "Cancel"))
                 {
                     args.Cancel = false;
-                    AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(assetItem));
+                    AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(virtualItem));
                 }
                 else
                 {
@@ -183,6 +188,15 @@ public class VirtualItemsTreeExplorer
                     args.Cancel = true;
                 }
             }
+        }
+    }
+
+    private void OnListOrderChange<T>(IList<T> list) where T : VirtualItem
+    {
+        for (int i = 0; i < list.Count; i++)
+        {
+            list[i].SortIndex = i;
+            EditorUtility.SetDirty(list[i]);
         }
     }
 

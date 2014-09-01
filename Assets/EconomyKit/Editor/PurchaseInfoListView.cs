@@ -7,7 +7,7 @@ public class PurchaseInfoListView
 {
     public PurchaseInfoListView(PurchasableItem item)
     {
-        _listControl = new ReorderableListControl();
+        _listControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand | ReorderableListFlags.ShowIndices);
 
         UpdateVirtualCurrencyIndices();
     }

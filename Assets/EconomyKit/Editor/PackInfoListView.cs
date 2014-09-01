@@ -7,7 +7,7 @@ public class PackInfoListView
 {
     public PackInfoListView(VirtualItemPack pack)
     {
-        _listControl = new ReorderableListControl();
+        _listControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand | ReorderableListFlags.ShowIndices);
 
         UpdateItemIndices();
     }

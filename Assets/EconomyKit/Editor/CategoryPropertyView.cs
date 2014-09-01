@@ -1,19 +1,23 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using Rotorz.ReorderableList;
 
 public class CategoryPropertyView
 {
     public CategoryPropertyView(VirtualCategory category)
     {
         _itemsWithoutCategory = new List<VirtualItem>();
-        UpdateListAndSelection();
+        _categoryItemListControl = new ReorderableListControl(ReorderableListFlags.HideAddButton |
+            ReorderableListFlags.HideRemoveButtons | ReorderableListFlags.DisableDuplicateCommand);
+        UpdateItemsWithoutCategory();
     }
 
     public void UpdateDisplayItem(VirtualCategory category)
     {
         _currentCategoryID = category.ID;
-        UpdateListAndSelection();
+        _categoryItemListAdaptor = new GenericClassListAdaptor<VirtualItem>(category.Items, 20, null, DrawItemInCategory);
+        UpdateItemsWithoutCategory();
     }
 
     public void Draw(Rect position, VirtualCategory category)
@@ -24,6 +28,12 @@ public class CategoryPropertyView
         float width = position.width * 0.4f;
         float height = position.height - 30;
         GUI.BeginGroup(new Rect(position.x, position.y + 30, width, height), string.Empty, "Box");
+        _scrollPositionOfCategory = GUI.BeginScrollView(new Rect(0, 0, width, height),
+            _scrollPositionOfCategory, new Rect(0, 0, width - 20, 20 * category.Items.Count));
+        _categoryItemListControl.Draw(new Rect(0, 0, width, height), _categoryItemListAdaptor);
+        GUI.EndScrollView();
+        GUI.EndGroup();
+        GUI.BeginGroup(new Rect(position.x + position.width - width, position.y + 30, width, height), string.Empty, "Box");
         _scrollPositionOfNonCategory = GUI.BeginScrollView(new Rect(0, 0, width, height),
             _scrollPositionOfNonCategory, new Rect(0, 0, width - 20, 20 * _itemsWithoutCategory.Count));
         float yOffset = 0;
@@ -41,42 +51,36 @@ public class CategoryPropertyView
         GUI.EndGroup();
 
         GUI.enabled = _currentSelectedNonCategoryItem != null;
-        if (GUI.Button(new Rect(position.width * 0.5f - 50, position.height * 0.5f - 30, 100, 20), "Add>"))
+        if (GUI.Button(new Rect(position.width * 0.5f - 50, position.height * 0.5f - 30, 100, 20), "<Add"))
         {
             category.Items.Add(_currentSelectedNonCategoryItem);
             _currentSelectedCategoryItem = _currentSelectedNonCategoryItem;
             _currentSelectedNonCategoryItem = null;
-            UpdateListAndSelection();
+            UpdateItemsWithoutCategory();
             EditorUtility.SetDirty(EconomyKit.Config);
         }
         GUI.enabled = _currentSelectedCategoryItem != null;
         if (_currentSelectedCategoryItem != null &&
-            GUI.Button(new Rect(position.width * 0.5f - 50, position.height * 0.5f + 30, 100, 20), "<Remove"))
+            GUI.Button(new Rect(position.width * 0.5f - 50, position.height * 0.5f + 30, 100, 20), "Remove>"))
         {
             category.Items.Remove(_currentSelectedCategoryItem);
             _currentSelectedNonCategoryItem = _currentSelectedCategoryItem;
             _currentSelectedCategoryItem = null;
-            UpdateListAndSelection();
+            UpdateItemsWithoutCategory();
             EditorUtility.SetDirty(EconomyKit.Config);
         }
         GUI.enabled = true;
+    }
 
-        GUI.BeginGroup(new Rect(position.x + position.width - width, position.y + 30, width, height), string.Empty, "Box");
-        _scrollPositionOfCategory = GUI.BeginScrollView(new Rect(0, 0, width, height),
-            _scrollPositionOfCategory, new Rect(0, 0, width - 20, 20 * category.Items.Count));
-        yOffset = 0;
-        foreach (var item in category.Items)
+    private VirtualItem DrawItemInCategory(Rect position, VirtualItem item, int index)
+    {
+        if (GUI.Button(position, item.ID, 
+            item == _currentSelectedCategoryItem ? 
+                VirtualItemsDrawUtil.ItemSelectedStyle : VirtualItemsDrawUtil.ItemStyle))
         {
-            if (GUI.Button(new Rect(0, yOffset, position.width * 0.4f, itemHeight), item.ID, 
-                item == _currentSelectedNonCategoryItem ? 
-                    VirtualItemsDrawUtil.ItemSelectedStyle : VirtualItemsDrawUtil.ItemStyle))
-            {
-                _currentSelectedCategoryItem = item;
-            }
-            yOffset += itemHeight;
+            _currentSelectedCategoryItem = item;
         }
-        GUI.EndScrollView();
-        GUI.EndGroup();
+        return item;
     }
 
     private void DrawCategoryID(VirtualCategory category)
@@ -99,7 +103,7 @@ public class CategoryPropertyView
         }
     }
 
-    private void UpdateListAndSelection()
+    private void UpdateItemsWithoutCategory()
     {
         EconomyKit.Config.UpdateIdToItemMap();
         EconomyKit.Config.UpdateIdToCategoryMap();
@@ -114,6 +118,8 @@ public class CategoryPropertyView
     }
 
     private string _currentCategoryID;
+    private GenericClassListAdaptor<VirtualItem> _categoryItemListAdaptor;
+    private ReorderableListControl _categoryItemListControl;
     private VirtualCategory _currentDisplayedCategory;
     private List<VirtualItem> _itemsWithoutCategory;
     private Vector2 _scrollPositionOfNonCategory;

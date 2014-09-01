@@ -17,9 +17,6 @@ public class VirtualItemsConfig : ScriptableObject
     public List<VirtualItemPack> ItemPacks;
 
     [SerializeField]
-    public List<UpgradeItem> UpgradeItems;
-
-    [SerializeField]
     public List<VirtualCategory> Categories;
 
     public IEnumerable<VirtualItem> Items
@@ -88,10 +85,6 @@ public class VirtualItemsConfig : ScriptableObject
         {
             TryAddToIdItemMap(ItemPacks[i].ID, ItemPacks[i]);
         }
-        for (int i = 0; i < UpgradeItems.Count; i++)
-        {
-            TryAddToIdItemMap(UpgradeItems[i].ID, UpgradeItems[i]);
-        }
     }
 
     public void UpdateIdToCategoryMap()
@@ -141,10 +134,6 @@ public class VirtualItemsConfig : ScriptableObject
         if (ItemPacks == null)
         {
             ItemPacks = new List<VirtualItemPack>();
-        }
-        if (UpgradeItems == null)
-        {
-            UpgradeItems = new List<UpgradeItem>();
         }
         if (Categories == null)
         {
