@@ -14,6 +14,7 @@ public class SingleUseItem : PurchasableItem
 
     protected override void GiveBalance(int amount)
     {
+        Debug.Log("give amount = " + amount);
         Storage.SetItemBalance(ID, Storage.GetItemBalance(ID) + amount);
     }
 }

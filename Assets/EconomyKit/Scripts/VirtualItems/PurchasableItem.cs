@@ -12,6 +12,7 @@ public abstract class PurchasableItem : VirtualItem
         {
             Purchase(0);
         }
+        else
         {
             // if the item doesn't contain any purchase, it is free
             Give(1);

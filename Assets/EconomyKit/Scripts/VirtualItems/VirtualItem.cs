@@ -110,6 +110,11 @@ public abstract class VirtualItem : ScriptableObject, IComparable
         }
     }
 
+    public T GetExtend<T>() where T : ScriptableObject
+    {
+        return Extend as T;
+    }
+
     protected virtual void OnEnable()
     {
         if (Upgrades == null)
