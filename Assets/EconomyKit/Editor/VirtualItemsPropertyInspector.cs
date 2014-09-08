@@ -91,6 +91,9 @@ public class VirtualItemsPropertyInspector
             yOffset += 20;
             item.Icon = EditorGUI.ObjectField(new Rect(0, yOffset, width, 20), "Icon", item.Icon, typeof(Sprite), false) as Sprite;
             yOffset += 20;
+            item.Extend = EditorGUI.ObjectField(new Rect(0, yOffset, width, 20), "Extend", 
+                item.Extend, typeof(VirtualItemExtend), false) as VirtualItemExtend;
+            yOffset += 20;
         }
 
         if (item is LifeTimeItem)
@@ -134,6 +137,15 @@ public class VirtualItemsPropertyInspector
                 yOffset += 200;
             }
         }
+        if (item.Extend != null)
+        {
+            yOffset += 20;
+            _isExtendInfoExpanded = EditorGUI.Foldout(new Rect(0, yOffset, width, 20), 
+                _isExtendInfoExpanded, "Extend");
+            yOffset += 20;
+            yOffset += item.Extend.DrawInspector(new Rect(0, yOffset, width, 200));
+        }
+
         _currentYOffset = yOffset;
 
         GUI.EndScrollView();
@@ -177,6 +189,7 @@ public class VirtualItemsPropertyInspector
     private bool _isPackInfoExpanded = true;
     private bool _isPurchaseInfoExpanded = true;
     private bool _isUpgradeInfoExpanded = false;
+    private bool _isExtendInfoExpanded = false;
 
     private string _currentDisplayedItemID;
     private object _currentDisplayedItem;
