@@ -21,6 +21,8 @@ public class VirtualItemsPropertyInspector
         if (item is VirtualItem)
         {
             _currentDisplayedItemID = (item as VirtualItem).ID;
+            GUI.FocusControl(string.Empty);
+
             if (item is SingleUseItem || item is LifeTimeItem)
             {
                 _upgradesListView.UpdateDisplayItem(item as VirtualItem);
@@ -145,9 +147,12 @@ public class VirtualItemsPropertyInspector
 
     private void DrawID(Rect position, VirtualItem item)
     {
-        GUI.SetNextControlName(item.HashID);
+        GUI.SetNextControlName(IDInputControlName);
         if (EditorGUI.TextField(position, "Unique ID", 
-            _currentDisplayedItemID).KeyPressed<string>(item.HashID, KeyCode.Return, out _currentDisplayedItemID))
+            _currentDisplayedItemID).KeyPressed<string>(IDInputControlName, 
+                KeyCode.Return, out _currentDisplayedItemID) ||
+            (GUI.GetNameOfFocusedControl() != IDInputControlName && 
+             _currentDisplayedItemID != item.ID))
         {
             EconomyKit.Config.UpdateIdToItemMap();
             VirtualItem itemWithID = EconomyKit.Config.GetItemByID(_currentDisplayedItemID);
@@ -182,4 +187,6 @@ public class VirtualItemsPropertyInspector
 
     private Vector2 _scrollPosition;
     private float _currentYOffset;
+
+    private const string IDInputControlName = "virtual_item_id_field";
 }

@@ -11,10 +11,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a817df6b1479da46a263fb093e229ec, type: 3}
   m_Name: Gem
   m_EditorClassIdentifier: 
-  Name: "\u5B9D\u77F3"
-  Description: "\u5B9D\u77F3"
+  Name: Gem
+  Description: Gem
   ID: Gem
   Icon: {fileID: 0}
   SortIndex: 1
-  HashID: aaa99427-2e08-455b-9a9b-02f267c828ea
   Upgrades: []

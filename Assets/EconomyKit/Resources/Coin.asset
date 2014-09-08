@@ -11,10 +11,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a817df6b1479da46a263fb093e229ec, type: 3}
   m_Name: Coin
   m_EditorClassIdentifier: 
-  Name: "\u6728\u9C7C"
-  Description: "\u6728\u9C7C"
+  Name: Coin
+  Description: Coin
   ID: Coin
   Icon: {fileID: 0}
   SortIndex: 0
-  HashID: 9eaafeb7-6b58-49cd-86e8-c7a568c32ff6
   Upgrades: []

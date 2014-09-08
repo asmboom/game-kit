@@ -91,10 +91,12 @@ public class CategoryPropertyView
 
     private void DrawCategoryID(VirtualCategory category)
     {
-        string newId = EditorGUILayout.TextField("Unique ID", _currentCategoryID);
-        if (!newId.Equals(_currentCategoryID))
+        GUI.SetNextControlName(IDInputControlName);
+        if (EditorGUILayout.TextField("Unique ID", 
+            _currentCategoryID).KeyPressed<string>(IDInputControlName, KeyCode.Return, out _currentCategoryID) ||
+            (GUI.GetNameOfFocusedControl() != IDInputControlName && 
+             _currentCategoryID != category.ID))
         {
-            _currentCategoryID = newId;
             VirtualCategory categoryWithID = EconomyKit.Config.GetCategoryByID(_currentCategoryID);
             if (categoryWithID != null && categoryWithID != category)
             {
@@ -106,6 +108,7 @@ public class CategoryPropertyView
             else
             {
                 category.ID = _currentCategoryID;
+                VirtualItemsEditorWindow.GetInstance().Repaint();
             }
         }
     }
@@ -133,4 +136,6 @@ public class CategoryPropertyView
     private Vector2 _scrollPositionOfCategory;
     private VirtualItem _currentSelectedNonCategoryItem;
     private VirtualItem _currentSelectedCategoryItem;
+
+    private const string IDInputControlName = "virtual_item_id_field";
 }
