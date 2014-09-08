@@ -15,18 +15,21 @@ public class VirtualItemsTreeExplorer
 
         _virtualCurrencyListAdaptor = CreateVirtualItemListAdaptor<VirtualCurrency>(config.VirtualCurrencies);
         _virtualCurrencyListAdaptor.OnOrderChagne += OnListOrderChange<VirtualCurrency>;
+        _virtualCurrencyListAdaptor.OnItemRemoved += VirtualItemsEditUtil.UpdateDisplayedOptions;
         _virtualCurrencyListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand);
         _virtualCurrencyListControl.ItemRemoving += OnItemRemoving<VirtualCurrency>;
         _virtualCurrencyListControl.ItemInserted += OnItemInsert<VirtualCurrency>;
 
         _singleuseItemListAdaptor = CreateVirtualItemListAdaptor<SingleUseItem>(config.SingleUseItems);
         _singleuseItemListAdaptor.OnOrderChagne += OnListOrderChange<SingleUseItem>;
+        _singleuseItemListAdaptor.OnItemRemoved += VirtualItemsEditUtil.UpdateDisplayedOptions;
         _singleuseItemListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand);
         _singleuseItemListControl.ItemRemoving += OnItemRemoving<SingleUseItem>;
         _singleuseItemListControl.ItemInserted += OnItemInsert<SingleUseItem>;
 
         _lifetimeItemListAdaptor = CreateVirtualItemListAdaptor<LifeTimeItem>(config.LifeTimeItems);
         _lifetimeItemListAdaptor.OnOrderChagne += OnListOrderChange<LifeTimeItem>;
+        _lifetimeItemListAdaptor.OnItemRemoved += VirtualItemsEditUtil.UpdateDisplayedOptions;
         _lifetimeItemListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand);
         _lifetimeItemListControl.ItemRemoving += OnItemRemoving<LifeTimeItem>;
         _lifetimeItemListControl.ItemInserted += OnItemInsert<LifeTimeItem>;
@@ -143,6 +146,8 @@ public class VirtualItemsTreeExplorer
             {
                 item.ID = item.name;
                 item.SortIndex = listAdaptor.Count - 1;
+
+                VirtualItemsEditUtil.UpdateDisplayedOptions();
             }
             else
             {

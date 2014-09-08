@@ -16,7 +16,6 @@ MonoBehaviour:
   ID: GemPack01
   Icon: {fileID: 0}
   SortIndex: 2
-  HashID: 77fbe078-618d-480a-a29c-3ae9c8c09d07
   Upgrades: []
   PurchaseInfo:
   - Type: 0

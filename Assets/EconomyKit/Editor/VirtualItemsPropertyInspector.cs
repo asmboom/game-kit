@@ -168,6 +168,7 @@ public class VirtualItemsPropertyInspector
                 item.ID = _currentDisplayedItemID;
                 AssetDatabase.RenameAsset(AssetDatabase.GetAssetPath(item), item.ID);
                 VirtualItemsEditorWindow.GetInstance().Repaint();
+                VirtualItemsEditUtil.UpdateDisplayedOptions();
             }
         }
     }

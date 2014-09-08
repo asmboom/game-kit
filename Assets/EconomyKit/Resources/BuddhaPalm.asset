@@ -16,7 +16,6 @@ MonoBehaviour:
   ID: BuddhaPalm
   Icon: {fileID: 0}
   SortIndex: 0
-  HashID: 8ec9f518-1b0e-4f39-8c5d-b06d88bf28a3
   Upgrades: []
   PurchaseInfo:
   - Type: 1

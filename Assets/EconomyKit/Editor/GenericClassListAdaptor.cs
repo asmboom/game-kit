@@ -31,6 +31,7 @@ public class GenericClassListAdaptor<T> : IReorderableListAdaptor where T : clas
     }
 
     public System.Action<IList<T>> OnOrderChagne = delegate { };
+    public System.Action OnItemRemoved = delegate { };
 
     public GenericClassListAdaptor(IList<T> list, float itemHeight,
         GenericListAdaptorDelegate.ItemCreator<T> itemCreator, 
@@ -90,6 +91,7 @@ public class GenericClassListAdaptor<T> : IReorderableListAdaptor where T : clas
         if (_list != null)
         {
             _list.RemoveAt(index);
+            OnItemRemoved();
         }
     }
 
