@@ -26,7 +26,7 @@ public abstract class VirtualItem : ScriptableObject, IComparable
     public List<UpgradeItem> Upgrades;
 
     [SerializeField]
-    public VirtualItemExtend Extend;
+    public ScriptableObject Extend;
 
     public int Balance { get { return Storage.GetItemBalance(ID); } }
     
