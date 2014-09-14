@@ -16,7 +16,7 @@ MonoBehaviour:
   ID: Wuzheng
   Icon: {fileID: 0}
   SortIndex: 1
-  HashID: 314e1d9e-0328-4bc0-9760-66ead263739a
   Upgrades: []
+  Extend: {fileID: 0}
   PurchaseInfo: []
   IsEquippable: 1

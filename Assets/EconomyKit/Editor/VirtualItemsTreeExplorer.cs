@@ -73,27 +73,41 @@ public class VirtualItemsTreeExplorer
 
         EditorGUI.BeginChangeCheck();
 
-        _isVirtualCurrencyExpanded = EditorGUILayout.Foldout(_isVirtualCurrencyExpanded, "Virtual Currencies");
+        _isVirtualCurrencyExpanded = EditorGUILayout.Foldout(_isVirtualCurrencyExpanded, 
+            new GUIContent(" Virtual Currencies", Resources.Load("VirtualCurrencyIcon") as Texture, 
+                "Virtual currency can be used to purchase other items, e.g. coin, gem"),
+            VirtualItemsDrawUtil.FoldoutStyle);
         if (_isVirtualCurrencyExpanded)
         {
             _virtualCurrencyListControl.Draw(_virtualCurrencyListAdaptor);
         }
-        _isSingleUseItemExpanded = EditorGUILayout.Foldout(_isSingleUseItemExpanded, "Single Use Items");
+        _isSingleUseItemExpanded = EditorGUILayout.Foldout(_isSingleUseItemExpanded, 
+            new GUIContent(" Single Use Items", Resources.Load("SingleUseItemIcon") as Texture,
+                "Items that use can buy multiple times and use multiple times, e.g. magic spells."),
+            VirtualItemsDrawUtil.FoldoutStyle);
         if (_isSingleUseItemExpanded)
         {
             _singleuseItemListControl.Draw(_singleuseItemListAdaptor);
         }
-        _isLifeTimeItemExpanded = EditorGUILayout.Foldout(_isLifeTimeItemExpanded, "Lifetime Items");
+        _isLifeTimeItemExpanded = EditorGUILayout.Foldout(_isLifeTimeItemExpanded, 
+            new GUIContent(" Lifetime Items", Resources.Load("LifetimeItemIcon") as Texture,
+                "Items that bought only once and kept forever, e.g. no ads, characters, weapons"),
+            VirtualItemsDrawUtil.FoldoutStyle);
         if (_isLifeTimeItemExpanded)
         {
             _lifetimeItemListControl.Draw(_lifetimeItemListAdaptor);
         }
-        _isPackExpanded = EditorGUILayout.Foldout(_isPackExpanded, "Packs");
+        _isPackExpanded = EditorGUILayout.Foldout(_isPackExpanded, 
+            new GUIContent(" Packs", Resources.Load("PackIcon") as Texture,
+                "A pack contains a list of various virtual items"),
+            VirtualItemsDrawUtil.FoldoutStyle);
         if (_isPackExpanded)
         {
             _packListControl.Draw(_packListAdaptor);
         }
-        _isCategoryExpanded = EditorGUILayout.Foldout(_isCategoryExpanded, "Categories");
+        _isCategoryExpanded = EditorGUILayout.Foldout(_isCategoryExpanded, 
+            new GUIContent(" Categories", Resources.Load("CategoryIcon") as Texture),
+            VirtualItemsDrawUtil.FoldoutStyle);
         if (_isCategoryExpanded)
         {
             _categoryListControl.Draw(_categoryListAdaptor);

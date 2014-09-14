@@ -16,8 +16,8 @@ MonoBehaviour:
   ID: PermanentLife
   Icon: {fileID: 0}
   SortIndex: 0
-  HashID: 83d84b1b-f362-43a1-9b33-9f9462e2d0ad
   Upgrades: []
+  Extend: {fileID: 0}
   PurchaseInfo:
   - Type: 1
     Price: 10

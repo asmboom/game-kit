@@ -14,11 +14,15 @@ public static class VirtualItemsDrawUtil
 
         ItemSelectedStyle = new GUIStyle(GUI.skin.GetStyle("Box"));
         ItemSelectedStyle.normal.textColor = Color.red;
+
+        FoldoutStyle = new GUIStyle(EditorStyles.foldout);
+        FoldoutStyle.fixedHeight = FoldoutStyle.fixedWidth = 0;
     }
 
     public static GUIStyle TitleStyle { get; private set; }
     public static GUIStyle ItemStyle { get; private set; }
     public static GUIStyle ItemSelectedStyle { get; private set; }
+    public static GUIStyle FoldoutStyle { get; private set; }
 
     public static bool KeyPressed<T>(this T s, string controlName, KeyCode key, out T fieldValue)
     {
