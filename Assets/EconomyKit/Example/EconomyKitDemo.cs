@@ -206,8 +206,15 @@ public class EconomyKitDemo : MonoBehaviour
         }
         else
         {
-            DrawVirtualCurrencyIcon(purchase.VirtualCurrency.ID, Screen.width / 2f - 25, y + productSize * 2 / 3f);
-            GUI.Label(new Rect(Screen.width / 2f, y + productSize * 2 / 3f, Screen.width, productSize / 3f), string.Format("{0}", purchase.Price));
+            if (purchase.VirtualCurrency != null)
+            {
+                DrawVirtualCurrencyIcon(purchase.VirtualCurrency.ID, Screen.width / 2f - 25, y + productSize * 2 / 3f);
+                GUI.Label(new Rect(Screen.width / 2f, y + productSize * 2 / 3f, Screen.width, productSize / 3f), string.Format("{0}", purchase.Price));
+            }
+            else
+            {
+                GUI.Label(new Rect(Screen.width / 2f, y + productSize * 2 / 3f, Screen.width, productSize / 3f), "Null");
+            }
         }
     }
 
