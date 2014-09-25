@@ -128,7 +128,12 @@ public class VirtualItemsTreeExplorer
     private T DrawItem<T>(Rect position, T item, int index) where T : class
     {
         string id = string.Empty;
-        if (item is VirtualItem)
+        if (item == null)
+        {
+            GUI.Label(position, "NULL");
+            return item;
+        }
+        else if (item is VirtualItem)
         {
             id = (item as VirtualItem).ID;
         }

@@ -49,6 +49,9 @@ public class VirtualItemsEditorWindow : EditorWindow
 
     private void OnFocus()
     {
+        _config.RemoveNullRefs();
+        _config.UpdateIdToCategoryMap();
+        _config.UpdateIdToItemMap();
         VirtualItemsEditUtil.UpdateDisplayedOptions();
     }
 

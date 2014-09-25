@@ -87,6 +87,45 @@ public class VirtualItemsConfig : ScriptableObject
         }
     }
 
+    public void RemoveNullRefs()
+    {
+        for (int i = 0; i < VirtualCurrencies.Count; i++)
+        {
+            if (VirtualCurrencies[i] == null)
+            {
+                VirtualCurrencies.RemoveAt(i);
+            }
+        }
+        for (int i = 0; i < SingleUseItems.Count; i++)
+        {
+            if (SingleUseItems[i] == null)
+            {
+                SingleUseItems.RemoveAt(i);
+            }
+        }
+        for (int i = 0; i < LifeTimeItems.Count; i++)
+        {
+            if (LifeTimeItems[i] == null)
+            {
+                LifeTimeItems.RemoveAt(i);
+            }
+        }
+        for (int i = 0; i < ItemPacks.Count; i++)
+        {
+            if (ItemPacks[i] == null)
+            {
+                ItemPacks.RemoveAt(i);
+            }
+        }
+        for (int i = 0; i < Categories.Count; i++)
+        {
+            if (Categories[i] == null)
+            {
+                Categories.RemoveAt(i);
+            }
+        }
+    }
+
     public void UpdateIdToCategoryMap()
     {
         _idToCategory = new Dictionary<string, VirtualCategory>();
