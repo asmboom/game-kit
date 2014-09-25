@@ -124,7 +124,7 @@ public class GenericClassListAdaptor<T> : IReorderableListAdaptor where T : clas
 
     public void DrawItem(Rect position, int index)
     {
-        if (_list != null && index < _list.Count)
+        if (_list != null && index >= 0 && index < _list.Count)
         {
             _list[index] = _itemDrawer(position, _list[index], index);
         }

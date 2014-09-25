@@ -47,6 +47,11 @@ public class VirtualItemsEditorWindow : EditorWindow
         _itemsExplorer.OnSelectionChange -= _itemInspector.OnExplorerSelectionChange;
     }
 
+    private void OnFocus()
+    {
+        VirtualItemsEditUtil.UpdateDisplayedOptions();
+    }
+
     private static VirtualItemsConfig GetVirtualItemsConfigAndCreateIfNonExist()
     {
         string configFilePath = VirtualItemsEditUtil.DefaultVirtualItemDataPath + "/VirtualItemsConfig.asset";
