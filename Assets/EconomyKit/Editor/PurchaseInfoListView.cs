@@ -98,7 +98,7 @@ namespace Beetle23
         private void DrawType(Rect position, Purchase purchase, int index)
         {
             PurchaseType newType = (PurchaseType)EditorGUI.EnumPopup(position, purchase.Type);
-            if (newType != purchase.Type && purchase.Type == PurchaseType.PurchaseWithVirtualCurrency)
+            if (newType != purchase.Type && newType == PurchaseType.PurchaseWithVirtualCurrency)
             {
                 VirtualItemsEditUtil.UpdatePurchaseByIndex(purchase, _virtualCurrencyIndicesForPurchase[index]);
             }

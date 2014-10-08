@@ -19,6 +19,7 @@ namespace Beetle23
 
         public void UpdateDisplayItem(VirtualItemPack pack)
         {
+            _currentDisplayedPack = pack;
             if (pack != null)
             {
                 _listAdaptor = new GenericClassListAdaptor<PackElement>(pack.PackElements, 18,
@@ -83,6 +84,15 @@ namespace Beetle23
 
                 for (var i = 0; i < _listAdaptor.Count; i++)
                 {
+                    if (_listAdaptor[i].Item == null && VirtualItemsEditUtil.DisplayedItemIDs.Length > 0)
+                    {
+                        VirtualItem item = EconomyKit.Config.GetItemByID(VirtualItemsEditUtil.DisplayedItemIDs[0]);
+                        if (item != null)
+                        {
+                            Debug.LogWarning("One of pack " + _currentDisplayedPack.Name + "'s items is null, correct it with default item [" + item.ID + "].");
+                        }
+                        _listAdaptor[i].Item = item;
+                    }
                     _itemIndices.Add(_listAdaptor[i].Item != null ?
                         VirtualItemsEditUtil.GetItemIndexById(_listAdaptor[i].Item.ID) : 0);
                 }
@@ -118,6 +128,7 @@ namespace Beetle23
             }
         }
 
+        private VirtualItemPack _currentDisplayedPack;
         private ReorderableListControl _listControl;
         private GenericClassListAdaptor<PackElement> _listAdaptor;
         private List<int> _itemIndices;
