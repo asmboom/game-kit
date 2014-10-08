@@ -7,25 +7,11 @@ namespace Beetle23
     public class VirtualCategory
     {
         public string ID;
-        public List<string> ItemIDs;
-
-        public List<VirtualItem> Items
-        {
-            get
-            {
-                if (_items == null)
-                {
-                    _items = EconomyKit.Config.GetCategoryItems(this);
-                }
-                return _items;
-            }
-        }
+        public List<VirtualItem> Items;
 
         public VirtualCategory()
         {
-            ItemIDs = new List<string>();
+            Items = new List<VirtualItem>();
         }
-
-        private List<VirtualItem> _items;
     }
 }

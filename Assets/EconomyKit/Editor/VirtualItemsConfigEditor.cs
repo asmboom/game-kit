@@ -16,17 +16,38 @@ namespace Beetle23
             {
                 DrawDefaultInspector();
 
-                if (GUILayout.Button("Check Errors"))
+                if (GUILayout.Button("Update & Check Errors"))
                 {
-                    CheckIfErrors(config);
+                    UpdateVirtualItemsConfig(config);
                 }
             }
         }
 
-        private static void CheckIfErrors(VirtualItemsConfig virtualItemsConfig)
+        private static void UpdateVirtualItemsConfig(VirtualItemsConfig virtualItemsConfig)
         {
-            virtualItemsConfig.UpdateMaps();
+            ClearVirtualItemConfigLists(virtualItemsConfig);
+
+            // update virtual items list
+            virtualItemsConfig.VirtualCurrencies.AddRange(Resources.FindObjectsOfTypeAll<VirtualCurrency>());
+            virtualItemsConfig.VirtualCurrencies.Sort();
+            virtualItemsConfig.SingleUseItems.AddRange(Resources.FindObjectsOfTypeAll<SingleUseItem>());
+            virtualItemsConfig.SingleUseItems.Sort();
+            virtualItemsConfig.LifeTimeItems.AddRange(Resources.FindObjectsOfTypeAll<LifeTimeItem>());
+            virtualItemsConfig.LifeTimeItems.Sort();
+            virtualItemsConfig.ItemPacks.AddRange(Resources.FindObjectsOfTypeAll<VirtualItemPack>());
+            virtualItemsConfig.ItemPacks.Sort();
+
+            virtualItemsConfig.UpdateIdToItemMap();
             CheckIfAnyInvalidRef(virtualItemsConfig);
+            EditorUtility.SetDirty(virtualItemsConfig);
+        }
+
+        private static void ClearVirtualItemConfigLists(VirtualItemsConfig virtualItemsConfig)
+        {
+            virtualItemsConfig.VirtualCurrencies.Clear();
+            virtualItemsConfig.SingleUseItems.Clear();
+            virtualItemsConfig.LifeTimeItems.Clear();
+            virtualItemsConfig.ItemPacks.Clear();
         }
 
         private static void CheckIfAnyInvalidRef(VirtualItemsConfig config)
@@ -35,7 +56,7 @@ namespace Beetle23
             {
                 foreach (var element in pack.PackElements)
                 {
-                    if (element.ItemID == null)
+                    if (element.Item == null)
                     {
                         Debug.LogError("Pack [" + pack.ID + "]'s element item is null.");
                     }

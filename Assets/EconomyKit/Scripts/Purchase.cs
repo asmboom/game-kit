@@ -13,9 +13,8 @@ namespace Beetle23
     {
         public PurchaseType Type;
         public float Price;
-        // if purchasing with market, this is market id
-        // if purchasing with virtual currency, this is virtual currency id
-        public string AssociatedID;
+        public string MarketID; // only useful if purchasing with market
+        public VirtualCurrency VirtualCurrency; // only useful if purchaing with virtual currency
 
         public bool IsMarketPurchase
         {
@@ -23,16 +22,6 @@ namespace Beetle23
             {
                 return Type == PurchaseType.PurchaseWithMarket;
             }
-        }
-
-        public VirtualCurrency VirtualCurrency
-        {
-            get
-            {
-                _virtualCurrency = EconomyKit.Config.PopulateItemIfNull(AssociatedID, 
-                    _virtualCurrency) as VirtualCurrency;
-                return _virtualCurrency;
-            }   
         }
 
         public PurchaseError Execute(PurchasableItem purchasable)
@@ -71,7 +60,7 @@ namespace Beetle23
             EconomyKit.OnPurchaseStarted(item);
 
             _currentItemPurchasedWithMarket = item;
-            return Market.Instance.StartPurchase(AssociatedID, 1,
+            return Market.Instance.StartPurchase(MarketID, 1,
                 OnMarketPurchaseSucceeded, OnMarketPurchaseFailed);
         }
 
@@ -90,8 +79,6 @@ namespace Beetle23
             EconomyKit.OnPurchaseFailed(_currentItemPurchasedWithMarket);
             _currentItemPurchasedWithMarket = null;
         }
-
-        private VirtualCurrency _virtualCurrency;
 
         private static PurchasableItem _currentItemPurchasedWithMarket = null;
     }

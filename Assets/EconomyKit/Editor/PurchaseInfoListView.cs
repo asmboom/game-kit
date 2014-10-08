@@ -98,7 +98,7 @@ namespace Beetle23
         private void DrawType(Rect position, Purchase purchase, int index)
         {
             PurchaseType newType = (PurchaseType)EditorGUI.EnumPopup(position, purchase.Type);
-            if (newType != purchase.Type && newType == PurchaseType.PurchaseWithVirtualCurrency)
+            if (newType != purchase.Type && purchase.Type == PurchaseType.PurchaseWithVirtualCurrency)
             {
                 VirtualItemsEditUtil.UpdatePurchaseByIndex(purchase, _virtualCurrencyIndicesForPurchase[index]);
             }
@@ -107,7 +107,7 @@ namespace Beetle23
 
         private void DrawMarketID(Rect position, Purchase purchase)
         {
-            purchase.AssociatedID = EditorGUI.TextField(position, purchase.AssociatedID);
+            purchase.MarketID = EditorGUI.TextField(position, purchase.MarketID);
         }
 
         private void DrawVirtualCurrencyPopup(Rect position, Purchase purchase, int index)
@@ -144,13 +144,6 @@ namespace Beetle23
 
                 for (var i = 0; i < _listAdaptor.Count; i++)
                 {
-                    if (!_listAdaptor[i].IsMarketPurchase &&
-                        _listAdaptor[i].VirtualCurrency == null &&
-                        VirtualItemsEditUtil.DisplayedVirtualCurrencyIDs.Length > 0)
-                    {
-                        _listAdaptor[i].AssociatedID = VirtualItemsEditUtil.DisplayedVirtualCurrencyIDs[0];
-                    }
-                        
                     _virtualCurrencyIndicesForPurchase.Add(_listAdaptor[i].VirtualCurrency == null ? 0 :
                         VirtualItemsEditUtil.GetVirtualCurrencyIndexById(_listAdaptor[i].VirtualCurrency.ID));
                 }

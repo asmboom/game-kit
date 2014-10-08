@@ -39,24 +39,6 @@ namespace Beetle23
             return _idToItems.TryGetValue(id, out item);
         }
 
-        public VirtualItem PopulateItemIfNull(string itemID, VirtualItem item)
-        {
-            if (!string.IsNullOrEmpty(itemID))
-            {
-#if UNITY_EDITOR
-                if (!UnityEditor.EditorApplication.isPlaying)
-                {
-                    item = null;
-                }
-#endif
-                if (item == null)
-                {
-                    item = GetItemByID(itemID) as VirtualItem;
-                }
-            }
-            return item;
-        }
-
         public VirtualItem GetItemByID(string id)
         {
             if (_idToItems.ContainsKey(id))
@@ -83,18 +65,28 @@ namespace Beetle23
 
         public VirtualCategory GetItemCategory(string id)
         {
-            return _itemIDToCategory.ContainsKey(id) ? _itemIDToCategory[id] : null;
+            return _idToCategory.ContainsKey(id) ? _idToCategory[id] : null;
         }
 
-        public List<VirtualItem> GetCategoryItems(VirtualCategory category)
+        public void UpdateIdToItemMap()
         {
-            return _categoryToItems.ContainsKey(category) ? _categoryToItems[category] : null;
-        }
-
-        public void UpdateMaps()
-        {
-            UpdateIdToItemMap();
-            UpdateCategoryMaps();
+            _idToItems = new Dictionary<string, VirtualItem>();
+            for (int i = 0; i < VirtualCurrencies.Count; i++)
+            {
+                TryAddToIdItemMap(VirtualCurrencies[i].ID, VirtualCurrencies[i]);
+            }
+            for (int i = 0; i < SingleUseItems.Count; i++)
+            {
+                TryAddToIdItemMap(SingleUseItems[i].ID, SingleUseItems[i]);
+            }
+            for (int i = 0; i < LifeTimeItems.Count; i++)
+            {
+                TryAddToIdItemMap(LifeTimeItems[i].ID, LifeTimeItems[i]);
+            }
+            for (int i = 0; i < ItemPacks.Count; i++)
+            {
+                TryAddToIdItemMap(ItemPacks[i].ID, ItemPacks[i]);
+            }
         }
 
         public void RemoveNullRefs()
@@ -132,6 +124,21 @@ namespace Beetle23
                 if (Categories[i] == null)
                 {
                     Categories.RemoveAt(i);
+                }
+            }
+        }
+
+        public void UpdateIdToCategoryMap()
+        {
+            _idToCategory = new Dictionary<string, VirtualCategory>();
+            for (int i = 0; i < Categories.Count; i++)
+            {
+                foreach (var item in Categories[i].Items)
+                {
+                    if (item != null)
+                    {
+                        _idToCategory.Add(item.ID, Categories[i]);
+                    }
                 }
             }
         }
@@ -174,55 +181,11 @@ namespace Beetle23
                 Categories = new List<VirtualCategory>();
             }
 
-            UpdateMaps();
-        }
-
-        private void UpdateIdToItemMap()
-        {
-            _idToItems = new Dictionary<string, VirtualItem>();
-            for (int i = 0; i < VirtualCurrencies.Count; i++)
-            {
-                TryAddToIdItemMap(VirtualCurrencies[i].ID, VirtualCurrencies[i]);
-            }
-            for (int i = 0; i < SingleUseItems.Count; i++)
-            {
-                TryAddToIdItemMap(SingleUseItems[i].ID, SingleUseItems[i]);
-            }
-            for (int i = 0; i < LifeTimeItems.Count; i++)
-            {
-                TryAddToIdItemMap(LifeTimeItems[i].ID, LifeTimeItems[i]);
-            }
-            for (int i = 0; i < ItemPacks.Count; i++)
-            {
-                TryAddToIdItemMap(ItemPacks[i].ID, ItemPacks[i]);
-            }
-        }
-
-        private void UpdateCategoryMaps()
-        {
-            _itemIDToCategory = new Dictionary<string, VirtualCategory>();
-            _categoryToItems = new Dictionary<VirtualCategory, List<VirtualItem>>();
-            for (int i = 0; i < Categories.Count; i++)
-            {
-                List<VirtualItem> items = new List<VirtualItem>();
-                foreach (string itemID in Categories[i].ItemIDs)
-                {
-                    if (!string.IsNullOrEmpty(itemID))
-                    {
-                        VirtualItem item = GetItemByID(itemID);
-                        if (item != null)
-                        {
-                            _itemIDToCategory.Add(itemID, Categories[i]);
-                            items.Add(item);
-                        }
-                    }
-                }
-                _categoryToItems.Add(Categories[i], items);
-            }
+            UpdateIdToItemMap();
+            UpdateIdToCategoryMap();
         }
 
         private Dictionary<string, VirtualItem> _idToItems;
-        private Dictionary<string, VirtualCategory> _itemIDToCategory;
-        private Dictionary<VirtualCategory, List<VirtualItem>> _categoryToItems;
+        private Dictionary<string, VirtualCategory> _idToCategory;
     }
 }

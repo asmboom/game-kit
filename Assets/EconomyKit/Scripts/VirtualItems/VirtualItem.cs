@@ -4,13 +4,30 @@ using UnityEngine;
 
 namespace Beetle23
 {
-    [System.Serializable]
-    public abstract class VirtualItem : Entity
+    public abstract class VirtualItem : ScriptableObject, IComparable
     {
         public Action<int, int> OnBalanceChanged = delegate { };
 
+        [SerializeField]
+        public string Name;
+
+        [SerializeField]
+        public string Description;
+
+        [SerializeField]
+        public string ID;
+
+        [SerializeField]
         public Sprite Icon;
+
+        [SerializeField]
+        [HideInInspector]
+        public int SortIndex;
+
+        [SerializeField]
         public List<UpgradeItem> Upgrades;
+
+        [SerializeField]
         public ScriptableObject Extend;
 
         public int Balance { get { return EconomyStorage.GetItemBalance(ID); } }
@@ -19,13 +36,8 @@ namespace Beetle23
         {
             get
             {
-                return string.IsNullOrEmpty(ID) ? null : EconomyKit.Config.GetItemCategory(ID);
+                return EconomyKit.Config.GetItemCategory(ID);
             }
-        }
-
-        public VirtualItem()
-        {
-            Upgrades = new List<UpgradeItem>();
         }
 
         public void ResetBalance()
@@ -33,6 +45,18 @@ namespace Beetle23
             int oldBalance = Balance;
             EconomyStorage.SetItemBalance(ID, 0);
             OnBalanceChanged(oldBalance, 0);
+        }
+
+        public int CompareTo(object obj)
+        {
+            VirtualItem otherItem = obj as VirtualItem;
+            return otherItem != null ?
+                SortIndex.CompareTo(otherItem.SortIndex) : 0;
+        }
+
+        public int CompareTo(VirtualItem other)
+        {
+            return SortIndex.CompareTo(other.SortIndex);
         }
 
         public void Take(int amount)

@@ -6,7 +6,7 @@ namespace Beetle23
     public class Reward
     {
         public RewardType Type;
-        public string RelatedEntityID;
+        public ScriptableObject RelatedItem;
         public int RewardNumber;
 
         public void Give()

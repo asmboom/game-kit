@@ -12,87 +12,21 @@ MonoBehaviour:
   m_Name: VirtualItemsConfig
   m_EditorClassIdentifier: 
   VirtualCurrencies:
-  - ID: Coin
-    Name: Coin
-    Description: Coin
-    Icon: {fileID: 0}
-    Extend: {fileID: 0}
-  - ID: Gem
-    Name: Gem
-    Description: Gem
-    Icon: {fileID: 0}
-    Extend: {fileID: 0}
+  - {fileID: 11400000, guid: f801a488561815140925ca32fb172746, type: 2}
+  - {fileID: 11400000, guid: 84fc3c21350dc7a4a897d0f587509fd7, type: 2}
   SingleUseItems:
-  - ID: BuddhaPalm
-    Name: BuddhaPalm
-    Description: BuddhaPalm
-    Icon: {fileID: 0}
-    Extend: {fileID: 0}
-    PurchaseInfo:
-    - Type: 1
-      Price: 1000
-      AssociatedID: 
-  - ID: Life
-    Name: Life
-    Description: Life
-    Icon: {fileID: 0}
-    Extend: {fileID: 0}
-    PurchaseInfo:
-    - Type: 1
-      Price: 1
-      AssociatedID: Gem
+  - {fileID: 11400000, guid: a5135bea16b82404c98d5ad68cb5571e, type: 2}
+  - {fileID: 11400000, guid: c4499e27c6c706a4d89d20d4e7a98cf5, type: 2}
   LifeTimeItems:
-  - ID: PermanentLife
-    Name: PermanentLife
-    Description: PermanentLife
-    Icon: {fileID: 0}
-    Extend: {fileID: 0}
-    PurchaseInfo:
-    - Type: 1
-      Price: 5
-      AssociatedID: Gem
-    IsEquippable: 0
-  - ID: Wuzheng
-    Name: Wuzheng
-    Description: Wuzheng
-    Icon: {fileID: 0}
-    Extend: {fileID: 0}
-    PurchaseInfo: []
-    IsEquippable: 1
-  - ID: Wubao
-    Name: Wubao
-    Description: Wubao
-    Icon: {fileID: 0}
-    Extend: {fileID: 0}
-    PurchaseInfo:
-    - Type: 1
-      Price: 10
-      AssociatedID: Gem
-    IsEquippable: 1
+  - {fileID: 11400000, guid: 55942d1e4d8051a44b3901b0d127e546, type: 2}
+  - {fileID: 11400000, guid: 082df1851a8ebe244945e4cb6ca345d9, type: 2}
+  - {fileID: 11400000, guid: 1600332a6d3c761469c9d78fde933f1d, type: 2}
   ItemPacks:
-  - ID: CoinPack001
-    Name: CoinPack001
-    Description: CoinPack001
-    Icon: {fileID: 0}
-    Extend: {fileID: 0}
-    PurchaseInfo:
-    - Type: 1
-      Price: 6
-      AssociatedID: Gem
-    PackElements:
-    - ItemID: Coin
-      Amount: 10000
-  - ID: GemPack001
-    Name: GemPack001
-    Description: GemPack001
-    Icon: {fileID: 0}
-    Extend: {fileID: 0}
-    PurchaseInfo: []
-    PackElements:
-    - ItemID: 
-      Amount: 0
+  - {fileID: 11400000, guid: f56b13953dbef6d4a949a39a3d117e3d, type: 2}
+  - {fileID: 11400000, guid: 5717b672f9bc11d45bf6ed125ffe4efd, type: 2}
+  - {fileID: 11400000, guid: 9deb8151fd695794f9911ff3f7ded8ff, type: 2}
   Categories:
   - ID: Characters
-    ItemIDs:
-    - Wuzheng
-    - Wubao
+    Items:
+    - {fileID: 11400000, guid: 082df1851a8ebe244945e4cb6ca345d9, type: 2}
+    - {fileID: 11400000, guid: 1600332a6d3c761469c9d78fde933f1d, type: 2}

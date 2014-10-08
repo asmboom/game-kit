@@ -6,17 +6,8 @@ namespace Beetle23
     [System.Serializable]
     public class PackElement
     {
-        public string ItemID;
+        public VirtualItem Item;
         public int Amount;
-
-        public VirtualItem Item
-        {
-            get
-            {
-                _item = EconomyKit.Config.PopulateItemIfNull(ItemID, _item);
-                return _item;
-            }
-        }
 
         public void Give(int amount)
         {
@@ -30,21 +21,14 @@ namespace Beetle23
 
         public override string ToString()
         {
-            return ItemID != null ? string.Format("{0}x{1}", Item.Name, Amount) : "None";
+            return Item != null ? string.Format("{0}x{1}", Item.Name, Amount) : "None";
         }
-
-        private VirtualItem _item;
     }
 
-    [System.Serializable]
     public class VirtualItemPack : PurchasableItem
     {
+        [SerializeField]
         public List<PackElement> PackElements;
-
-        public VirtualItemPack()
-        {
-            PackElements = new List<PackElement>();
-        }
 
         public override bool CanPurchaseNow()
         {

@@ -83,14 +83,8 @@ namespace Beetle23
 
                 for (var i = 0; i < _listAdaptor.Count; i++)
                 {
-                    if (_listAdaptor[i].Item == null &&
-                        VirtualItemsEditUtil.DisplayedItemIDs.Length > 0)
-                    {
-                        _listAdaptor[i].ItemID = VirtualItemsEditUtil.DisplayedItemIDs[0];
-                    }
-                        
-                    _itemIndices.Add(_listAdaptor[i].ItemID != null ?
-                        VirtualItemsEditUtil.GetItemIndexById(_listAdaptor[i].ItemID) : 0);
+                    _itemIndices.Add(_listAdaptor[i].Item != null ?
+                        VirtualItemsEditUtil.GetItemIndexById(_listAdaptor[i].Item.ID) : 0);
                 }
             }
         }

@@ -8,14 +8,18 @@ namespace Beetle23
         public string ID;
         public string Name;
         public string Description;
-
-        public Entity() { }
+        public ScriptableObject Extend;
 
         public Entity(string id, string name, string description)
         {
             ID = id;
             Name = name;
             Description = description;
+        }
+
+        public T GetExtend<T>() where T : ScriptableObject
+        {
+            return Extend as T;
         }
     }
 }
