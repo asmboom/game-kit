@@ -202,7 +202,7 @@ public class EconomyKitDemo : MonoBehaviour
     {
         if (purchase.IsMarketPurchase)
         {
-            MarketProduct marketProduct = Market.Instance.ProductList[purchase.MarketID];
+            MarketProduct marketProduct = Market.Instance.ProductList[purchase.AssociatedID];
             GUI.Label(new Rect(Screen.width / 2f, y + productSize * 2 / 3f, Screen.width, productSize / 3f), string.Format("{0}", marketProduct.FormattedPrice));
         }
         else

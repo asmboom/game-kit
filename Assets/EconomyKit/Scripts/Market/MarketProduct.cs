@@ -38,7 +38,7 @@ namespace Beetle23
                     if (purchase.IsMarketPurchase)
                     {
                         MarketProduct product = new MarketProduct();
-                        product.ProductIdentifier = purchase.MarketID;
+                        product.ProductIdentifier = purchase.AssociatedID;
                         product.Title = item.Name;
                         product.Price = purchase.Price.ToString();
                         product.Description = item.Description;

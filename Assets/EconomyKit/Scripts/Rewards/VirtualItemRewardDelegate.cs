@@ -4,7 +4,7 @@
     {
         public void Give(Reward reward)
         {
-            VirtualItem item = reward.RelatedItem as VirtualItem;
+            VirtualItem item = EconomyKit.Config.GetItemByID(reward.RelatedEntityID);
             if (item != null)
             {
                 item.Give(reward.RewardNumber);

@@ -5,8 +5,12 @@ namespace Beetle23
 {
     public abstract class PurchasableItem : VirtualItem
     {
-        [SerializeField]
         public List<Purchase> PurchaseInfo;
+
+        public PurchasableItem()
+        {
+            PurchaseInfo = new List<Purchase>();
+        }
 
         public void Purchase()
         {
