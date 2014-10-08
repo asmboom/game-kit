@@ -1,18 +1,21 @@
-﻿public interface IEconomyKitFactory
+﻿namespace Beetle23
 {
-    IEconomyStorage CreateStorage();
-    Market CreateMarket();
-}
-
-public class DefaultEconomyKitFactory : IEconomyKitFactory
-{
-    public IEconomyStorage CreateStorage()
+    public interface IEconomyKitFactory
     {
-        return new NullableEconomyStorage();
+        IStorage CreateStorage();
+        Market CreateMarket();
     }
 
-    public Market CreateMarket()
+    public class DefaultEconomyKitFactory : IEconomyKitFactory
     {
-        return new MarketMockup();
+        public IStorage CreateStorage()
+        {
+            return new Storage();
+        }
+
+        public Market CreateMarket()
+        {
+            return new MarketMockup();
+        }
     }
 }

@@ -1,14 +1,17 @@
 ﻿using UnityEngine;
 
-public class VirtualCurrency : VirtualItem
+namespace Beetle23
 {
-    protected override void TakeBalance(int amount)
+    public class VirtualCurrency : VirtualItem
     {
-        Storage.SetItemBalance(ID, Storage.GetItemBalance(ID) - amount);
-    }
+        protected override void TakeBalance(int amount)
+        {
+            EconomyStorage.SetItemBalance(ID, EconomyStorage.GetItemBalance(ID) - amount);
+        }
 
-    protected override void GiveBalance(int amount)
-    {
-        Storage.SetItemBalance(ID, Storage.GetItemBalance(ID) + amount);
+        protected override void GiveBalance(int amount)
+        {
+            EconomyStorage.SetItemBalance(ID, EconomyStorage.GetItemBalance(ID) + amount);
+        }
     }
 }

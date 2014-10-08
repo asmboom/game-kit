@@ -1,48 +1,51 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class PurchasableItem : VirtualItem
+namespace Beetle23
 {
-    [SerializeField]
-    public List<Purchase> PurchaseInfo;
-
-    public void Purchase()
+    public abstract class PurchasableItem : VirtualItem
     {
-        if (PurchaseInfo.Count > 0)
-        {
-            Purchase(0);
-        }
-        else
-        {
-            // if the item doesn't contain any purchase, it is free
-            Give(1);
-        }
-    }
+        [SerializeField]
+        public List<Purchase> PurchaseInfo;
 
-    public void Purchase(int index)
-    {
-        if (index < PurchaseInfo.Count)
+        public void Purchase()
         {
-            if (CanPurchaseNow())
+            if (PurchaseInfo.Count > 0)
             {
-                PurchaseInfo[index].Execute(this);
+                Purchase(0);
+            }
+            else
+            {
+                // if the item doesn't contain any purchase, it is free
+                Give(1);
             }
         }
-        else
+
+        public void Purchase(int index)
         {
-            Debug.LogError("Item [" + ID + "] doesn't have purchase of index " + index);
+            if (index < PurchaseInfo.Count)
+            {
+                if (CanPurchaseNow())
+                {
+                    PurchaseInfo[index].Execute(this);
+                }
+            }
+            else
+            {
+                Debug.LogError("Item [" + ID + "] doesn't have purchase of index " + index);
+            }
         }
-    }
 
-    public abstract bool CanPurchaseNow();
+        public abstract bool CanPurchaseNow();
 
-    protected override void OnEnable()
-    {
-        base.OnEnable();
-
-        if (PurchaseInfo == null)
+        protected override void OnEnable()
         {
-            PurchaseInfo = new List<Purchase>();
+            base.OnEnable();
+
+            if (PurchaseInfo == null)
+            {
+                PurchaseInfo = new List<Purchase>();
+            }
         }
     }
 }

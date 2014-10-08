@@ -1,84 +1,87 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class PackElement
+namespace Beetle23
 {
-    public VirtualItem Item;
-    public int Amount;
-
-    public void Give(int amount)
+    [System.Serializable]
+    public class PackElement
     {
-        Item.Give(amount * Amount);
-    }
+        public VirtualItem Item;
+        public int Amount;
 
-    public void Take(int amount)
-    {
-        Item.Take(amount * Amount);
-    }
-
-    public override string ToString()
-    {
-        return Item != null ? string.Format("{0}x{1}", Item.Name, Amount) : "None";
-    }
-}
-
-public class VirtualItemPack : PurchasableItem
-{
-    [SerializeField]
-    public List<PackElement> PackElements;
-
-    public override bool CanPurchaseNow()
-    {
-        return true;
-    }
-
-    protected override void TakeBalance(int amount)
-    {
-        for (int i = 0; i < PackElements.Count; i++)
+        public void Give(int amount)
         {
-            PackElements[i].Take(amount);
+            Item.Give(amount * Amount);
+        }
+
+        public void Take(int amount)
+        {
+            Item.Take(amount * Amount);
+        }
+
+        public override string ToString()
+        {
+            return Item != null ? string.Format("{0}x{1}", Item.Name, Amount) : "None";
         }
     }
 
-    protected override void GiveBalance(int amount)
+    public class VirtualItemPack : PurchasableItem
     {
-        for (int i = 0; i < PackElements.Count; i++)
+        [SerializeField]
+        public List<PackElement> PackElements;
+
+        public override bool CanPurchaseNow()
         {
-            PackElements[i].Give(amount);
+            return true;
         }
-    }
 
-    protected override void OnEnable()
-    {
-        base.OnEnable();
-
-        if (PackElements == null)
+        protected override void TakeBalance(int amount)
         {
-            PackElements = new List<PackElement>();
-        }
-    }
-
-    public override string ToString()
-    {
-        if (PackElements.Count > 0)
-        {
-            string final = string.Empty;
             for (int i = 0; i < PackElements.Count; i++)
             {
-                final += PackElements[i].ToString();
-                if (i < PackElements.Count - 1)
-                {
-                    final += ",";
-                }
+                PackElements[i].Take(amount);
             }
-            return final;
         }
-        else
-        {
-            return EmptyString;
-        }
-    }
 
-    private const string EmptyString = "Empty";
+        protected override void GiveBalance(int amount)
+        {
+            for (int i = 0; i < PackElements.Count; i++)
+            {
+                PackElements[i].Give(amount);
+            }
+        }
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+
+            if (PackElements == null)
+            {
+                PackElements = new List<PackElement>();
+            }
+        }
+
+        public override string ToString()
+        {
+            if (PackElements.Count > 0)
+            {
+                string final = string.Empty;
+                for (int i = 0; i < PackElements.Count; i++)
+                {
+                    final += PackElements[i].ToString();
+                    if (i < PackElements.Count - 1)
+                    {
+                        final += ",";
+                    }
+                }
+                return final;
+            }
+            else
+            {
+                return EmptyString;
+            }
+        }
+
+        private const string EmptyString = "Empty";
+    }
 }

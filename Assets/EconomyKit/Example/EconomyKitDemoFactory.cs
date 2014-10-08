@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
+using Beetle23;
 
 public class EconomyKitDemoFactory : IEconomyKitFactory
 {
-    public IEconomyStorage CreateStorage()
+    public IStorage CreateStorage()
     {
-        return new PlayerPrefsEconomyStorage();
+        return new Storage();
     }
 
     public Market CreateMarket()

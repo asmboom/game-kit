@@ -1,14 +1,17 @@
 ﻿using UnityEngine;
 
-[System.Serializable]
-public class Reward
+namespace Beetle23
 {
-    public RewardType Type;
-    public ScriptableObject RelatedItem;
-    public int RewardNumber;
-
-    public void Give()
+    [System.Serializable]
+    public class Reward
     {
-        RewardDelegateFactory.Get(Type).Give(this);
+        public RewardType Type;
+        public ScriptableObject RelatedItem;
+        public int RewardNumber;
+
+        public void Give()
+        {
+            RewardDelegateFactory.Get(Type).Give(this);
+        }
     }
 }

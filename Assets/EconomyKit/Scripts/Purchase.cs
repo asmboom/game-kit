@@ -1,82 +1,85 @@
 ﻿using UnityEngine;
 
-public enum PurchaseType
+namespace Beetle23
 {
-    PurchaseWithMarket,
-    PurchaseWithVirtualCurrency
-}
-
-[System.Serializable]
-public class Purchase
-{
-    public PurchaseType Type;
-    public float Price;
-    public string MarketID; // only useful if purchasing with market
-    public VirtualCurrency VirtualCurrency; // only useful if purchaing with virtual currency
-
-    public bool IsMarketPurchase
+    public enum PurchaseType
     {
-        get
-        {
-            return Type == PurchaseType.PurchaseWithMarket;
-        }
+        PurchaseWithMarket,
+        PurchaseWithVirtualCurrency
     }
 
-    public PurchaseError Execute(PurchasableItem purchasable)
+    [System.Serializable]
+    public class Purchase
     {
-        if (Type == PurchaseType.PurchaseWithVirtualCurrency)
+        public PurchaseType Type;
+        public float Price;
+        public string MarketID; // only useful if purchasing with market
+        public VirtualCurrency VirtualCurrency; // only useful if purchaing with virtual currency
+
+        public bool IsMarketPurchase
         {
-            return BuyWithVirtualCurrency(purchasable);
+            get
+            {
+                return Type == PurchaseType.PurchaseWithMarket;
+            }
         }
-        else
+
+        public PurchaseError Execute(PurchasableItem purchasable)
         {
-            return BuyWithMarket(purchasable);
+            if (Type == PurchaseType.PurchaseWithVirtualCurrency)
+            {
+                return BuyWithVirtualCurrency(purchasable);
+            }
+            else
+            {
+                return BuyWithMarket(purchasable);
+            }
         }
-    }
 
-    private PurchaseError BuyWithVirtualCurrency(PurchasableItem item)
-    {
-        EconomyKit.OnPurchaseStarted(item);
-
-        int priceInVirtualCurrency = (int)Price;
-        int balance = VirtualCurrency.Balance;
-        if (balance < priceInVirtualCurrency)
+        private PurchaseError BuyWithVirtualCurrency(PurchasableItem item)
         {
-            return PurchaseError.InsufficientVirtualCurrency;
+            EconomyKit.OnPurchaseStarted(item);
+
+            int priceInVirtualCurrency = (int)Price;
+            int balance = VirtualCurrency.Balance;
+            if (balance < priceInVirtualCurrency)
+            {
+                return PurchaseError.InsufficientVirtualCurrency;
+            }
+            else
+            {
+                VirtualCurrency.Take(priceInVirtualCurrency);
+                item.Give(1);
+                EconomyKit.OnPurchaseSucceeded(item);
+                return PurchaseError.None;
+            }
         }
-        else
+
+        private PurchaseError BuyWithMarket(PurchasableItem item)
         {
-            VirtualCurrency.Take(priceInVirtualCurrency);
-            item.Give(1);
-            EconomyKit.OnPurchaseSucceeded(item);
-            return PurchaseError.None;
+            EconomyKit.OnPurchaseStarted(item);
+
+            _currentItemPurchasedWithMarket = item;
+            return Market.Instance.StartPurchase(MarketID, 1,
+                OnMarketPurchaseSucceeded, OnMarketPurchaseFailed);
         }
-    }
 
-    private PurchaseError BuyWithMarket(PurchasableItem item)
-    {
-        EconomyKit.OnPurchaseStarted(item);
-
-        _currentItemPurchasedWithMarket = item;
-        return Market.Instance.StartPurchase(MarketID, 1,
-            OnMarketPurchaseSucceeded, OnMarketPurchaseFailed);
-    }
-
-    private void OnMarketPurchaseSucceeded()
-    {
-        if (_currentItemPurchasedWithMarket != null)
+        private void OnMarketPurchaseSucceeded()
         {
-            _currentItemPurchasedWithMarket.Give(1);
-            EconomyKit.OnPurchaseSucceeded(_currentItemPurchasedWithMarket);
+            if (_currentItemPurchasedWithMarket != null)
+            {
+                _currentItemPurchasedWithMarket.Give(1);
+                EconomyKit.OnPurchaseSucceeded(_currentItemPurchasedWithMarket);
+            }
+            _currentItemPurchasedWithMarket = null;
         }
-        _currentItemPurchasedWithMarket = null;
-    }
 
-    private void OnMarketPurchaseFailed()
-    {
-        EconomyKit.OnPurchaseFailed(_currentItemPurchasedWithMarket);
-        _currentItemPurchasedWithMarket = null;
-    }
+        private void OnMarketPurchaseFailed()
+        {
+            EconomyKit.OnPurchaseFailed(_currentItemPurchasedWithMarket);
+            _currentItemPurchasedWithMarket = null;
+        }
 
-    private static PurchasableItem _currentItemPurchasedWithMarket = null;
+        private static PurchasableItem _currentItemPurchasedWithMarket = null;
+    }
 }

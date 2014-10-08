@@ -1,22 +1,25 @@
 ﻿using System;
 using UnityEngine;
 
-public class MarketMockup : Market
+namespace Beetle23
 {
-    protected override void RequestProductList()
+    public class MarketMockup : Market
     {
-        _marketProducts = MarketProduct.CreateProductListFromVirtualItemsConfig(EconomyKit.Config);
-        EndProductListRequest(true);
-    }
+        protected override void RequestProductList()
+        {
+            _marketProducts = MarketProduct.CreateProductListFromVirtualItemsConfig(EconomyKit.Config);
+            EndProductListRequest(true);
+        }
 
-    protected override void PurchaseProduct(MarketProduct product, int quantity)
-    {
+        protected override void PurchaseProduct(MarketProduct product, int quantity)
+        {
 #if UNITY_EDITOR
-        UnityEngine.Debug.Log("Cost real currency" + product.FormattedPrice +
-            "x" + quantity + " and purchased product [" + product.ProductIdentifier + "] named [" + product.Title + "]");
-        EndPurchase(true);
+            UnityEngine.Debug.Log("Cost real currency" + product.FormattedPrice +
+                "x" + quantity + " and purchased product [" + product.ProductIdentifier + "] named [" + product.Title + "]");
+            EndPurchase(true);
 #else
         EndPurchase(false);
 #endif
+        }
     }
 }

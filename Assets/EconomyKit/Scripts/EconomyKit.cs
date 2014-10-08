@@ -1,77 +1,80 @@
 ﻿using System;
 using UnityEngine;
 
-public static class EconomyKit
+namespace Beetle23
 {
-    public static Action<PurchasableItem> OnPurchaseStarted = delegate { };
-    public static Action<PurchasableItem> OnPurchaseSucceeded = delegate { };
-    public static Action<PurchasableItem> OnPurchaseFailed = delegate { };
-
-    public static void Init(IEconomyKitFactory factory)
+    public static class EconomyKit
     {
-        _factory = factory;
-    }
+        public static Action<PurchasableItem> OnPurchaseStarted = delegate { };
+        public static Action<PurchasableItem> OnPurchaseSucceeded = delegate { };
+        public static Action<PurchasableItem> OnPurchaseFailed = delegate { };
 
-    public static VirtualItemsConfig Config
-    {
-        get
+        public static void Init(IEconomyKitFactory factory)
         {
-            if (_config == null)
+            _factory = factory;
+        }
+
+        public static VirtualItemsConfig Config
+        {
+            get
             {
-                _config = Resources.Load<VirtualItemsConfig>("VirtualItemsConfig");
                 if (_config == null)
                 {
-                    Debug.LogWarning("Create empty VirtualItemsConfig at runtime");
-                    _config = ScriptableObject.CreateInstance<VirtualItemsConfig>();
+                    _config = Resources.Load<VirtualItemsConfig>("VirtualItemsConfig");
+                    if (_config == null)
+                    {
+                        Debug.LogWarning("Create empty VirtualItemsConfig at runtime");
+                        _config = ScriptableObject.CreateInstance<VirtualItemsConfig>();
 #if UNITY_EDITOR
-                    string fullPath = "Assets/StoreKit/Resources/VirtualItemsConfig.asset";
-                    UnityEditor.AssetDatabase.CreateAsset(_config, fullPath);
+                        string fullPath = "Assets/StoreKit/Resources/VirtualItemsConfig.asset";
+                        UnityEditor.AssetDatabase.CreateAsset(_config, fullPath);
 #endif
+                    }
                 }
+                return _config;
             }
-            return _config;
         }
-    }
 
-    public static void LogDebug(string tag, string message)
-    {
-        if (Debug.isDebugBuild)
+        public static void LogDebug(string tag, string message)
         {
-            Debug.Log(string.Format("{0} {1}", tag, message));
+            if (Debug.isDebugBuild)
+            {
+                Debug.Log(string.Format("{0} {1}", tag, message));
+            }
         }
-    }
 
-    public static void LogError(string tag, string message)
-    {
-        Debug.LogError(string.Format("{0} {1}", tag, message));
-    }
+        public static void LogError(string tag, string message)
+        {
+            Debug.LogError(string.Format("{0} {1}", tag, message));
+        }
 
-    internal static Market CreateMarket()
-    {
-        if (_factory != null)
+        internal static Market CreateMarket()
         {
-            return _factory.CreateMarket();
+            if (_factory != null)
+            {
+                return _factory.CreateMarket();
+            }
+            else
+            {
+                Debug.LogError("You need to call EconomyKit::Init function first!!!");
+                return null;
+            }
         }
-        else
-        {
-            Debug.LogError("You need to call EconomyKit::Init function first!!!");
-            return null;
-        }
-    }
 
-    internal static IEconomyStorage CreateStorage()
-    {
-        if (_factory != null)
+        internal static IStorage CreateStorage()
         {
-            return _factory.CreateStorage();
+            if (_factory != null)
+            {
+                return _factory.CreateStorage();
+            }
+            else
+            {
+                Debug.LogError("You need to call EconomyKit::Init function first!!!");
+                return null;
+            }
         }
-        else
-        {
-            Debug.LogError("You need to call EconomyKit::Init function first!!!");
-            return null;
-        }
-    }
 
-    private static VirtualItemsConfig _config;
-    private static IEconomyKitFactory _factory;
+        private static VirtualItemsConfig _config;
+        private static IEconomyKitFactory _factory;
+    }
 }

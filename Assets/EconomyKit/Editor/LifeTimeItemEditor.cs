@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(LifeTimeItem))]
-public class LifeTimeItemEditor : VirtualCurrencyEditor
+namespace Beetle23
 {
-    public override void OnInspectorGUI()
+    [CustomEditor(typeof(LifeTimeItem))]
+    public class LifeTimeItemEditor : VirtualCurrencyEditor
     {
-        base.OnInspectorGUI();
-        EditorGUILayout.LabelField("Is Equippable", (target as LifeTimeItem).IsEquippable.ToString());
-        VirtualCurrencyEditor.DrawPurchaseInspector(target as PurchasableItem);
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
+            EditorGUILayout.LabelField("Is Equippable", (target as LifeTimeItem).IsEquippable.ToString());
+            VirtualCurrencyEditor.DrawPurchaseInspector(target as PurchasableItem);
+        }
     }
 }

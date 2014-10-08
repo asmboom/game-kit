@@ -1,15 +1,18 @@
-﻿public class VirtualItemRewardDelegate : IRewardDelegate
+﻿namespace Beetle23
 {
-    public void Give(Reward reward)
+    public class VirtualItemRewardDelegate : IRewardDelegate
     {
-        VirtualItem item = reward.RelatedItem as VirtualItem;
-        if (item != null)
+        public void Give(Reward reward)
         {
-            item.Give(reward.RewardNumber);
-        }
-        else
-        {
-            UnityEngine.Debug.LogWarning("Virtual item's reward item is not a virtual item.");
+            VirtualItem item = reward.RelatedItem as VirtualItem;
+            if (item != null)
+            {
+                item.Give(reward.RewardNumber);
+            }
+            else
+            {
+                UnityEngine.Debug.LogWarning("Virtual item's reward item is not a virtual item.");
+            }
         }
     }
 }

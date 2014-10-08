@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(VirtualItemPack))]
-public class VirtualItemPackEditor : VirtualCurrencyEditor
+namespace Beetle23
 {
-    public override void OnInspectorGUI()
+    [CustomEditor(typeof(VirtualItemPack))]
+    public class VirtualItemPackEditor : VirtualCurrencyEditor
     {
-        base.OnInspectorGUI();
-        EditorGUILayout.LabelField("Pack info", (target as VirtualItemPack).ToString());
-        VirtualCurrencyEditor.DrawPurchaseInspector(target as PurchasableItem);
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
+            EditorGUILayout.LabelField("Pack info", (target as VirtualItemPack).ToString());
+            VirtualCurrencyEditor.DrawPurchaseInspector(target as PurchasableItem);
+        }
     }
 }

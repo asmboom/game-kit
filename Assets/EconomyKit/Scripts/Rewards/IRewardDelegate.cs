@@ -1,4 +1,7 @@
-﻿public interface IRewardDelegate
+﻿namespace Beetle23
 {
-    void Give(Reward reward);
+    public interface IRewardDelegate
+    {
+        void Give(Reward reward);
+    }
 }

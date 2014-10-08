@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Beetle23;
 
 public class EconomyKitDemo : MonoBehaviour
 {
@@ -220,12 +221,12 @@ public class EconomyKitDemo : MonoBehaviour
 
     private bool IsLaunched()
     {
-        return PlayerPrefsEconomyStorage.GetBool("already_launched", false);
+        return PlayerPrefs.GetInt("already_launched", 0) != 0;
     }
 
     private void SetLaunched()
     {
-        PlayerPrefsEconomyStorage.SetBool("already_launched", true);
+        PlayerPrefs.SetInt("already_launched", 1);
     }
 
     private List<PurchasableItem> _items;

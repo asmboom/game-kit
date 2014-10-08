@@ -1,14 +1,17 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class VirtualCategory
+namespace Beetle23
 {
-    public string ID;
-    public List<VirtualItem> Items;
-
-    public VirtualCategory()
+    [System.Serializable]
+    public class VirtualCategory
     {
-        Items = new List<VirtualItem>();
+        public string ID;
+        public List<VirtualItem> Items;
+
+        public VirtualCategory()
+        {
+            Items = new List<VirtualItem>();
+        }
     }
 }

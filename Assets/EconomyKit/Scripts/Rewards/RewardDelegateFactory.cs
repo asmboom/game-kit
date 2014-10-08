@@ -1,28 +1,31 @@
 ﻿using System.Collections.Generic;
 
-public static class RewardDelegateFactory
+namespace Beetle23
 {
-    public static IRewardDelegate Get(RewardType type)
+    public static class RewardDelegateFactory
     {
-        if (!_typeToDelegate.ContainsKey(type))
+        public static IRewardDelegate Get(RewardType type)
         {
-            switch (type)
+            if (!_typeToDelegate.ContainsKey(type))
             {
-                case RewardType.VirtualItemReward:
-                    _typeToDelegate.Add(type, new VirtualItemRewardDelegate());
-                    break;
-                default:
-                    return null;
+                switch (type)
+                {
+                    case RewardType.VirtualItemReward:
+                        _typeToDelegate.Add(type, new VirtualItemRewardDelegate());
+                        break;
+                    default:
+                        return null;
+                }
             }
+
+            return _typeToDelegate[type];
         }
 
-        return _typeToDelegate[type];
-    }
+        static RewardDelegateFactory()
+        {
+            _typeToDelegate = new Dictionary<RewardType, IRewardDelegate>();
+        }
 
-    static RewardDelegateFactory()
-    {
-        _typeToDelegate = new Dictionary<RewardType, IRewardDelegate>();
+        private static Dictionary<RewardType, IRewardDelegate> _typeToDelegate;
     }
-
-    private static Dictionary<RewardType, IRewardDelegate> _typeToDelegate;
 }

@@ -1,73 +1,76 @@
 ﻿using System;
 using UnityEngine;
 
-public class LifeTimeItem : PurchasableItem
+namespace Beetle23
 {
-    [SerializeField]
-    public bool IsEquippable;
-
-    public Action OnEquipped = delegate { };
-    public Action OnUnEquipped = delegate { };
-
-    public void Give()
+    public class LifeTimeItem : PurchasableItem
     {
-        Give(1);
-    }
+        [SerializeField]
+        public bool IsEquippable;
 
-    public void Take()
-    {
-        Take(1);
-    }
+        public Action OnEquipped = delegate { };
+        public Action OnUnEquipped = delegate { };
 
-    public override bool CanPurchaseNow()
-    {
-        return Balance < 1;
-    }
-
-    protected override void TakeBalance(int amount)
-    {
-        Storage.SetItemBalance(ID, 0);
-    }
-
-    protected override void GiveBalance(int amount)
-    {
-        Storage.SetItemBalance(ID, 1);
-    }
-
-    public void Equip()
-    {
-        if (IsEquippable && Storage.GetItemBalance(ID) > 0)
+        public void Give()
         {
-            UnequipOtherItemsInCategory();
-            Storage.EquipVirtualGood(ID);
+            Give(1);
         }
-    }
 
-    public void Unequip()
-    {
-        if (IsEquippable)
+        public void Take()
         {
-            Storage.UnEquipVirtualGood(ID);
+            Take(1);
         }
-    }
 
-    public bool IsEquipped()
-    {
-        return IsEquippable && Storage.IsVertualGoodEquipped(ID);
-    }
-
-    private void UnequipOtherItemsInCategory()
-    {
-        if (Category != null)
+        public override bool CanPurchaseNow()
         {
-            for (int i = 0; i < Category.Items.Count; i++)
+            return Balance < 1;
+        }
+
+        protected override void TakeBalance(int amount)
+        {
+            EconomyStorage.SetItemBalance(ID, 0);
+        }
+
+        protected override void GiveBalance(int amount)
+        {
+            EconomyStorage.SetItemBalance(ID, 1);
+        }
+
+        public void Equip()
+        {
+            if (IsEquippable && EconomyStorage.GetItemBalance(ID) > 0)
             {
-                LifeTimeItem itemInCategory = Category.Items[i] as LifeTimeItem;
-                if (itemInCategory != null &&
-                    itemInCategory.IsEquippable &&
-                    itemInCategory != this)
+                UnequipOtherItemsInCategory();
+                EconomyStorage.EquipVirtualGood(ID);
+            }
+        }
+
+        public void Unequip()
+        {
+            if (IsEquippable)
+            {
+                EconomyStorage.UnEquipVirtualGood(ID);
+            }
+        }
+
+        public bool IsEquipped()
+        {
+            return IsEquippable && EconomyStorage.IsVertualGoodEquipped(ID);
+        }
+
+        private void UnequipOtherItemsInCategory()
+        {
+            if (Category != null)
+            {
+                for (int i = 0; i < Category.Items.Count; i++)
                 {
-                    itemInCategory.Unequip();
+                    LifeTimeItem itemInCategory = Category.Items[i] as LifeTimeItem;
+                    if (itemInCategory != null &&
+                        itemInCategory.IsEquippable &&
+                        itemInCategory != this)
+                    {
+                        itemInCategory.Unequip();
+                    }
                 }
             }
         }

@@ -1,26 +1,29 @@
 ﻿using UnityEngine;
 
-public class UpgradeItem : PurchasableItem
+namespace Beetle23
 {
-    [SerializeField]
-    public VirtualItem RelatedItem;
-
-    public override bool CanPurchaseNow()
+    public class UpgradeItem : PurchasableItem
     {
-        VirtualItem associatedItem = RelatedItem;
-        VirtualItem nextUpgradeItem = associatedItem.NextUpgradeItem;
-        return nextUpgradeItem != null && nextUpgradeItem == this;
-    }
+        [SerializeField]
+        public VirtualItem RelatedItem;
 
-    protected override void TakeBalance(int amount)
-    {
-        Storage.SetGoodCurrentLevel(RelatedItem.ID,
-            Storage.GetGoodCurrentLevel(RelatedItem.ID) - 1);
-    }
+        public override bool CanPurchaseNow()
+        {
+            VirtualItem associatedItem = RelatedItem;
+            VirtualItem nextUpgradeItem = associatedItem.NextUpgradeItem;
+            return nextUpgradeItem != null && nextUpgradeItem == this;
+        }
 
-    protected override void GiveBalance(int amount)
-    {
-        Storage.SetGoodCurrentLevel(RelatedItem.ID,
-            Storage.GetGoodCurrentLevel(RelatedItem.ID) + 1);
+        protected override void TakeBalance(int amount)
+        {
+            EconomyStorage.SetGoodCurrentLevel(RelatedItem.ID,
+                EconomyStorage.GetGoodCurrentLevel(RelatedItem.ID) - 1);
+        }
+
+        protected override void GiveBalance(int amount)
+        {
+            EconomyStorage.SetGoodCurrentLevel(RelatedItem.ID,
+                EconomyStorage.GetGoodCurrentLevel(RelatedItem.ID) + 1);
+        }
     }
 }

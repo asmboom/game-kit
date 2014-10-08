@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(SingleUseItem))]
-public class SingleUseItemEditor : VirtualCurrencyEditor
+namespace Beetle23
 {
-    public override void OnInspectorGUI()
+    [CustomEditor(typeof(SingleUseItem))]
+    public class SingleUseItemEditor : VirtualCurrencyEditor
     {
-        base.OnInspectorGUI();
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
 
-        VirtualCurrencyEditor.DrawPurchaseInspector(target as PurchasableItem);
+            VirtualCurrencyEditor.DrawPurchaseInspector(target as PurchasableItem);
+        }
     }
 }
