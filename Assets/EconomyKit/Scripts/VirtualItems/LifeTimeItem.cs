@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Beetle23
 {
+    [System.Serializable]
     public class LifeTimeItem : PurchasableItem
     {
         [SerializeField]

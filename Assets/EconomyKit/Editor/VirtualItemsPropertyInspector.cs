@@ -7,8 +7,9 @@ namespace Beetle23
 {
     public class VirtualItemsPropertyInspector
     {
-        public VirtualItemsPropertyInspector(object currentDisplayedItem)
+        public VirtualItemsPropertyInspector(VirtualItemsConfig config, object currentDisplayedItem)
         {
+            _config = config;
             _currentDisplayedItem = currentDisplayedItem;
             _purchaseListView = new PurchaseInfoListView(currentDisplayedItem as PurchasableItem);
             _packListView = new PackInfoListView(currentDisplayedItem as VirtualItemPack);
@@ -46,6 +47,8 @@ namespace Beetle23
 
         public void Draw(Rect position)
         {
+            EditorGUI.BeginChangeCheck();
+
             VirtualItem item = _currentDisplayedItem as VirtualItem;
             if (item != null)
             {
@@ -63,12 +66,15 @@ namespace Beetle23
                     GUILayout.EndArea();
                 }
             }
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                EditorUtility.SetDirty(_config);
+            }
         }
 
         private void DrawVirtualItem(Rect position, VirtualItem item)
         {
-            EditorGUI.BeginChangeCheck();
-
             GUI.BeginGroup(position);
             _scrollPosition = GUI.BeginScrollView(new Rect(0, 0, position.width, position.height),
                 _scrollPosition, new Rect(0, 0, position.width - 20, _currentYOffset));
@@ -144,11 +150,6 @@ namespace Beetle23
 
             GUI.EndScrollView();
             GUI.EndGroup();
-
-            if (EditorGUI.EndChangeCheck())
-            {
-                EditorUtility.SetDirty(item);
-            }
         }
 
         private void DrawID(Rect position, VirtualItem item)
@@ -160,7 +161,7 @@ namespace Beetle23
                 (GUI.GetNameOfFocusedControl() != IDInputControlName &&
                  _currentDisplayedItemID != item.ID))
             {
-                EconomyKit.Config.UpdateIdToItemMap();
+                EconomyKit.Config.UpdateMaps();
                 VirtualItem itemWithID = EconomyKit.Config.GetItemByID(_currentDisplayedItemID);
                 if (itemWithID != null && itemWithID != item)
                 {
@@ -172,13 +173,13 @@ namespace Beetle23
                 else
                 {
                     item.ID = _currentDisplayedItemID;
-                    AssetDatabase.RenameAsset(AssetDatabase.GetAssetPath(item), item.ID);
                     VirtualItemsEditorWindow.GetInstance().Repaint();
                     VirtualItemsEditUtil.UpdateDisplayedOptions();
                 }
             }
         }
 
+        private VirtualItemsConfig _config;
         private bool _isVirtualItemPropertiesExpanded = true;
         private bool _isPackInfoExpanded = true;
         private bool _isPurchaseInfoExpanded = true;

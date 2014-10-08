@@ -37,7 +37,7 @@ namespace Beetle23
             }
             if (_itemInspector == null)
             {
-                _itemInspector = new VirtualItemsPropertyInspector(_itemsExplorer.CurrentSelectedItem);
+                _itemInspector = new VirtualItemsPropertyInspector(_config, _itemsExplorer.CurrentSelectedItem);
                 _itemsExplorer.OnSelectionChange += _itemInspector.OnExplorerSelectionChange;
             }
 
@@ -57,8 +57,7 @@ namespace Beetle23
             if (_config != null)
             {
                 _config.RemoveNullRefs();
-                _config.UpdateIdToCategoryMap();
-                _config.UpdateIdToItemMap();
+                _config.UpdateMaps();
             }
             VirtualItemsEditUtil.UpdateDisplayedOptions();
         }

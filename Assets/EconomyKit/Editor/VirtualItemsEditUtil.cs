@@ -20,15 +20,6 @@ namespace Beetle23
             return asset;
         }
 
-        public static T CreateNewVirtualItem<T>(string path = null) where T : VirtualItem
-        {
-            T asset = ScriptableObject.CreateInstance<T>();
-            path = string.IsNullOrEmpty(path) ? DefaultVirtualItemDataPath : path;
-            AssetDatabase.CreateAsset(asset, path + "/NewVirtualItem" + EconomyKit.Config.ItemsCount + ".asset");
-            AssetDatabase.SaveAssets();
-            return asset;
-        }
-
         public static void UpdateDisplayedOptions()
         {
             UpdateDisplayedVirtualCurrencyIDs();
@@ -37,8 +28,8 @@ namespace Beetle23
 
         public static void UpdatePurchaseByIndex(Purchase purchase, int newCurrencyIndex)
         {
-            purchase.VirtualCurrency =
-                EconomyKit.Config.GetItemByID(DisplayedVirtualCurrencyIDs[newCurrencyIndex]) as VirtualCurrency;
+            purchase.AssociatedID =
+                EconomyKit.Config.GetItemByID(DisplayedVirtualCurrencyIDs[newCurrencyIndex]).ID;
         }
 
         public static void UpdateRelatedItemByIndex(VirtualItem item, int newItemIndex)
@@ -54,7 +45,7 @@ namespace Beetle23
         {
             if (element != null)
             {
-                element.Item = EconomyKit.Config.GetItemByID(DisplayedItemIDs[newItemIndex]);
+                element.ItemID = EconomyKit.Config.GetItemByID(DisplayedItemIDs[newItemIndex]).ID;
             }
         }
 
