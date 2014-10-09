@@ -17,11 +17,12 @@ MonoBehaviour:
   Icon: {fileID: 0}
   SortIndex: 2
   Upgrades: []
+  Extend: {fileID: 0}
   PurchaseInfo:
   - Type: 0
     Price: 6
     MarketID: store.gempack001
     VirtualCurrency: {fileID: 11400000, guid: f801a488561815140925ca32fb172746, type: 2}
   PackElements:
-  - Item: {fileID: 0}
+  - Item: {fileID: 11400000, guid: 84fc3c21350dc7a4a897d0f587509fd7, type: 2}
     Amount: 20
