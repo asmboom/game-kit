@@ -13,7 +13,7 @@ public static class VirtualItemsDrawUtil
         ItemStyle.alignment = TextAnchor.MiddleCenter;
 
         ItemSelectedStyle = new GUIStyle(GUI.skin.GetStyle("Box"));
-        ItemSelectedStyle.normal.textColor = Color.red;
+        ItemSelectedStyle.normal.textColor = Color.cyan;
 
         FoldoutStyle = new GUIStyle(EditorStyles.foldout);
         FoldoutStyle.fixedHeight = FoldoutStyle.fixedWidth = 0;

@@ -47,10 +47,11 @@ namespace Beetle23
             foreach (var item in _itemsWithoutCategory)
             {
                 if (GUI.Button(new Rect(0, yOffset, position.width * 0.4f, itemHeight), item.ID,
-                    item == _currentSelectedNonCategoryItem ?
+                    item == _currentSelectedItem ?
                         VirtualItemsDrawUtil.ItemSelectedStyle : VirtualItemsDrawUtil.ItemStyle))
                 {
-                    _currentSelectedNonCategoryItem = item;
+                    _currentSelectedItem = item;
+                    _isCurrentSelectedItemInCategory = false;
                 }
                 yOffset += itemHeight;
             }
@@ -58,22 +59,20 @@ namespace Beetle23
             GUI.EndGroup();
             GUI.EndGroup();
 
-            GUI.enabled = _currentSelectedNonCategoryItem != null;
+            GUI.enabled = _currentSelectedItem != null && !_isCurrentSelectedItemInCategory;
             if (GUI.Button(new Rect(position.width * 0.5f - 50, position.height * 0.5f - 30, 100, 20), "<Add"))
             {
-                category.Items.Add(_currentSelectedNonCategoryItem);
-                _currentSelectedCategoryItem = _currentSelectedNonCategoryItem;
-                _currentSelectedNonCategoryItem = null;
+                category.Items.Add(_currentSelectedItem);
+                _isCurrentSelectedItemInCategory = true;
                 UpdateItemsWithoutCategory();
                 EditorUtility.SetDirty(EconomyKit.Config);
             }
-            GUI.enabled = _currentSelectedCategoryItem != null;
-            if (_currentSelectedCategoryItem != null &&
+            GUI.enabled = _currentSelectedItem != null && _isCurrentSelectedItemInCategory;
+            if (_currentSelectedItem != null &&
                 GUI.Button(new Rect(position.width * 0.5f - 50, position.height * 0.5f + 30, 100, 20), "Remove>"))
             {
-                category.Items.Remove(_currentSelectedCategoryItem);
-                _currentSelectedNonCategoryItem = _currentSelectedCategoryItem;
-                _currentSelectedCategoryItem = null;
+                category.Items.Remove(_currentSelectedItem);
+                _isCurrentSelectedItemInCategory = false;
                 UpdateItemsWithoutCategory();
                 EditorUtility.SetDirty(EconomyKit.Config);
             }
@@ -83,10 +82,11 @@ namespace Beetle23
         private VirtualItem DrawItemInCategory(Rect position, VirtualItem item, int index)
         {
             if (GUI.Button(position, item.ID,
-                item == _currentSelectedCategoryItem ?
+                item == _currentSelectedItem ?
                     VirtualItemsDrawUtil.ItemSelectedStyle : VirtualItemsDrawUtil.ItemStyle))
             {
-                _currentSelectedCategoryItem = item;
+                _currentSelectedItem = item;
+                _isCurrentSelectedItemInCategory = true;
             }
             return item;
         }
@@ -136,8 +136,8 @@ namespace Beetle23
         private List<VirtualItem> _itemsWithoutCategory;
         private Vector2 _scrollPositionOfNonCategory;
         private Vector2 _scrollPositionOfCategory;
-        private VirtualItem _currentSelectedNonCategoryItem;
-        private VirtualItem _currentSelectedCategoryItem;
+        private VirtualItem _currentSelectedItem;
+        private bool _isCurrentSelectedItemInCategory;
 
         private const string IDInputControlName = "virtual_item_id_field";
     }
