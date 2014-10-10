@@ -16,7 +16,6 @@ namespace Beetle23
 
         protected override void GiveBalance(int amount)
         {
-            Debug.Log("give amount = " + amount);
             EconomyStorage.SetItemBalance(ID, EconomyStorage.GetItemBalance(ID) + amount);
         }
     }

@@ -26,7 +26,7 @@ namespace Beetle23
                         Debug.LogWarning("Create empty VirtualItemsConfig at runtime");
                         _config = ScriptableObject.CreateInstance<VirtualItemsConfig>();
 #if UNITY_EDITOR
-                        string fullPath = "Assets/StoreKit/Resources/VirtualItemsConfig.asset";
+                        string fullPath = "Assets/Resources/VirtualItemsConfig.asset";
                         UnityEditor.AssetDatabase.CreateAsset(_config, fullPath);
 #endif
                     }

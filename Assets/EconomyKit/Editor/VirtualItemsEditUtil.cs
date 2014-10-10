@@ -6,7 +6,7 @@ namespace Beetle23
 {
     public static class VirtualItemsEditUtil
     {
-        public static readonly string DefaultVirtualItemDataPath = "Assets/EconomyKit/Resources";
+        public static readonly string DefaultVirtualItemDataPath = "Assets/Resources";
 
         public static string[] DisplayedCategories { get; private set; }
         public static string[] DisplayedVirtualCurrencyIDs { get; private set; }
