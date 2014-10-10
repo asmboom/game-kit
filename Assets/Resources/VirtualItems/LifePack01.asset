@@ -16,8 +16,8 @@ MonoBehaviour:
   ID: LifePack01
   Icon: {fileID: 0}
   SortIndex: 1
-  HashID: 9b3f2496-cd39-4943-8ca1-1e76942bea2e
   Upgrades: []
+  Extend: {fileID: 0}
   PurchaseInfo:
   - Type: 1
     Price: 5

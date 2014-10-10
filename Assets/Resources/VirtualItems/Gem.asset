@@ -17,3 +17,4 @@ MonoBehaviour:
   Icon: {fileID: 0}
   SortIndex: 1
   Upgrades: []
+  Extend: {fileID: 0}

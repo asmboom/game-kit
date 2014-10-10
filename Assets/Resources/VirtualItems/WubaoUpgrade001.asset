@@ -16,7 +16,7 @@ MonoBehaviour:
   ID: 
   Icon: {fileID: 0}
   SortIndex: 0
-  HashID: e42d1e46-89d1-49e0-aeab-51405fa93372
   Upgrades: []
+  Extend: {fileID: 0}
   PurchaseInfo: []
   RelatedItem: {fileID: 0}

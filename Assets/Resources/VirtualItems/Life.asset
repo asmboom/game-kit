@@ -16,8 +16,8 @@ MonoBehaviour:
   ID: Life
   Icon: {fileID: 0}
   SortIndex: 1
-  HashID: 6515f2b8-335f-4162-833f-06448bc0c1f1
   Upgrades: []
+  Extend: {fileID: 0}
   PurchaseInfo:
   - Type: 1
     Price: 1

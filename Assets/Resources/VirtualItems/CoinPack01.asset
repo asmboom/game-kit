@@ -8,17 +8,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22caca854d876a04580e8ea4f0e7843e, type: 3}
-  m_Name: BuddhaPalm
+  m_Script: {fileID: 11500000, guid: 44e7e21bbd20e0242a882a0a22dadff3, type: 3}
+  m_Name: CoinPack01
   m_EditorClassIdentifier: 
-  Name: "\u5982\u6765\u795E\u638C"
-  Description: "\u4E00\u638C\u6253\u53BB\uFF0C\u98DE\u884C500\u7C73"
-  ID: BuddhaPalm
+  Name: "\u6728\u9C7C\u591A\u591A\u5305"
+  Description: "\u54C7\uFF01\u597D\u591A\u7684\u6728\u9C7C\u554A\uFF01"
+  ID: CoinPack01
   Icon: {fileID: 0}
   SortIndex: 0
   Upgrades: []
+  Extend: {fileID: 0}
   PurchaseInfo:
   - Type: 1
-    Price: 2000
+    Price: 10
     MarketID: 
     VirtualCurrency: {fileID: 11400000, guid: f801a488561815140925ca32fb172746, type: 2}
+  PackElements:
+  - Item: {fileID: 11400000, guid: f801a488561815140925ca32fb172746, type: 2}
+    Amount: 10000

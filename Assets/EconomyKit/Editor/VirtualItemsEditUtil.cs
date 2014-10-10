@@ -24,7 +24,7 @@ namespace Beetle23
         {
             T asset = ScriptableObject.CreateInstance<T>();
             path = string.IsNullOrEmpty(path) ? DefaultVirtualItemDataPath : path;
-            AssetDatabase.CreateAsset(asset, path + "/NewVirtualItem" + EconomyKit.Config.ItemsCount + ".asset");
+            AssetDatabase.CreateAsset(asset, path + "/VirtualItems/NewVirtualItem" + EconomyKit.Config.ItemsCount + ".asset");
             AssetDatabase.SaveAssets();
             return asset;
         }
