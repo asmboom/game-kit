@@ -25,7 +25,6 @@ namespace Beetle23
         {
             if (index < PurchaseInfo.Count)
             {
-                Debug.Log(PurchaseInfo);
                 return PurchaseInfo[index].IsMarketPurchase ||
                     PurchaseInfo[index].VirtualCurrency.Balance >= PurchaseInfo[index].Price;
             }
