@@ -8,7 +8,20 @@ namespace Beetle23
         [SerializeField]
         public List<Purchase> PurchaseInfo;
 
-        public bool HasEnoughCurrency(int index)
+        public bool IsAffordable()
+        {
+            if (PurchaseInfo.Count > 0)
+            {
+                return IsAffordable(0);
+            }
+            else
+            {
+                // if the item doesn't contain any purchase, it is free
+                return true;
+            }
+        }
+
+        public bool IsAffordable(int index)
         {
             if (index < PurchaseInfo.Count)
             {
