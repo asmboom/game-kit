@@ -23,6 +23,55 @@ namespace Beetle23
             }
         }
 
+        public static void CheckIfAnyInvalidRef(VirtualItemsConfig config)
+        {
+            foreach (var item in config.LifeTimeItems)
+            {
+                for (int i = 0; i < item.PurchaseInfo.Count; i++)
+                {
+                    CheckPurchase("Life-time item", item.ID, item.PurchaseInfo[i], i);
+                }
+                for (int i = 0; i < item.Upgrades.Count; i++)
+                {
+                    UpgradeItem upgrade = item.Upgrades[i];
+                    for (int j = 0; j < upgrade.PurchaseInfo.Count; j++)
+                    {
+                        CheckPurchase(item.ID + " upgrade", upgrade.ID, upgrade.PurchaseInfo[j], j);
+                    }
+                }
+            }
+            foreach (var item in config.SingleUseItems)
+            {
+                for (int i = 0; i < item.PurchaseInfo.Count; i++)
+                {
+                    CheckPurchase("Single use item", item.ID, item.PurchaseInfo[i], i);
+                }
+                for (int i = 0; i < item.Upgrades.Count; i++)
+                {
+                    UpgradeItem upgrade = item.Upgrades[i];
+                    for (int j = 0; j < upgrade.PurchaseInfo.Count; j++)
+                    {
+                        CheckPurchase(item.ID + " upgrade", upgrade.ID, upgrade.PurchaseInfo[j], j);
+                    }
+                }
+            }
+            foreach (var pack in config.ItemPacks)
+            {
+                for (int i = 0; i < pack.PackElements.Count; i++)
+                {
+                    PackElement element = pack.PackElements[i];
+                    if (element.Item == null)
+                    {
+                        Debug.LogError("Pack [" + pack.ID + "]'s [" + (i + 1) + "] element item is null.");
+                    }
+                }
+                for (int i = 0; i < pack.PurchaseInfo.Count; i++)
+                {
+                    CheckPurchase("Pack", pack.ID, pack.PurchaseInfo[i], i);
+                }
+            }
+        }
+
         private static void UpdateVirtualItemsConfig(VirtualItemsConfig virtualItemsConfig)
         {
             ClearVirtualItemConfigLists(virtualItemsConfig);
@@ -50,50 +99,22 @@ namespace Beetle23
             virtualItemsConfig.ItemPacks.Clear();
         }
 
-        private static void CheckIfAnyInvalidRef(VirtualItemsConfig config)
+        private static void CheckPurchase(string type, string itemID, Purchase purchase, int purchaseIndex)
         {
-            foreach (var item in config.LifeTimeItems)
+            if (purchase.IsMarketPurchase)
             {
-                for (int i = 0; i < item.PurchaseInfo.Count; i++)
+                if (string.IsNullOrEmpty(purchase.MarketID))
                 {
-                    Purchase purchase = item.PurchaseInfo[i];
-                    if (!purchase.IsMarketPurchase && purchase.VirtualCurrency == null)
-                    {
-                        Debug.LogError("Lifetime item [" + item.ID +
-                            "]'s [" + (i + 1) + "] purchase's related virtual currency is null.");
-                    }
+                    Debug.LogError(type + " [" + itemID +
+                        "]'s [" + (purchaseIndex + 1) + "] purchase's market id is empty.");
                 }
             }
-            foreach (var item in config.SingleUseItems)
+            else
             {
-                for (int i = 0; i < item.PurchaseInfo.Count; i++)
+                if (purchase.VirtualCurrency == null)
                 {
-                    Purchase purchase = item.PurchaseInfo[i];
-                    if (!purchase.IsMarketPurchase && purchase.VirtualCurrency == null)
-                    {
-                        Debug.LogError("Single use item [" + item.ID +
-                            "]'s [" + (i + 1) + "] purchase's related virtual currency is null.");
-                    }
-                }
-            }
-            foreach (var pack in config.ItemPacks)
-            {
-                for (int i = 0; i < pack.PackElements.Count; i++)
-                {
-                    PackElement element = pack.PackElements[i];
-                    if (element.Item == null)
-                    {
-                        Debug.LogError("Pack [" + pack.ID + "]'s [" + (i + 1) + "] element item is null.");
-                    }
-                }
-                for (int i = 0; i < pack.PurchaseInfo.Count; i++)
-                {
-                    Purchase purchase = pack.PurchaseInfo[i];
-                    if (!purchase.IsMarketPurchase && purchase.VirtualCurrency == null)
-                    {
-                        Debug.LogError("Pack [" + pack.ID +
-                            "]'s [" + (i + 1) + "] purchase's related virtual currency is null.");
-                    }
+                    Debug.LogError(type + " [" + itemID +
+                        "]'s [" + (purchaseIndex + 1) + "] purchase's related virtual currency is null.");
                 }
             }
         }

@@ -52,6 +52,11 @@ namespace Beetle23
         {
             GUILayout.BeginArea(position, string.Empty, "Box");
 
+            if (GUILayout.Button("Check Errors"))
+            {
+                VirtualItemsConfigEditor.CheckIfAnyInvalidRef(_config);
+            }
+
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("+Expand All", GUILayout.Width(90)))
             {
