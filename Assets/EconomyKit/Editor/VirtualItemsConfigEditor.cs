@@ -52,13 +52,47 @@ namespace Beetle23
 
         private static void CheckIfAnyInvalidRef(VirtualItemsConfig config)
         {
+            foreach (var item in config.LifeTimeItems)
+            {
+                for (int i = 0; i < item.PurchaseInfo.Count; i++)
+                {
+                    Purchase purchase = item.PurchaseInfo[i];
+                    if (!purchase.IsMarketPurchase && purchase.VirtualCurrency == null)
+                    {
+                        Debug.LogError("Lifetime item [" + item.ID +
+                            "]'s [" + (i + 1) + "] purchase's related virtual currency is null.");
+                    }
+                }
+            }
+            foreach (var item in config.SingleUseItems)
+            {
+                for (int i = 0; i < item.PurchaseInfo.Count; i++)
+                {
+                    Purchase purchase = item.PurchaseInfo[i];
+                    if (!purchase.IsMarketPurchase && purchase.VirtualCurrency == null)
+                    {
+                        Debug.LogError("Single use item [" + item.ID +
+                            "]'s [" + (i + 1) + "] purchase's related virtual currency is null.");
+                    }
+                }
+            }
             foreach (var pack in config.ItemPacks)
             {
-                foreach (var element in pack.PackElements)
+                for (int i = 0; i < pack.PackElements.Count; i++)
                 {
+                    PackElement element = pack.PackElements[i];
                     if (element.Item == null)
                     {
-                        Debug.LogError("Pack [" + pack.ID + "]'s element item is null.");
+                        Debug.LogError("Pack [" + pack.ID + "]'s [" + (i + 1) + "] element item is null.");
+                    }
+                }
+                for (int i = 0; i < pack.PurchaseInfo.Count; i++)
+                {
+                    Purchase purchase = pack.PurchaseInfo[i];
+                    if (!purchase.IsMarketPurchase && purchase.VirtualCurrency == null)
+                    {
+                        Debug.LogError("Pack [" + pack.ID +
+                            "]'s [" + (i + 1) + "] purchase's related virtual currency is null.");
                     }
                 }
             }
