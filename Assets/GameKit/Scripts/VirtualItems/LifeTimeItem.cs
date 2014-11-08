@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 namespace Beetle23
@@ -36,20 +36,20 @@ namespace Beetle23
 
         protected override void TakeBalance(int amount)
         {
-            EconomyStorage.SetItemBalance(ID, 0);
+            VirtualItemStorage.SetItemBalance(ID, 0);
         }
 
         protected override void GiveBalance(int amount)
         {
-            EconomyStorage.SetItemBalance(ID, 1);
+            VirtualItemStorage.SetItemBalance(ID, 1);
         }
 
         public void Equip()
         {
-            if (IsEquippable && EconomyStorage.GetItemBalance(ID) > 0)
+            if (IsEquippable && VirtualItemStorage.GetItemBalance(ID) > 0)
             {
                 UnequipOtherItemsInCategory();
-                EconomyStorage.EquipVirtualGood(ID);
+                VirtualItemStorage.EquipVirtualGood(ID);
             }
         }
 
@@ -57,13 +57,13 @@ namespace Beetle23
         {
             if (IsEquippable)
             {
-                EconomyStorage.UnEquipVirtualGood(ID);
+                VirtualItemStorage.UnEquipVirtualGood(ID);
             }
         }
 
         public bool IsEquipped()
         {
-            return IsEquippable && EconomyStorage.IsVertualGoodEquipped(ID);
+            return IsEquippable && VirtualItemStorage.IsVertualGoodEquipped(ID);
         }
 
         private void UnequipOtherItemsInCategory()

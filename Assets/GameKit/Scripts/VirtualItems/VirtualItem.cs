@@ -18,7 +18,7 @@ namespace Beetle23
         [SerializeField]
         public ScriptableObject Extend;
 
-        public int Balance { get { return EconomyStorage.GetItemBalance(ID); } }
+        public int Balance { get { return VirtualItemStorage.GetItemBalance(ID); } }
 
         public VirtualCategory Category
         {
@@ -31,7 +31,7 @@ namespace Beetle23
         public void ResetBalance()
         {
             int oldBalance = Balance;
-            EconomyStorage.SetItemBalance(ID, 0);
+            VirtualItemStorage.SetItemBalance(ID, 0);
             OnBalanceChanged(oldBalance, 0);
         }
 
@@ -72,7 +72,7 @@ namespace Beetle23
             get
             {
                 return Upgrades.Count > 0 ?
-                    Mathf.Clamp(EconomyStorage.GetGoodCurrentLevel(ID), 0, MaxLevel) : 0;
+                    Mathf.Clamp(VirtualItemStorage.GetGoodCurrentLevel(ID), 0, MaxLevel) : 0;
             }
         }
 

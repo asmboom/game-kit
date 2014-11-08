@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace Beetle23
 {
@@ -16,14 +16,14 @@ namespace Beetle23
 
         protected override void TakeBalance(int amount)
         {
-            EconomyStorage.SetGoodCurrentLevel(RelatedItem.ID,
-                EconomyStorage.GetGoodCurrentLevel(RelatedItem.ID) - 1);
+            VirtualItemStorage.SetGoodCurrentLevel(RelatedItem.ID,
+                VirtualItemStorage.GetGoodCurrentLevel(RelatedItem.ID) - 1);
         }
 
         protected override void GiveBalance(int amount)
         {
-            EconomyStorage.SetGoodCurrentLevel(RelatedItem.ID,
-                EconomyStorage.GetGoodCurrentLevel(RelatedItem.ID) + 1);
+            VirtualItemStorage.SetGoodCurrentLevel(RelatedItem.ID,
+                VirtualItemStorage.GetGoodCurrentLevel(RelatedItem.ID) + 1);
         }
     }
 }

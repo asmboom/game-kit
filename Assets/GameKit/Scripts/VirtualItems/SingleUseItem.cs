@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace Beetle23
 {
@@ -11,12 +11,12 @@ namespace Beetle23
 
         protected override void TakeBalance(int amount)
         {
-            EconomyStorage.SetItemBalance(ID, EconomyStorage.GetItemBalance(ID) - amount);
+            VirtualItemStorage.SetItemBalance(ID, VirtualItemStorage.GetItemBalance(ID) - amount);
         }
 
         protected override void GiveBalance(int amount)
         {
-            EconomyStorage.SetItemBalance(ID, EconomyStorage.GetItemBalance(ID) + amount);
+            VirtualItemStorage.SetItemBalance(ID, VirtualItemStorage.GetItemBalance(ID) + amount);
         }
     }
 }
