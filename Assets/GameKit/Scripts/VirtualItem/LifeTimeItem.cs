@@ -9,7 +9,7 @@ namespace Beetle23
         public bool IsEquippable;
 
         public Action OnEquipped = delegate { };
-        public Action OnUnEquipped = delegate { };
+        public Action OnUnequipped = delegate { };
 
         public bool Owned
         {
@@ -50,6 +50,7 @@ namespace Beetle23
             {
                 UnequipOtherItemsInCategory();
                 VirtualItemStorage.EquipVirtualGood(ID);
+                OnEquipped();
             }
         }
 
@@ -58,6 +59,7 @@ namespace Beetle23
             if (IsEquippable)
             {
                 VirtualItemStorage.UnEquipVirtualGood(ID);
+                OnUnequipped();
             }
         }
 
