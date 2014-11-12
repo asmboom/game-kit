@@ -1,4 +1,7 @@
-﻿public enum RewardType
+﻿namespace Beetle23
 {
-    VirtualItemReward
+    public enum RewardType
+    {
+        VirtualItemReward
+    }
 }

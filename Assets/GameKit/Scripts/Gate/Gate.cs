@@ -4,60 +4,72 @@ using System;
 
 namespace Beetle23
 {
-    public abstract class Gate : Item
+    [System.Serializable]
+    public class Gate : Item
     {
         public Action OnOpened = delegate { };
 
-    	public bool IsOpen
-    	{
-    		get
-    		{
-    			return GateStorage.IsOpen(ID);
-    		}
-    	}
+        public GateType Type;
+        public ScriptableItem RelatedItem;
+        public float RelatedNumber;
 
-    	public bool CanOpenNow
-    	{
-    		get
-    		{
-    			if (IsOpen)
-    			{
-    				return false;
-    			}
-    			return DoCanOpenNow();
-    		}
-    	}
+        public Gate()
+        {
+            _delegate = GateDelegateFactory.Create(this);
+        }
 
-    	public bool TryOpen()
-    	{
-    		if (GateStorage.IsOpen(ID))
-    		{
-    			return true;
-    		}
-    		return DoTryOpen();
-    	}
+        public bool IsOpened
+        {
+            get
+            {
+                return GateStorage.IsOpen(ID);
+            }
+        }
 
-		public void ForceOpen(bool open) 
-		{
-			if (IsOpen == open) 
-			{
-				return;
-			}
-			GateStorage.SetOpen(ID, open);
+        public bool CanOpenNow
+        {
+            get
+            {
+                if (IsOpened)
+                {
+                    return false;
+                }
+                return _delegate.CanOpenNow;
+            }
+        }
+
+        public bool TryOpen()
+        {
+            if (GateStorage.IsOpen(ID))
+            {
+                return true;
+            }
+            return _delegate.TryOpen();
+        }
+
+        public void ForceOpen(bool open)
+        {
+            if (IsOpened == open)
+            {
+                return;
+            }
+            GateStorage.SetOpen(ID, open);
             if (open)
             {
                 OnOpened();
-                DoOnOpen();
+                _delegate.HandleOnOpen();
             }
             else
             {
-                DoOnClose();
+                _delegate.HandleOnClose();
             }
-		}
+        }
 
-    	protected abstract bool DoCanOpenNow();
-		protected abstract bool DoTryOpen();
-        protected abstract void DoOnOpen();
-        protected abstract void DoOnClose();
+        public T GetRelatedItem<T>() where T : ScriptableItem
+        {
+            return RelatedItem as T;
+        }
+
+        protected GateDelegate _delegate;
     }
 }

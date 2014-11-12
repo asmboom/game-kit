@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace Beetle23
 {
-    public class Score : Item
+    public class Score : ScriptableItem
     {
     	public Action OnBeatRecord = delegate { }; 
     	public Action<float, float> OnRuntimeScoreChange = delegate { };

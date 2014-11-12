@@ -5,7 +5,7 @@ using System;
 
 namespace Beetle23
 {
-    public class World : Item
+    public class World : ScriptableItem
     {
         public Action OnCompleted = delegate { };
 
@@ -33,7 +33,7 @@ namespace Beetle23
         {
             get
             {
-                return Gate == null || Gate.IsOpen;
+                return Gate == null || Gate.IsOpened;
             }
         }
 

@@ -1,21 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Beetle23
 {
-    public abstract class Item : ScriptableObject
+    [System.Serializable]
+    public class Item : IItem
     {
-        [SerializeField]
-        public string Name;
+        public string Name
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+                throw new System.NotImplementedException();
+            }
+        }
 
-        [SerializeField]
-        public string Description;
+        public string Description
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+                throw new System.NotImplementedException();
+            }
+        }
 
-        [SerializeField]
-        public string ID;
-
-        [SerializeField]
-        public Sprite Icon;
+        public string ID
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+                throw new System.NotImplementedException();
+            }
+        }
     }
 }

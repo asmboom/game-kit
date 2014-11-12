@@ -3,7 +3,7 @@
 namespace Beetle23
 {
     [System.Serializable]
-    public class Reward
+    public class Reward : Item
     {
         public RewardType Type;
         public ScriptableObject RelatedItem;

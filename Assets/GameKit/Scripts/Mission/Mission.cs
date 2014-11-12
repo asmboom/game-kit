@@ -5,7 +5,7 @@ using System;
 
 namespace Beetle23
 {
-    public class Mission : Item
+    public class Mission : ScriptableItem
     {
         public Action OnCompleted = delegate { };
     }

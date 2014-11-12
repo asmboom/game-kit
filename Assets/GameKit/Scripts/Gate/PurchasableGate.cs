@@ -3,49 +3,50 @@ using System.Collections;
 
 namespace Beetle23
 {
-	public class PurchasableGate : Gate
-	{
-    	[SerializeField]
-    	public LifeTimeItem RelatedItem;
+    public class PurchasableGate : GateDelegate
+    {
+        public PurchasableGate(Gate gate)
+            : base(gate)
+        {
+            _lifetimeItem = gate.GetRelatedItem<LifeTimeItem>();
 
-		protected void OnEnable()
-		{
-			if (!IsOpen) 
-			{
-				RelatedItem.OnPurchased += OnPurchasedItem;
-			}
-		}
+            if (_lifetimeItem != null)
+            {
+                if (!_context.IsOpened)
+                {
+                    _lifetimeItem.OnPurchased += OnPurchasedItem;
+                }
+            }
+            else
+            {
+                Debug.LogError("Purchasable gate [" + gate.Name + "] isn't connected with a purchasable lifetime item!!!");
+            }
+        }
 
-		protected override bool DoCanOpenNow() 
-		{
-			return RelatedItem != null && RelatedItem.Owned;
-		}
+        public override bool CanOpenNow
+        {
+            get
+            {
+                return _lifetimeItem != null && _lifetimeItem.Owned;
+            }
+        }
 
-		protected override bool DoTryOpen() 
-		{
-			if (CanOpenNow) 
-			{
-				ForceOpen(true);
-				return true;
-			}
-			
-			return false;
-		}
+        public override void HandleOnOpen()
+        {
+            _lifetimeItem.OnPurchased -= OnPurchasedItem;
+        }
 
-		protected override void DoOnOpen() 
-		{
-			RelatedItem.OnPurchased -= OnPurchasedItem;
-		}
+        public override void HandleOnClose()
+        {
+            _lifetimeItem.OnPurchased += OnPurchasedItem;
+        }
 
-		protected override void DoOnClose() 
-		{
-			RelatedItem.OnPurchased += OnPurchasedItem;
-		}
+        private void OnPurchasedItem()
+        {
+            _context.ForceOpen(true);
+        }
 
-		private void OnPurchasedItem() 
-		{
-			ForceOpen(true);
-		}
-	}
+        private LifeTimeItem _lifetimeItem;
+    }
 }
 
