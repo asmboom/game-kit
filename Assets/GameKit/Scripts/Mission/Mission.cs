@@ -22,17 +22,17 @@ namespace Beetle23
             {
                 ID = "gate_" + this.ID
             };
-            if (!RelatedGate.IsOpened)
+            if (!IsCompleted)
             {
-                RelatedGate.OnOpened += OnGateOpened;
+                RelatedGate.OnOpened += Complete;
             }
         }
 
-        public bool IsCompleted
+        public virtual bool IsCompleted
         {
             get
             {
-                return RelatedGate != null && RelatedGate.IsOpened;
+                return RelatedGate.IsOpened;
             }
         }
 
@@ -41,20 +41,36 @@ namespace Beetle23
             RelatedGate.ForceOpen(completed);
             if (completed)
             {
-                RelatedGate.OnOpened -= OnGateOpened;
-                GiveRewards();
-                OnCompleted();
+                Complete();
             }
             else
             {
-                TakeRewards();
-                RelatedGate.OnOpened += OnGateOpened;
+                RevokeComplete();
             }
         }
 
-        private void OnGateOpened()
+        protected void Complete()
         {
             GiveRewards();
+            UnregisterEvents();
+            OnCompleted();
+        }
+
+        protected void RevokeComplete()
+        {
+            TakeRewards();
+            RegisterEvents();
+            RelatedGate.OnOpened += Complete;
+        }
+
+        protected virtual void UnregisterEvents()
+        {
+            RelatedGate.OnOpened -= Complete;
+        }
+
+        protected virtual void RegisterEvents()
+        {
+            RelatedGate.OnOpened += Complete;
         }
 
         private void TakeRewards()

@@ -27,12 +27,12 @@ namespace Beetle23
             get { return _world != null && _world.IsCompleted; }
         }
 
-        public override void HandleOnOpen()
+        public override void UnregisterEvents()
         {
             _world.OnCompleted -= OnWorldCompleted;
         }
 
-        public override void HandleOnClose()
+        public override void RegisterEvents()
         {
             _world.OnCompleted += OnWorldCompleted;
         }

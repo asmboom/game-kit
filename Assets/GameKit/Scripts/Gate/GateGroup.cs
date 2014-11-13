@@ -6,18 +6,20 @@ using System.Collections.Generic;
 namespace Beetle23
 {
     [System.Serializable]
-    public class GatesList : Gate
+    public class GateGroup : Gate
     {
-        public enum GateListType
+        public enum GateGroupType
         {
             And,
             Or
         }
 
+        [SerializeField]
         public List<Gate> Gates;
-        public GateListType ListType;
+        [SerializeField]
+        public GateGroupType GroupType;
 
-        public GatesList()
+        public GateGroup()
         {
             if (Type != GateType.GateList)
             {

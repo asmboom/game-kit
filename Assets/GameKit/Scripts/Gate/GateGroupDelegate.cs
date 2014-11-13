@@ -2,16 +2,16 @@
 
 namespace Beetle23
 {
-    public class GateListDelegate : GateDelegate
+    public class GateGroupDelegate : GateDelegate
     {
-        public GateListDelegate(Gate gate)
+        public GateGroupDelegate(Gate gate)
             : base(gate)
         {
-            _gateList = gate as GatesList;
+            _gateGroup = gate as GateGroup;
 
-            if (!_gateList.IsOpened)
+            if (!_gateGroup.IsOpened)
             {
-                foreach (var aGate in _gateList.Gates)
+                foreach (var aGate in _gateGroup.Gates)
                 {
                     aGate.OnOpened += OnGateOpened;
                 }
@@ -22,9 +22,9 @@ namespace Beetle23
         {
             get
             {
-                if (_gateList.ListType == GatesList.GateListType.And)
+                if (_gateGroup.GroupType == GateGroup.GateGroupType.And)
                 {
-                    foreach (Gate gate in _gateList.Gates)
+                    foreach (Gate gate in _gateGroup.Gates)
                     {
                         if (!gate.IsOpened)
                         {
@@ -35,7 +35,7 @@ namespace Beetle23
                 }
                 else
                 {
-                    foreach (Gate gate in _gateList.Gates)
+                    foreach (Gate gate in _gateGroup.Gates)
                     {
                         if (gate.IsOpened)
                         {
@@ -47,17 +47,17 @@ namespace Beetle23
             }
         }
 
-        public override void HandleOnClose()
+        public override void RegisterEvents()
         {
-            foreach (var gate in _gateList.Gates)
+            foreach (var gate in _gateGroup.Gates)
             {
                 gate.OnOpened += OnGateOpened;
             }
         }
 
-        public override void HandleOnOpen()
+        public override void UnregisterEvents()
         {
-            foreach (var gate in _gateList.Gates)
+            foreach (var gate in _gateGroup.Gates)
             {
                 gate.OnOpened -= OnGateOpened;
             }
@@ -71,6 +71,6 @@ namespace Beetle23
             }
         }
 
-        private GatesList _gateList;
+        private GateGroup _gateGroup;
     }
 }

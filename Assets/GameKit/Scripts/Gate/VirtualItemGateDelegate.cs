@@ -31,7 +31,7 @@ namespace Beetle23
             }
         }
 
-        public override void HandleOnOpen()
+        public override void UnregisterEvents()
         {
             if (_virtualItem != null)
             {
@@ -39,7 +39,7 @@ namespace Beetle23
             }
         }
 
-        public override void HandleOnClose()
+        public override void RegisterEvents()
         {
             if (_virtualItem != null)
             {

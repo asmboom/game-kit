@@ -16,7 +16,7 @@ namespace Beetle23
                 case GateType.WorldCompletionGate:
                     return new WorldCompletionGateDelegate(gate);
                 case GateType.GateList:
-                    return new GateListDelegate(gate);
+                    return new GateGroupDelegate(gate);
                 default:
                     return null;
             }

@@ -57,11 +57,11 @@ namespace Beetle23
             if (open)
             {
                 OnOpened();
-                _delegate.HandleOnOpen();
+                _delegate.UnregisterEvents();
             }
             else
             {
-                _delegate.HandleOnClose();
+                _delegate.RegisterEvents();
             }
         }
 

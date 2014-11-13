@@ -34,12 +34,12 @@ namespace Beetle23
             }
         }
 
-        public override void HandleOnOpen()
+        public override void UnregisterEvents()
         {
             _score.OnBeatRecord -= OnBeatRecord;
         }
 
-        public override void HandleOnClose()
+        public override void RegisterEvents()
         {
             _score.OnBeatRecord += OnBeatRecord;
         }

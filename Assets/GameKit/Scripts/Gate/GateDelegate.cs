@@ -7,8 +7,8 @@
         { }
 
         public abstract bool CanOpenNow { get; }
-        public abstract void HandleOnClose();
-        public abstract void HandleOnOpen();
+        public abstract void RegisterEvents();
+        public abstract void UnregisterEvents();
 
         public virtual bool TryOpen()
         {

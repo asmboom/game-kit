@@ -3,9 +3,9 @@ using System.Collections;
 
 namespace Beetle23
 {
-    public class PurchasableGate : GateDelegate
+    public class PurchasableGateDelegate : GateDelegate
     {
-        public PurchasableGate(Gate gate)
+        public PurchasableGateDelegate(Gate gate)
             : base(gate)
         {
             _lifetimeItem = gate.GetRelatedItem<LifeTimeItem>();
@@ -31,12 +31,12 @@ namespace Beetle23
             }
         }
 
-        public override void HandleOnOpen()
+        public override void UnregisterEvents()
         {
             _lifetimeItem.OnPurchased -= OnPurchasedItem;
         }
 
-        public override void HandleOnClose()
+        public override void RegisterEvents()
         {
             _lifetimeItem.OnPurchased += OnPurchasedItem;
         }
