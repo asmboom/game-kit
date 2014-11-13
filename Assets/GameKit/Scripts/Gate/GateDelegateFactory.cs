@@ -15,7 +15,9 @@ namespace Beetle23
                     return new ScoreGateDelegate(gate);
                 case GateType.WorldCompletionGate:
                     return new WorldCompletionGateDelegate(gate);
-                case GateType.GateList:
+                case GateType.PurchasableGate:
+                    return new PurchasableGateDelegate(gate);
+                case GateType.GateGroup:
                     return new GateGroupDelegate(gate);
                 default:
                     return null;

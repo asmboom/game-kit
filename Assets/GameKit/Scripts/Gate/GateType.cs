@@ -5,6 +5,7 @@
         ScoreGate,
         VirtualItemGate,
         WorldCompletionGate,
-        GateList,
+        PurchasableGate,
+        GateGroup,
     }
 }

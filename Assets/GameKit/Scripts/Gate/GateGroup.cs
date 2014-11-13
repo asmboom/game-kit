@@ -21,9 +21,9 @@ namespace Beetle23
 
         public GateGroup()
         {
-            if (Type != GateType.GateList)
+            if (Type != GateType.GateGroup)
             {
-                Type = GateType.GateList;
+                Type = GateType.GateGroup;
                 _delegate = GateDelegateFactory.Create(this);
             }
             Gates = new List<Gate>();
