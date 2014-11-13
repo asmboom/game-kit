@@ -52,6 +52,10 @@ namespace Beetle23
                 }
             }
             WorldStorage.SetCompleted(ID, completed);
+            if (completed)
+            {
+                OnCompleted();
+            }
         }
     }
 }

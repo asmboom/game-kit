@@ -3,7 +3,7 @@
 namespace Beetle23
 {
     [System.Serializable]
-    public class Reward : Item
+    public class Reward : SerializableItem
     {
         public RewardType Type;
         public ScriptableObject RelatedItem;
@@ -12,6 +12,11 @@ namespace Beetle23
         public void Give()
         {
             RewardDelegateFactory.Get(Type).Give(this);
+        }
+
+        public void Take()
+        {
+            RewardDelegateFactory.Get(Type).Take(this);
         }
     }
 }

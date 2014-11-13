@@ -3,5 +3,6 @@
     public interface IRewardDelegate
     {
         void Give(Reward reward);
+        void Take(Reward reward);
     }
 }

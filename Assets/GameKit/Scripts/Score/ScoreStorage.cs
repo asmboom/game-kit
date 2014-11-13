@@ -2,7 +2,7 @@
 
 namespace Beetle23
 {
-    public static class ScoreStorage
+    internal static class ScoreStorage
     {
     	public static float GetRecordScore(string itemId)
     	{

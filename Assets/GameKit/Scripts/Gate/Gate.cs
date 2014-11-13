@@ -5,7 +5,7 @@ using System;
 namespace Beetle23
 {
     [System.Serializable]
-    public class Gate : Item
+    public class Gate : SerializableItem
     {
         public Action OnOpened = delegate { };
 

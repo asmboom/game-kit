@@ -3,17 +3,17 @@
 namespace Beetle23
 {
     [System.Serializable]
-    public class Item : IItem
+    public class SerializableItem : IItem
     {
         public string Name
         {
             get
             {
-                throw new System.NotImplementedException();
+                return _name;
             }
             set
             {
-                throw new System.NotImplementedException();
+                _name = value;
             }
         }
 
@@ -21,11 +21,11 @@ namespace Beetle23
         {
             get
             {
-                throw new System.NotImplementedException();
+                return _description;
             }
             set
             {
-                throw new System.NotImplementedException();
+                _description = value;
             }
         }
 
@@ -33,12 +33,21 @@ namespace Beetle23
         {
             get
             {
-                throw new System.NotImplementedException();
+                return _id;
             }
             set
             {
-                throw new System.NotImplementedException();
+                _id = value;
             }
         }
+
+        [SerializeField]
+        private string _name;
+
+        [SerializeField]
+        private string _description;
+
+        [SerializeField]
+        private string _id;
     }
 }

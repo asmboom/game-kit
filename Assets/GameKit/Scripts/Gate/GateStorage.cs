@@ -2,7 +2,7 @@
 
 namespace Beetle23
 {
-    public static class GateStorage
+    internal static class GateStorage
     {
         public static bool IsOpen(string itemId)
         {

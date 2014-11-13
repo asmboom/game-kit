@@ -2,7 +2,7 @@
 
 namespace Beetle23
 {
-    public static class VirtualItemStorage
+    internal static class VirtualItemStorage
     {
         public static int GetItemBalance(string itemId)
         {

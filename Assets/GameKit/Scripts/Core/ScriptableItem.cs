@@ -6,15 +6,6 @@ namespace Beetle23
 {
     public abstract class ScriptableItem : ScriptableObject, IItem
     {
-        [SerializeField]
-        public string _name;
-
-        [SerializeField]
-        public string _description;
-
-        [SerializeField]
-        public string _id;
-
         public string Name
         {
             get
@@ -50,5 +41,14 @@ namespace Beetle23
                 _id = value;
             }
         }
+
+        [SerializeField]
+        private string _name;
+
+        [SerializeField]
+        private string _description;
+
+        [SerializeField]
+        private string _id;
     }
 }
