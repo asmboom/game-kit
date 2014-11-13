@@ -5,11 +5,11 @@ using System.Collections.Generic;
 namespace Beetle23
 {
     [System.Serializable]
-    public class MissionGroup : Mission
+    public class Challenge : Mission
     {
         public List<Mission> Missions;
 
-        public MissionGroup()
+        public Challenge()
         {
             Missions = new List<Mission>();
 

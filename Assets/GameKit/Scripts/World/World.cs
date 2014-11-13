@@ -37,12 +37,25 @@ namespace Beetle23
             }
         }
 
-        public void SetCompleted(bool completed) 
+        public void Complete(bool recursive)
         {
-            SetCompleted(completed, false);
+            SetCompleted(true, recursive);
         }
 
-        public void SetCompleted(bool completed, bool recursive) 
+        public void RevokeComplete(bool resursive)
+        {
+            SetCompleted(false, resursive);
+        }
+
+        public void ResetRuntimeScores(bool save)
+        {
+            for (int i = 0; i < Scores.Count; i++)
+            {
+                Scores[i].ResetRuntimeScore(save);
+            }
+        }
+
+        private void SetCompleted(bool completed, bool recursive) 
         {
             if (recursive) 
             {
