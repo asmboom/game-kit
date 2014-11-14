@@ -9,14 +9,12 @@ namespace Beetle23
     {
         public Action OnOpened = delegate { };
 
+        [SerializeField]
         public GateType Type;
+        [SerializeField]
         public ScriptableItem RelatedItem;
+        [SerializeField]
         public float RelatedNumber;
-
-        public Gate()
-        {
-            _delegate = GateDelegateFactory.Create(this);
-        }
 
         public bool IsOpened
         {
@@ -34,17 +32,19 @@ namespace Beetle23
                 {
                     return false;
                 }
-                return _delegate.CanOpenNow;
+                return Delegate.CanOpenNow;
             }
         }
 
-        public bool TryOpen()
+        public  bool TryOpen()
         {
-            if (GateStorage.IsOpen(ID))
+            if (CanOpenNow)
             {
+                ForceOpen(true);
                 return true;
             }
-            return _delegate.TryOpen();
+
+            return false;
         }
 
         public void ForceOpen(bool open)
@@ -57,11 +57,11 @@ namespace Beetle23
             if (open)
             {
                 OnOpened();
-                _delegate.UnregisterEvents();
+                Delegate.UnregisterEvents();
             }
             else
             {
-                _delegate.RegisterEvents();
+                Delegate.RegisterEvents();
             }
         }
 
@@ -70,6 +70,19 @@ namespace Beetle23
             return RelatedItem as T;
         }
 
-        protected GateDelegate _delegate;
+
+        protected GateDelegate Delegate
+        {
+            get
+            {
+                if (_delegate == null)
+                {
+                    _delegate = GateDelegateFactory.Create(this);
+                }
+                return _delegate;
+            }
+        }
+
+        private GateDelegate _delegate;
     }
 }
