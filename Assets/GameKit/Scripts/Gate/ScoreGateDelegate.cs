@@ -46,7 +46,7 @@ namespace Beetle23
 
         private void OnBeatRecord()
         {
-            if (_context.CanOpenNow)
+            if (Gate.AutoSave && _context.CanOpenNow)
             {
                 _context.ForceOpen(true);
             }

@@ -10,7 +10,7 @@ namespace Beetle23
         public Action OnCompleted = delegate { };
 
     	[SerializeField]
-    	public Gate Gate;
+    	public GateGroup Gate;
 
         [SerializeField]
         public List<World> SubWorlds;

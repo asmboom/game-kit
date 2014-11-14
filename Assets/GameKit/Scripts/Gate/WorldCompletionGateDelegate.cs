@@ -39,7 +39,10 @@ namespace Beetle23
 
         private void OnWorldCompleted()
         {
-            _context.ForceOpen(true);
+            if (Gate.AutoSave)
+            {
+                _context.ForceOpen(true);
+            }
         }
 
         private World _world;

@@ -9,6 +9,8 @@ namespace Beetle23
     {
         public Action OnOpened = delegate { };
 
+        public static bool AutoSave { get; set; }
+
         [SerializeField]
         public GateType Type;
         [SerializeField]
@@ -69,7 +71,6 @@ namespace Beetle23
         {
             return RelatedItem as T;
         }
-
 
         protected GateDelegate Delegate
         {

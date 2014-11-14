@@ -7,7 +7,7 @@ namespace Beetle23
     public abstract class VirtualItem : ScriptableItem, IComparable
     {
         public Action<int, int> OnBalanceChanged = delegate { };
-
+        
         [SerializeField]
         public Sprite Icon;
 

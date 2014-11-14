@@ -18,18 +18,6 @@ namespace Beetle23
             }
         }
 
-        public string Description
-        {
-            get
-            {
-                return _description;
-            }
-            set
-            {
-                _description = value;
-            }
-        }
-
         public string ID
         {
             get
@@ -42,13 +30,25 @@ namespace Beetle23
             }
         }
 
+        public string Description
+        {
+            get
+            {
+                return _description;
+            }
+            set
+            {
+                _description = value;
+            }
+        }
+
+        [SerializeField]
+        private string _id;
+
         [SerializeField]
         private string _name;
 
         [SerializeField]
         private string _description;
-
-        [SerializeField]
-        private string _id;
     }
 }

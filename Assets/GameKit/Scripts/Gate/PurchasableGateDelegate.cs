@@ -43,7 +43,10 @@ namespace Beetle23
 
         private void OnPurchasedItem()
         {
-            _context.ForceOpen(true);
+            if (Gate.AutoSave)
+            {
+                _context.ForceOpen(true);
+            }
         }
 
         private LifeTimeItem _lifetimeItem;

@@ -65,7 +65,7 @@ namespace Beetle23
 
         private void OnGateOpened()
         {
-            if (_context.CanOpenNow)
+            if (Gate.AutoSave && _context.CanOpenNow)
             {
                 _context.ForceOpen(true);
             }
