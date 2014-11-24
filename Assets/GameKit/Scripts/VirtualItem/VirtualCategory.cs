@@ -4,9 +4,9 @@ using UnityEngine;
 namespace Beetle23
 {
     [System.Serializable]
-    public class VirtualCategory
+    public class VirtualCategory : SerializableItem
     {
-        public string ID;
+        [SerializeField]
         public List<VirtualItem> Items;
 
         public VirtualCategory()

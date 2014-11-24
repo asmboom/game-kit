@@ -9,7 +9,7 @@ namespace Beetle23
     public class VirtualItemsTreeExplorer
     {
         public Action<object> OnSelectionChange = delegate { };
-        public object CurrentSelectedItem { get; private set; }
+        public IItem CurrentSelectedItem { get; private set; }
 
         public VirtualItemsTreeExplorer(VirtualItemsConfig config)
         {
@@ -132,30 +132,17 @@ namespace Beetle23
             GUILayout.EndArea();
         }
 
-        private T DrawItem<T>(Rect position, T item, int index) where T : class
+        private T DrawItem<T>(Rect position, T item, int index) where T : IItem
         {
-            string id = string.Empty;
             if (item == null)
             {
                 GUI.Label(position, "NULL");
                 return item;
             }
-            else if (item is VirtualItem)
-            {
-                id = (item as VirtualItem).ID;
-            }
-            else if (item is VirtualCategory)
-            {
-                id = (item as VirtualCategory).ID;
-            }
-            else
-            {
-                return item;
-            }
 
-            if (GUI.Button(position, id,
-                    item == CurrentSelectedItem ?
-                        VirtualItemsDrawUtil.ItemSelectedStyle : VirtualItemsDrawUtil.ItemStyle))
+            if (GUI.Button(position, item.ID,
+                    (!string.IsNullOrEmpty(item.ID) && CurrentSelectedItem != null && item.ID == CurrentSelectedItem.ID ?
+                        VirtualItemsDrawUtil.ItemSelectedStyle : VirtualItemsDrawUtil.ItemStyle)))
             {
                 SelectItem(item);
             }
@@ -249,7 +236,7 @@ namespace Beetle23
                                     }, DrawItem<VirtualCategory>);
         }
 
-        private void SelectItem(object item)
+        private void SelectItem(IItem item)
         {
             if (item != CurrentSelectedItem)
             {
