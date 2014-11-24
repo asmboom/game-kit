@@ -18,7 +18,9 @@ namespace Beetle23
 
                 if (GUILayout.Button("Update & Check Errors"))
                 {
-                    UpdateVirtualItemsConfig(config);
+                    config.UpdateIdToItemMap();
+                    config.UpdateIdToCategoryMap();
+                    CheckIfAnyInvalidRef(config);
                 }
             }
         }
@@ -60,6 +62,7 @@ namespace Beetle23
                 for (int i = 0; i < pack.PackElements.Count; i++)
                 {
                     PackElement element = pack.PackElements[i];
+
                     if (element.Item == null)
                     {
                         Debug.LogError("Pack [" + pack.ID + "]'s [" + (i + 1) + "] element item is null.");
@@ -70,33 +73,17 @@ namespace Beetle23
                     CheckPurchase("Pack", pack.ID, pack.PurchaseInfo[i], i);
                 }
             }
-        }
-
-        private static void UpdateVirtualItemsConfig(VirtualItemsConfig virtualItemsConfig)
-        {
-            ClearVirtualItemConfigLists(virtualItemsConfig);
-
-            // update virtual items list
-            virtualItemsConfig.VirtualCurrencies.AddRange(Resources.FindObjectsOfTypeAll<VirtualCurrency>());
-            virtualItemsConfig.VirtualCurrencies.Sort();
-            virtualItemsConfig.SingleUseItems.AddRange(Resources.FindObjectsOfTypeAll<SingleUseItem>());
-            virtualItemsConfig.SingleUseItems.Sort();
-            virtualItemsConfig.LifeTimeItems.AddRange(Resources.FindObjectsOfTypeAll<LifeTimeItem>());
-            virtualItemsConfig.LifeTimeItems.Sort();
-            virtualItemsConfig.ItemPacks.AddRange(Resources.FindObjectsOfTypeAll<VirtualItemPack>());
-            virtualItemsConfig.ItemPacks.Sort();
-
-            virtualItemsConfig.UpdateIdToItemMap();
-            CheckIfAnyInvalidRef(virtualItemsConfig);
-            EditorUtility.SetDirty(virtualItemsConfig);
-        }
-
-        private static void ClearVirtualItemConfigLists(VirtualItemsConfig virtualItemsConfig)
-        {
-            virtualItemsConfig.VirtualCurrencies.Clear();
-            virtualItemsConfig.SingleUseItems.Clear();
-            virtualItemsConfig.LifeTimeItems.Clear();
-            virtualItemsConfig.ItemPacks.Clear();
+            foreach (var category in config.Categories)
+            {
+                List<VirtualItem> items = category.GetItems(true);
+                for (int i = 0; i < items.Count; i++)
+                {
+                    if (items[i] == null)
+                    {
+                        Debug.LogError("Category [" + category.ID + "]'s [" + (i + 1) + "] item is null.");
+                    }
+                }
+            }
         }
 
         private static void CheckPurchase(string type, string itemID, Purchase purchase, int purchaseIndex)

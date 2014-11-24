@@ -8,41 +8,47 @@ namespace Beetle23
 {
     public class VirtualItemsTreeExplorer
     {
-        public Action<object> OnSelectionChange = delegate { };
+        public Action<IItem> OnSelectionChange = delegate { };
         public IItem CurrentSelectedItem { get; private set; }
 
         public VirtualItemsTreeExplorer(VirtualItemsConfig config)
         {
             _config = config;
 
-            _virtualCurrencyListAdaptor = CreateVirtualItemListAdaptor<VirtualCurrency>(config.VirtualCurrencies);
-            _virtualCurrencyListAdaptor.OnOrderChagne += OnListOrderChange<VirtualCurrency>;
+            _virtualCurrencyListAdaptor = new GenericClassListAdaptor<VirtualCurrency>(config.VirtualCurrencies, 20,
+                                    () => { return new VirtualCurrency(); },
+                                    DrawItem<VirtualCurrency>);
             _virtualCurrencyListAdaptor.OnItemRemoved += VirtualItemsEditUtil.UpdateDisplayedOptions;
             _virtualCurrencyListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand);
             _virtualCurrencyListControl.ItemRemoving += OnItemRemoving<VirtualCurrency>;
             _virtualCurrencyListControl.ItemInserted += OnItemInsert<VirtualCurrency>;
 
-            _singleuseItemListAdaptor = CreateVirtualItemListAdaptor<SingleUseItem>(config.SingleUseItems);
-            _singleuseItemListAdaptor.OnOrderChagne += OnListOrderChange<SingleUseItem>;
+            _singleuseItemListAdaptor = new GenericClassListAdaptor<SingleUseItem>(config.SingleUseItems, 20,
+                                    () => { return new SingleUseItem(); },
+                                    DrawItem<SingleUseItem>);
             _singleuseItemListAdaptor.OnItemRemoved += VirtualItemsEditUtil.UpdateDisplayedOptions;
             _singleuseItemListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand);
             _singleuseItemListControl.ItemRemoving += OnItemRemoving<SingleUseItem>;
             _singleuseItemListControl.ItemInserted += OnItemInsert<SingleUseItem>;
 
-            _lifetimeItemListAdaptor = CreateVirtualItemListAdaptor<LifeTimeItem>(config.LifeTimeItems);
-            _lifetimeItemListAdaptor.OnOrderChagne += OnListOrderChange<LifeTimeItem>;
+            _lifetimeItemListAdaptor = new GenericClassListAdaptor<LifeTimeItem>(config.LifeTimeItems, 20,
+                                    () => { return new LifeTimeItem(); },
+                                    DrawItem<LifeTimeItem>);
             _lifetimeItemListAdaptor.OnItemRemoved += VirtualItemsEditUtil.UpdateDisplayedOptions;
             _lifetimeItemListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand);
             _lifetimeItemListControl.ItemRemoving += OnItemRemoving<LifeTimeItem>;
             _lifetimeItemListControl.ItemInserted += OnItemInsert<LifeTimeItem>;
 
-            _packListAdaptor = CreateVirtualItemListAdaptor<VirtualItemPack>(config.ItemPacks);
-            _packListAdaptor.OnOrderChagne += OnListOrderChange<VirtualItemPack>;
+            _packListAdaptor = new GenericClassListAdaptor<VirtualItemPack>(config.ItemPacks, 20,
+                                    () => { return new VirtualItemPack(); },
+                                    DrawItem<VirtualItemPack>);
             _packListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand);
             _packListControl.ItemRemoving += OnItemRemoving<VirtualItemPack>;
             _packListControl.ItemInserted += OnItemInsert<VirtualItemPack>;
 
-            _categoryListAdaptor = CreateVirtualCategoryListAdaptor(config.Categories);
+            _categoryListAdaptor = new GenericClassListAdaptor<VirtualCategory>(config.Categories, 20,
+                                    () => { return new VirtualCategory(); },
+                                    DrawItem<VirtualCategory>);
             _categoryListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand);
             _categoryListControl.ItemInserted += OnItemInsert<VirtualCategory>;
             _categoryListControl.ItemRemoving += OnItemRemoving<VirtualCategory>;
@@ -52,7 +58,7 @@ namespace Beetle23
         {
             GUILayout.BeginArea(position, string.Empty, "Box");
 
-            if (GUILayout.Button("Check Errors"))
+            if (GUILayout.Button("Check References"))
             {
                 VirtualItemsConfigEditor.CheckIfAnyInvalidRef(_config);
             }
@@ -77,8 +83,6 @@ namespace Beetle23
             GUILayout.EndHorizontal();
 
             _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
-
-            EditorGUI.BeginChangeCheck();
 
             _isVirtualCurrencyExpanded = EditorGUILayout.Foldout(_isVirtualCurrencyExpanded,
                 new GUIContent(" Virtual Currencies", Resources.Load("VirtualCurrencyIcon") as Texture,
@@ -120,11 +124,6 @@ namespace Beetle23
                 _categoryListControl.Draw(_categoryListAdaptor);
             }
 
-            if (EditorGUI.EndChangeCheck())
-            {
-                EditorUtility.SetDirty(_config);
-            }
-
             GUILayout.Space(30);
 
             GUILayout.EndScrollView();
@@ -132,7 +131,7 @@ namespace Beetle23
             GUILayout.EndArea();
         }
 
-        private T DrawItem<T>(Rect position, T item, int index) where T : IItem
+        private T DrawItem<T>(Rect position, T item, int index) where T : SerializableItem
         {
             if (item == null)
             {
@@ -141,7 +140,7 @@ namespace Beetle23
             }
 
             if (GUI.Button(position, item.ID,
-                    (!string.IsNullOrEmpty(item.ID) && CurrentSelectedItem != null && item.ID == CurrentSelectedItem.ID ?
+                    (!string.IsNullOrEmpty(item.ID) && item == CurrentSelectedItem ?
                         VirtualItemsDrawUtil.ItemSelectedStyle : VirtualItemsDrawUtil.ItemStyle)))
             {
                 SelectItem(item);
@@ -149,91 +148,59 @@ namespace Beetle23
             return item;
         }
 
-        private void OnItemInsert<T>(object sender, ItemInsertedEventArgs args) where T : class
+        private void OnItemInsert<T>(object sender, ItemInsertedEventArgs args) where T : SerializableItem
         {
             GenericClassListAdaptor<T> listAdaptor = args.adaptor as GenericClassListAdaptor<T>;
             if (listAdaptor != null)
             {
-                VirtualItem item = listAdaptor[args.itemIndex] as VirtualItem;
-                if (item != null)
+                SelectItem(listAdaptor[args.itemIndex]);
+                if (listAdaptor[args.itemIndex] is VirtualItem)
                 {
-                    item.ID = item.name;
-                    item.SortIndex = listAdaptor.Count - 1;
-
-                    VirtualItemsEditUtil.UpdateDisplayedOptions();
-                }
-                else
-                {
-                    VirtualCategory category = listAdaptor[args.itemIndex] as VirtualCategory;
-                    if (category != null)
-                    {
-                        category.ID = "New Category";
-                    }
+                    ShowInputDialogForId<T>(CurrentSelectedItem.ID);
                 }
             }
         }
 
-        private void OnItemRemoving<T>(object sender, ItemRemovingEventArgs args) where T : class
+        private void ShowInputDialogForId<T>(string defaultId) where T : SerializableItem
+        {
+            SingleInputDialog.Show("Enter id for the new item", defaultId, "OK", OnGetNewId<T>);
+        }
+
+        private void OnGetNewId<T>(string id) where T : SerializableItem
+        {
+            GameKit.Config.UpdateIdToItemMap();
+            SerializableItem itemWithID = GameKit.Config.GetVirtualItemByID(id);
+            if (itemWithID != null && itemWithID != CurrentSelectedItem)
+            {
+                Debug.LogWarning("Id [" + id + "] is already used by [" + 
+                    itemWithID.Name + "], please change one.");
+                ShowInputDialogForId<T>(id);
+            }
+            else
+            {
+                CurrentSelectedItem.ID = id;
+                VirtualItemsEditorWindow.GetInstance().Repaint();
+            }
+        }
+
+        private void OnItemRemoving<T>(object sender, ItemRemovingEventArgs args) where T : SerializableItem
         {
             GenericClassListAdaptor<T> listAdaptor = args.adaptor as GenericClassListAdaptor<T>;
             T item = listAdaptor[args.itemIndex];
             if (listAdaptor != null)
             {
-                if (item is VirtualItem)
+                if (EditorUtility.DisplayDialog("Confirm to delete",
+                        "Confirm to delete item [" + item.ID + "]?", "OK", "Cancel"))
                 {
-                    VirtualItem virtualItem = item as VirtualItem;
-                    if (EditorUtility.DisplayDialog("Confirm to delete",
-                            "Confirm to delete asset [" + virtualItem.name + ".asset]?", "OK", "Cancel"))
-                    {
-                        args.Cancel = false;
-                        AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(virtualItem));
-                    }
-                    else
-                    {
-                        args.Cancel = true;
-                    }
+                    args.Cancel = false;
+                    SelectItem(null);
+                    VirtualItemsEditorWindow.GetInstance().Repaint();
                 }
-                else if (item is VirtualCategory)
+                else
                 {
-                    VirtualCategory category = item as VirtualCategory;
-                    if (EditorUtility.DisplayDialog("Confirm to delete",
-                            "Confirm to delete category [" + category.ID + "]?", "OK", "Cancel"))
-                    {
-                        args.Cancel = false;
-                    }
-                    else
-                    {
-                        args.Cancel = true;
-                    }
+                    args.Cancel = true;
                 }
             }
-        }
-
-        private void OnListOrderChange<T>(IList<T> list) where T : VirtualItem
-        {
-            for (int i = 0; i < list.Count; i++)
-            {
-                list[i].SortIndex = i;
-                EditorUtility.SetDirty(list[i]);
-            }
-        }
-
-        private GenericClassListAdaptor<T> CreateVirtualItemListAdaptor<T>(List<T> items) where T : VirtualItem
-        {
-            return new GenericClassListAdaptor<T>(items, 20,
-                () =>
-                {
-                    return VirtualItemsEditUtil.CreateNewVirtualItem<T>();
-                }, DrawItem<T>);
-        }
-
-        private GenericClassListAdaptor<VirtualCategory> CreateVirtualCategoryListAdaptor(List<VirtualCategory> categories)
-        {
-            return new GenericClassListAdaptor<VirtualCategory>(categories, 20,
-                                    () =>
-                                    {
-                                        return new VirtualCategory();
-                                    }, DrawItem<VirtualCategory>);
         }
 
         private void SelectItem(IItem item)

@@ -21,29 +21,29 @@ namespace Beetle23
         [SerializeField]
         public List<VirtualCategory> Categories;
 
-        public IEnumerable<VirtualItem> Items
+        public IEnumerable<VirtualItem> VirtualItems
         {
             get
             {
-                return _idToItems.Values;
+                return _idToVirtualItems.Values;
             }
         }
 
-        public int ItemsCount
+        public int VirtualItemsCount
         {
-            get { return _idToItems.Count; }
+            get { return _idToVirtualItems.Count; }
         }
 
-        public bool TryGetItemByID(string id, out VirtualItem item)
+        public bool TryGetVirtualItemByID(string id, out VirtualItem item)
         {
-            return _idToItems.TryGetValue(id, out item);
+            return _idToVirtualItems.TryGetValue(id, out item);
         }
 
-        public VirtualItem GetItemByID(string id)
+        public VirtualItem GetVirtualItemByID(string id)
         {
-            if (_idToItems.ContainsKey(id))
+            if (_idToVirtualItems.ContainsKey(id))
             {
-                return _idToItems[id];
+                return _idToVirtualItems[id];
             }
             else
             {
@@ -70,7 +70,7 @@ namespace Beetle23
 
         public void UpdateIdToItemMap()
         {
-            _idToItems = new Dictionary<string, VirtualItem>();
+            _idToVirtualItems = new Dictionary<string, VirtualItem>();
             for (int i = 0; i < VirtualCurrencies.Count; i++)
             {
                 TryAddToIdItemMap(VirtualCurrencies[i].ID, VirtualCurrencies[i]);
@@ -133,11 +133,11 @@ namespace Beetle23
             _idToCategory = new Dictionary<string, VirtualCategory>();
             for (int i = 0; i < Categories.Count; i++)
             {
-                foreach (var item in Categories[i].Items)
+                foreach (var itemID in Categories[i].ItemIDs)
                 {
-                    if (item != null)
+                    if (itemID != null && GetVirtualItemByID(itemID) != null)
                     {
-                        _idToCategory.Add(item.ID, Categories[i]);
+                        _idToCategory.Add(itemID, Categories[i]);
                     }
                 }
             }
@@ -147,9 +147,9 @@ namespace Beetle23
         {
             if (!string.IsNullOrEmpty(id))
             {
-                if (!_idToItems.ContainsKey(id))
+                if (!_idToVirtualItems.ContainsKey(id))
                 {
-                    _idToItems.Add(id, item);
+                    _idToVirtualItems.Add(id, item);
                 }
                 else
                 {
@@ -185,7 +185,7 @@ namespace Beetle23
             UpdateIdToCategoryMap();
         }
 
-        private Dictionary<string, VirtualItem> _idToItems;
+        private Dictionary<string, VirtualItem> _idToVirtualItems;
         private Dictionary<string, VirtualCategory> _idToCategory;
     }
 }

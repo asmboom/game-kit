@@ -29,6 +29,11 @@ namespace Beetle23
             }
         }
 
+        public SerializableItem()
+        {
+            ID = System.Guid.NewGuid().ToString().Substring(0, 8);
+        }
+
         [SerializeField]
         private string _id;
 

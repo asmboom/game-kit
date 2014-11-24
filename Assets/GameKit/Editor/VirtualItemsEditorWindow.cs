@@ -76,10 +76,17 @@ namespace Beetle23
 
         private void OnGUI()
         {
+            EditorGUI.BeginChangeCheck();
+
             _itemsExplorer.Draw(new Rect(10, 5, 250, position.height - 10));
             if (_itemInspector != null)
             {
                 _itemInspector.Draw(new Rect(270, 5, position.width - 280, position.height - 10));
+            }
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                EditorUtility.SetDirty(_config);
             }
         }
 

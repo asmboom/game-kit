@@ -2,6 +2,7 @@
 
 namespace Beetle23
 {
+    /*
     public class VirtualItemGateDelegate : GateDelegate
     {
         public VirtualItemGateDelegate(Gate gate)
@@ -58,4 +59,5 @@ namespace Beetle23
         private VirtualItem _virtualItem;
         private float _requiredBalance;
     }
+    */
 }

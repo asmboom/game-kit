@@ -11,6 +11,11 @@ namespace Beetle23
         [SerializeField]
         public List<Purchase> PurchaseInfo;
 
+        public PurchasableItem()
+        {
+            PurchaseInfo = new List<Purchase>();
+        }
+
         public bool IsAffordable()
         {
             if (PurchaseInfo.Count > 0)
@@ -68,16 +73,35 @@ namespace Beetle23
                 return PurchaseError.InvalidPurchase;
             }
         }
-        public abstract bool CanPurchaseNow();
 
-        protected override void OnEnable()
+        public override string ToString()
         {
-            base.OnEnable();
-
-            if (PurchaseInfo == null)
+            string final = string.Empty;
+            if (PurchaseInfo.Count > 0)
             {
-                PurchaseInfo = new List<Purchase>();
+                for (var i = 0; i < PurchaseInfo.Count; i++)
+                {
+                    Purchase purchase = PurchaseInfo[i];
+                    if (purchase != null)
+                    {
+                        if (i > 0)
+                        {
+                            final += "\nor ";
+                        }
+                        final += purchase.IsMarketPurchase ?
+                            string.Format("Real money {0} ({1})", purchase.Price, purchase.MarketID) :
+                            string.Format("{0}x{1}",
+                                purchase.VirtualCurrency != null ? purchase.VirtualCurrency.Name : "null", purchase.Price);
+                    }
+                }
             }
+            else
+            {
+                final = "Free";
+            }
+            return final;
         }
+
+        public abstract bool CanPurchaseNow();
     }
 }

@@ -14,7 +14,16 @@ namespace Beetle23
         public PurchaseType Type;
         public float Price;
         public string MarketID; // only useful if purchasing with market
-        public VirtualCurrency VirtualCurrency; // only useful if purchaing with virtual currency
+        public string VirtualCurrencyID;
+
+        public VirtualCurrency VirtualCurrency
+        {
+            get
+            {
+                return string.IsNullOrEmpty(VirtualCurrencyID) ? null : 
+                    GameKit.Config.GetVirtualItemByID(VirtualCurrencyID) as VirtualCurrency;
+            }
+        }
 
         public bool IsMarketPurchase
         {

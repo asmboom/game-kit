@@ -7,7 +7,7 @@ namespace Beetle23
 {
     public class VirtualItemsPropertyInspector
     {
-        public VirtualItemsPropertyInspector(object currentDisplayedItem)
+        public VirtualItemsPropertyInspector(IItem currentDisplayedItem)
         {
             _currentDisplayedItem = currentDisplayedItem;
             _purchaseListView = new PurchaseInfoListView(currentDisplayedItem as PurchasableItem);
@@ -16,13 +16,12 @@ namespace Beetle23
             _categoryPropertyView = new CategoryPropertyView(currentDisplayedItem as VirtualCategory);
         }
 
-        public void OnExplorerSelectionChange(object item)
+        public void OnExplorerSelectionChange(IItem item)
         {
             _currentDisplayedItem = item;
 
             if (item is VirtualItem)
             {
-                _currentDisplayedItemID = (item as VirtualItem).ID;
                 GUI.FocusControl(string.Empty);
 
                 if (item is SingleUseItem || item is LifeTimeItem)
@@ -67,8 +66,6 @@ namespace Beetle23
 
         private void DrawVirtualItem(Rect position, VirtualItem item)
         {
-            EditorGUI.BeginChangeCheck();
-
             GUI.BeginGroup(position);
             _scrollPosition = GUI.BeginScrollView(new Rect(0, 0, position.width, position.height),
                 _scrollPosition, new Rect(0, 0, position.width - 20, _currentYOffset));
@@ -83,8 +80,6 @@ namespace Beetle23
             {
                 DrawID(new Rect(0, yOffset, width, 20), item);
                 yOffset += 20;
-                //EditorGUI.LabelField(new Rect(0, yOffset, width, 20), "Sort index", item.SortIndex.ToString());
-                //yOffset += 20;
                 item.Name = EditorGUI.TextField(new Rect(0, yOffset, width, 20), "Name", item.Name);
                 yOffset += 20;
                 item.Description = EditorGUI.TextField(new Rect(0, yOffset, width, 20), "Desription", item.Description);
@@ -144,39 +139,11 @@ namespace Beetle23
 
             GUI.EndScrollView();
             GUI.EndGroup();
-
-            if (EditorGUI.EndChangeCheck())
-            {
-                EditorUtility.SetDirty(item);
-            }
         }
 
         private void DrawID(Rect position, VirtualItem item)
         {
-            GUI.SetNextControlName(IDInputControlName);
-            if (EditorGUI.TextField(position, "Unique ID",
-                _currentDisplayedItemID).KeyPressed<string>(IDInputControlName,
-                    KeyCode.Return, out _currentDisplayedItemID) ||
-                (GUI.GetNameOfFocusedControl() != IDInputControlName &&
-                 _currentDisplayedItemID != item.ID))
-            {
-                GameKit.Config.UpdateIdToItemMap();
-                VirtualItem itemWithID = GameKit.Config.GetItemByID(_currentDisplayedItemID);
-                if (itemWithID != null && itemWithID != item)
-                {
-                    GUIUtility.keyboardControl = 0;
-                    EditorUtility.DisplayDialog("Duplicate ID", "An item with ID[" +
-                        _currentDisplayedItemID + "] already exists!!!", "OK");
-                    _currentDisplayedItemID = item.ID;
-                }
-                else
-                {
-                    item.ID = _currentDisplayedItemID;
-                    AssetDatabase.RenameAsset(AssetDatabase.GetAssetPath(item), item.ID);
-                    VirtualItemsEditorWindow.GetInstance().Repaint();
-                    VirtualItemsEditUtil.UpdateDisplayedOptions();
-                }
-            }
+            EditorGUI.LabelField(position, "ID", item.ID);
         }
 
         private bool _isVirtualItemPropertiesExpanded = true;
@@ -184,8 +151,7 @@ namespace Beetle23
         private bool _isPurchaseInfoExpanded = true;
         private bool _isUpgradeInfoExpanded = false;
 
-        private string _currentDisplayedItemID;
-        private object _currentDisplayedItem;
+        private IItem _currentDisplayedItem;
 
         private PurchaseInfoListView _purchaseListView;
         private PackInfoListView _packListView;

@@ -20,15 +20,6 @@ namespace Beetle23
             return asset;
         }
 
-        public static T CreateNewVirtualItem<T>(string path = null) where T : VirtualItem
-        {
-            T asset = ScriptableObject.CreateInstance<T>();
-            path = string.IsNullOrEmpty(path) ? DefaultVirtualItemDataPath : path;
-            AssetDatabase.CreateAsset(asset, path + "/VirtualItems/NewVirtualItem" + GameKit.Config.ItemsCount + ".asset");
-            AssetDatabase.SaveAssets();
-            return asset;
-        }
-
         public static void UpdateDisplayedOptions()
         {
             UpdateDisplayedVirtualCurrencyIDs();
@@ -37,8 +28,7 @@ namespace Beetle23
 
         public static void UpdatePurchaseByIndex(Purchase purchase, int newCurrencyIndex)
         {
-            purchase.VirtualCurrency =
-                GameKit.Config.GetItemByID(DisplayedVirtualCurrencyIDs[newCurrencyIndex]) as VirtualCurrency;
+            purchase.VirtualCurrencyID = DisplayedVirtualCurrencyIDs[newCurrencyIndex];
         }
 
         public static void UpdateRelatedItemByIndex(VirtualItem item, int newItemIndex)
@@ -46,7 +36,7 @@ namespace Beetle23
             if (item is UpgradeItem)
             {
                 UpgradeItem upgradeItem = item as UpgradeItem;
-                upgradeItem.RelatedItem = GameKit.Config.GetItemByID(DisplayedItemIDs[newItemIndex]);
+                upgradeItem.RelatedItem = GameKit.Config.GetVirtualItemByID(DisplayedItemIDs[newItemIndex]);
             }
         }
 
@@ -54,7 +44,7 @@ namespace Beetle23
         {
             if (element != null)
             {
-                element.Item = GameKit.Config.GetItemByID(DisplayedItemIDs[newItemIndex]);
+                element.ItemID = DisplayedItemIDs[newItemIndex];
             }
         }
 

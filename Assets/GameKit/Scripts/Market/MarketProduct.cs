@@ -16,7 +16,7 @@ namespace Beetle23
         {
             Dictionary<string, MarketProduct> list = new Dictionary<string, MarketProduct>();
 
-            foreach (var item in config.Items)
+            foreach (var item in config.VirtualItems)
             {
                 MarketProduct product = TryCreateMarketProductFromVirtualItem(item);
                 if (product != null)

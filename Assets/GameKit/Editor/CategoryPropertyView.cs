@@ -17,28 +17,32 @@ namespace Beetle23
 
         public void UpdateDisplayItem(VirtualCategory category)
         {
+            _currentCategory = category;
             _currentCategoryID = category.ID;
-            _categoryItemListAdaptor = new GenericClassListAdaptor<VirtualItem>(category.Items, 20, null, DrawItemInCategory);
+            _categoryItemListAdaptor = new GenericClassListAdaptor<string>(category.ItemIDs, 20, null, DrawItemInCategory);
             UpdateItemsWithoutCategory();
         }
 
         public void Draw(Rect position, VirtualCategory category)
         {
             DrawCategoryID(category);
+            category.Name = EditorGUILayout.TextField("Name", category.Name);
 
             float itemHeight = 20;
             float width = position.width * 0.4f;
             float height = position.height - 30;
 
-            GUI.BeginGroup(new Rect(position.x, position.y + 30, width, height));
+            CheckAndRemoveInvalidIdsInCategory(_currentCategory);
+
+            GUI.BeginGroup(new Rect(position.x, position.y + 50, width, height));
             _scrollPositionOfCategory = GUI.BeginScrollView(new Rect(0, 0, width, height),
-                _scrollPositionOfCategory, new Rect(0, 0, width - 20, 20 * category.Items.Count));
+                _scrollPositionOfCategory, new Rect(0, 0, width - 20, 20 * category.ItemIDs.Count));
             GUI.Label(new Rect(0, 0, width, 20), "In Category", VirtualItemsDrawUtil.TitleStyle);
             _categoryItemListControl.Draw(new Rect(0, 20, width, height - 20), _categoryItemListAdaptor);
             GUI.EndScrollView();
             GUI.EndGroup();
 
-            GUI.BeginGroup(new Rect(position.x + position.width - width - 20, position.y + 30, width, height));
+            GUI.BeginGroup(new Rect(position.x + position.width - width - 20, position.y + 50, width, height));
             GUI.Label(new Rect(0, 0, width, 20), "Not in Category", VirtualItemsDrawUtil.TitleStyle);
             GUI.BeginGroup(new Rect(0, 20, width, height - 20), string.Empty, "Box");
             _scrollPositionOfNonCategory = GUI.BeginScrollView(new Rect(0, 0, width, height - 20),
@@ -62,7 +66,7 @@ namespace Beetle23
             GUI.enabled = _currentSelectedItem != null && !_isCurrentSelectedItemInCategory;
             if (GUI.Button(new Rect(position.width * 0.5f - 50, position.height * 0.5f - 30, 100, 20), "<Add"))
             {
-                category.Items.Add(_currentSelectedItem);
+                category.ItemIDs.Add(_currentSelectedItem.ID);
                 _isCurrentSelectedItemInCategory = true;
                 UpdateItemsWithoutCategory();
                 EditorUtility.SetDirty(GameKit.Config);
@@ -71,7 +75,7 @@ namespace Beetle23
             if (_currentSelectedItem != null &&
                 GUI.Button(new Rect(position.width * 0.5f - 50, position.height * 0.5f + 30, 100, 20), "Remove>"))
             {
-                category.Items.Remove(_currentSelectedItem);
+                category.ItemIDs.Remove(_currentSelectedItem.ID);
                 _isCurrentSelectedItemInCategory = false;
                 UpdateItemsWithoutCategory();
                 EditorUtility.SetDirty(GameKit.Config);
@@ -79,22 +83,40 @@ namespace Beetle23
             GUI.enabled = true;
         }
 
-        private VirtualItem DrawItemInCategory(Rect position, VirtualItem item, int index)
+        private void CheckAndRemoveInvalidIdsInCategory(VirtualCategory category)
         {
-            if (GUI.Button(position, item.ID,
-                item == _currentSelectedItem ?
+            List<string> toBeRemoved = new List<string>();
+            foreach (var itemId in category.ItemIDs)
+            {
+                if (GameKit.Config.GetVirtualItemByID(itemId) == null)
+                {
+                    toBeRemoved.Add(itemId);
+                }
+            }
+            foreach (var itemId in toBeRemoved)
+            {
+                Debug.LogWarning("Category [" + category.ID + "]'s item [" + itemId + 
+                    "] doesn't exist, remove it.");
+                category.ItemIDs.Remove(itemId);
+            }
+        }
+
+        private string DrawItemInCategory(Rect position, string itemID, int index)
+        {
+            if (GUI.Button(position, itemID,
+                _currentSelectedItem != null && itemID == _currentSelectedItem.ID ?
                     VirtualItemsDrawUtil.ItemSelectedStyle : VirtualItemsDrawUtil.ItemStyle))
             {
-                _currentSelectedItem = item;
+                _currentSelectedItem = GameKit.Config.GetVirtualItemByID(itemID);
                 _isCurrentSelectedItemInCategory = true;
             }
-            return item;
+            return itemID;
         }
 
         private void DrawCategoryID(VirtualCategory category)
         {
             GUI.SetNextControlName(IDInputControlName);
-            if (EditorGUILayout.TextField("Unique ID",
+            if (EditorGUILayout.TextField("ID",
                 _currentCategoryID).KeyPressed<string>(IDInputControlName, KeyCode.Return, out _currentCategoryID) ||
                 (GUI.GetNameOfFocusedControl() != IDInputControlName &&
                  _currentCategoryID != category.ID))
@@ -103,7 +125,7 @@ namespace Beetle23
                 if (categoryWithID != null && categoryWithID != category)
                 {
                     GUIUtility.keyboardControl = 0;
-                    EditorUtility.DisplayDialog("Duplicate ID", "An category with ID[" +
+                    EditorUtility.DisplayDialog("Duplicate ID", "A category with ID[" +
                         _currentCategoryID + "] already exists!!!", "OK");
                     _currentCategoryID = category.ID;
                 }
@@ -120,7 +142,7 @@ namespace Beetle23
             GameKit.Config.UpdateIdToItemMap();
             GameKit.Config.UpdateIdToCategoryMap();
             _itemsWithoutCategory.Clear();
-            foreach (var item in GameKit.Config.Items)
+            foreach (var item in GameKit.Config.VirtualItems)
             {
                 if (item.Category == null)
                 {
@@ -129,8 +151,9 @@ namespace Beetle23
             }
         }
 
+        private VirtualCategory _currentCategory;
         private string _currentCategoryID;
-        private GenericClassListAdaptor<VirtualItem> _categoryItemListAdaptor;
+        private GenericClassListAdaptor<string> _categoryItemListAdaptor;
         private ReorderableListControl _categoryItemListControl;
         private VirtualCategory _currentDisplayedCategory;
         private List<VirtualItem> _itemsWithoutCategory;

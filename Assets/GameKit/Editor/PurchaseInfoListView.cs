@@ -14,18 +14,19 @@ namespace Beetle23
             _listControl.ItemInserted += OnItemInsert;
             _listControl.ItemRemoving += OnItemRemoving;
 
-            UpdateVirtualCurrencyIndices();
+            UpdateVirtualCurrencyIndices(true);
         }
 
         public void UpdateDisplayItem(PurchasableItem item)
         {
+            _currentPurchasableItem = item;
             if (item != null)
             {
                 _listAdaptor = new GenericClassListAdaptor<Purchase>(item.PurchaseInfo, 18,
                     CreatePurchase, DrawOnePurchase);
             }
 
-            UpdateVirtualCurrencyIndices();
+            UpdateVirtualCurrencyIndices(true);
         }
 
         public void Draw(Rect position)
@@ -63,12 +64,12 @@ namespace Beetle23
 
         private void OnItemRemoving(object sender, ItemRemovingEventArgs args)
         {
-            UpdateVirtualCurrencyIndices();
+            UpdateVirtualCurrencyIndices(true);
         }
 
         private void OnItemInsert(object sender, ItemInsertedEventArgs args)
         {
-            UpdateVirtualCurrencyIndices();
+            UpdateVirtualCurrencyIndices(false);
         }
 
         private Purchase DrawOnePurchase(Rect position, Purchase purchase, int index)
@@ -136,7 +137,7 @@ namespace Beetle23
             }
         }
 
-        private void UpdateVirtualCurrencyIndices()
+        private void UpdateVirtualCurrencyIndices(bool needWarning)
         {
             if (_listAdaptor != null)
             {
@@ -144,6 +145,16 @@ namespace Beetle23
 
                 for (var i = 0; i < _listAdaptor.Count; i++)
                 {
+                    if (_listAdaptor[i].VirtualCurrency == null && VirtualItemsEditUtil.DisplayedVirtualCurrencyIDs.Length > 0)
+                    {
+                        VirtualItem item = GameKit.Config.GetVirtualItemByID(VirtualItemsEditUtil.DisplayedVirtualCurrencyIDs[0]);
+                        if (item != null && needWarning)
+                        {
+                            Debug.LogWarning("[" + _currentPurchasableItem.ID + "]'s purchase [" + (i + 1) + 
+                                "] is null, correct it with default virtual currency [" + item.ID + "].");
+                        }
+                        _listAdaptor[i].VirtualCurrencyID = item.ID;
+                    }
                     _virtualCurrencyIndicesForPurchase.Add(_listAdaptor[i].VirtualCurrency == null ? 0 :
                         VirtualItemsEditUtil.GetVirtualCurrencyIndexById(_listAdaptor[i].VirtualCurrency.ID));
                 }
@@ -153,6 +164,7 @@ namespace Beetle23
         private ReorderableListControl _listControl;
         private GenericClassListAdaptor<Purchase> _listAdaptor;
         private List<int> _virtualCurrencyIndicesForPurchase;
+        private PurchasableItem _currentPurchasableItem;
 
         private const float PurchaseTypeWidth = 0.4f;
         private const float PurchaseAssociatedWidth = 0.4f;

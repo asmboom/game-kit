@@ -11,8 +11,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 460e5bccbacdeae47a0de50350efe9ad, type: 3}
   m_Name: VirtualItemsConfig
   m_EditorClassIdentifier: 
-  VirtualCurrencies: []
-  SingleUseItems: []
-  LifeTimeItems: []
-  ItemPacks: []
+  VirtualCurrencies:
+  - _id: vial
+    _name: Vial
+    Description: Vial
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+  - _id: iso-8
+    _name: ISO-8
+    Description: ISO-8
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+  - _id: 08ec6816
+    _name: 
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+  SingleUseItems:
+  - _id: energy-refill
+    _name: Spidey Energy Refill
+    Description: Refills Yours Spidey Energy!!!
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+  LifeTimeItems:
+  - _id: vial-magnet
+    _name: Web Magnet
+    Description: Brings all vials in sight right to you!
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo:
+    - Type: 1
+      Price: 5000
+      MarketID: 
+      VirtualCurrencyID: vial
+    IsEquippable: 0
+  ItemPacks:
+  - _id: iso-8-pack01
+    _name: 
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo:
+    - Type: 1
+      Price: 0
+      MarketID: 
+      VirtualCurrencyID: 08ec6816
+    PackElements:
+    - ItemID: 08ec6816
+      Amount: 6
   Categories: []

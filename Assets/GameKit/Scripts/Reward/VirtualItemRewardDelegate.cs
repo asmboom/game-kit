@@ -1,5 +1,6 @@
 ﻿namespace Beetle23
 {
+    /*
     public class VirtualItemRewardDelegate : IRewardDelegate
     {
         public void Give(Reward reward)
@@ -28,4 +29,5 @@
             }
         }
     }
+    */
 }

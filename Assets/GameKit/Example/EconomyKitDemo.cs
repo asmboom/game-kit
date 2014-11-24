@@ -10,12 +10,12 @@ public class EconomyKitDemo : MonoBehaviour
     {
         GameKit.Init(new EconomyKitDemoFactory());
 
-        _coin = GameKit.Config.GetItemByID("Coin");
-        _gem = GameKit.Config.GetItemByID("Gem");
-        _primaryCharacterItem = GameKit.Config.GetItemByID("Wuzheng") as LifeTimeItem;
+        _coin = GameKit.Config.GetVirtualItemByID("Coin");
+        _gem = GameKit.Config.GetVirtualItemByID("Gem");
+        _primaryCharacterItem = GameKit.Config.GetVirtualItemByID("Wuzheng") as LifeTimeItem;
 
         _items = new List<PurchasableItem>();
-        foreach(var item in GameKit.Config.Items)
+        foreach(var item in GameKit.Config.VirtualItems)
         {
             if (item is PurchasableItem &&
                 !(item is UpgradeItem))

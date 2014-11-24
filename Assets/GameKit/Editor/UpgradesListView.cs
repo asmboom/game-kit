@@ -85,12 +85,7 @@ namespace Beetle23
             if (_currentSelectedUpgrade != null)
             {
                 GUI.Label(new Rect(xOffset, 0, position.width * 0.7f, 20), "Upgrade price", VirtualItemsDrawUtil.TitleStyle);
-                EditorGUI.BeginChangeCheck();
                 _purchaseListView.Draw(new Rect(xOffset, 20, position.width * 0.7f, position.height - 20));
-                if (EditorGUI.EndChangeCheck())
-                {
-                    EditorUtility.SetDirty(_currentSelectedUpgrade);
-                }
             }
 
             GUI.EndGroup();
@@ -101,8 +96,8 @@ namespace Beetle23
             if (EditorUtility.DisplayDialog("Confirm to delete",
                     "Confirm to delete upgrade [" + _listAdaptor[args.itemIndex].Name + "]?", "OK", "Cancel"))
             {
+                //TODO
                 args.Cancel = false;
-                AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(_listAdaptor[args.itemIndex]));
             }
             else
             {
@@ -112,6 +107,8 @@ namespace Beetle23
 
         private void OnItemInsert(object sender, ItemInsertedEventArgs args)
         {
+            //TODO
+            /*
             string prefix = (args.itemIndex + 1) < 10 ? "0" + (args.itemIndex + 1) : (args.itemIndex + 1).ToString();
             _listAdaptor[args.itemIndex].ID = string.Format("{0}Upgrade0{1}", _currentItem.ID, prefix);
             string oldAssetFileName = AssetDatabase.GetAssetPath(_listAdaptor[args.itemIndex]);
@@ -127,11 +124,12 @@ namespace Beetle23
             _listAdaptor[args.itemIndex].Description = _listAdaptor[args.itemIndex].Name;
             _listAdaptor[args.itemIndex].RelatedItem = _currentItem;
             EditorUtility.SetDirty(_listAdaptor[args.itemIndex]);
+            */
         }
 
         private UpgradeItem CreateUpgradeItem()
         {
-            return VirtualItemsEditUtil.CreateNewVirtualItem<UpgradeItem>();
+            return new UpgradeItem();
         }
 
         private UpgradeItem DrawUpgradeItem(Rect position, UpgradeItem item, int index)

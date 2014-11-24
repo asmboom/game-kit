@@ -6,8 +6,17 @@ namespace Beetle23
     [System.Serializable]
     public class PackElement
     {
-        public VirtualItem Item;
+        public string ItemID;
         public int Amount;
+
+        public VirtualItem Item
+        {
+            get
+            {
+                return string.IsNullOrEmpty(ItemID) ? null : 
+                    GameKit.Config.GetVirtualItemByID(ItemID);
+            }
+        }
 
         public void Give(int amount)
         {
@@ -25,17 +34,23 @@ namespace Beetle23
         }
     }
 
+    [System.Serializable]
     public class VirtualItemPack : PurchasableItem
     {
         [SerializeField]
         public List<PackElement> PackElements;
+
+        public VirtualItemPack()
+        {
+            PackElements = new List<PackElement>();
+        }
 
         public override bool CanPurchaseNow()
         {
             return true;
         }
 
-        protected override void TakeBalance(int amount)
+        protected override void DoTake(int amount)
         {
             for (int i = 0; i < PackElements.Count; i++)
             {
@@ -43,21 +58,11 @@ namespace Beetle23
             }
         }
 
-        protected override void GiveBalance(int amount)
+        protected override void DoGive(int amount)
         {
             for (int i = 0; i < PackElements.Count; i++)
             {
                 PackElements[i].Give(amount);
-            }
-        }
-
-        protected override void OnEnable()
-        {
-            base.OnEnable();
-
-            if (PackElements == null)
-            {
-                PackElements = new List<PackElement>();
             }
         }
 

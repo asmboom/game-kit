@@ -6,31 +6,38 @@ public class SingleInputDialog : EditorWindow
 {
     public delegate bool CheckErrorDelegate(string text);
 
-    public static void Show(string textCaption, string buttonCaption,
+    public static void Show(string textCaption, string defaultText, string buttonCaption,
         Action<string> OnButtonClick)
     {
-        Show(textCaption, buttonCaption, OnButtonClick, null);
+        Show(textCaption, defaultText, buttonCaption, OnButtonClick, null);
     }
 
-    public static void Show(string textCaption, string buttonCaption,
+    public static void Show(string textCaption, string defaultText, string buttonCaption,
         Action<string> OnButtonClick, CheckErrorDelegate checkError)
     {
-        SingleInputDialog dialog = EditorWindow.GetWindow<SingleInputDialog>("Input Dialog");
+        SingleInputDialog dialog = ScriptableObject.CreateInstance<SingleInputDialog>();
         dialog._textCaption = textCaption;
+        dialog._text = defaultText;
         dialog._buttonCaption = buttonCaption;
         dialog._onButtonClick = OnButtonClick;
         dialog._checkError = checkError;
-        dialog.Show();
+        dialog.Show(true);
     }
 
     private void OnGUI()
     {
         _text = EditorGUILayout.TextField(_textCaption, _text);
-
+        GUI.enabled = !string.IsNullOrEmpty(_text);
         if (GUILayout.Button(_buttonCaption))
         {
             OnClickButton();
         }
+        GUI.enabled = true;
+    }
+
+    private void OnLostFocus()
+    {
+        Focus();
     }
 
     private void OnClickButton()

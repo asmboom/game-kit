@@ -14,13 +14,13 @@ namespace Beetle23
             return nextUpgradeItem != null && nextUpgradeItem == this;
         }
 
-        protected override void TakeBalance(int amount)
+        protected override void DoTake(int amount)
         {
             VirtualItemStorage.SetGoodCurrentLevel(RelatedItem.ID,
                 VirtualItemStorage.GetGoodCurrentLevel(RelatedItem.ID) - 1);
         }
 
-        protected override void GiveBalance(int amount)
+        protected override void DoGive(int amount)
         {
             VirtualItemStorage.SetGoodCurrentLevel(RelatedItem.ID,
                 VirtualItemStorage.GetGoodCurrentLevel(RelatedItem.ID) + 1);

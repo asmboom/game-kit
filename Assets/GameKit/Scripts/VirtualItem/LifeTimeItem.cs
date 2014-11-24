@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Beetle23
 {
+    [System.Serializable]
     public class LifeTimeItem : PurchasableItem
     {
         [SerializeField]
@@ -34,12 +35,12 @@ namespace Beetle23
             return Balance < 1;
         }
 
-        protected override void TakeBalance(int amount)
+        protected override void DoTake(int amount)
         {
             VirtualItemStorage.SetItemBalance(ID, 0);
         }
 
-        protected override void GiveBalance(int amount)
+        protected override void DoGive(int amount)
         {
             VirtualItemStorage.SetItemBalance(ID, 1);
         }
@@ -72,9 +73,10 @@ namespace Beetle23
         {
             if (Category != null)
             {
-                for (int i = 0; i < Category.Items.Count; i++)
+                System.Collections.Generic.List<VirtualItem> items = Category.GetItems(false);
+                for (int i = 0; i < items.Count; i++)
                 {
-                    LifeTimeItem itemInCategory = Category.Items[i] as LifeTimeItem;
+                    LifeTimeItem itemInCategory = items[i] as LifeTimeItem;
                     if (itemInCategory != null &&
                         itemInCategory.IsEquippable &&
                         itemInCategory != this)

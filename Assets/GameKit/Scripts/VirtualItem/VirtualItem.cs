@@ -4,16 +4,16 @@ using UnityEngine;
 
 namespace Beetle23
 {
-    public abstract class VirtualItem : ScriptableItem, IComparable
+    [System.Serializable]
+    public abstract class VirtualItem : SerializableItem
     {
         public Action<int, int> OnBalanceChanged = delegate { };
+
+        [SerializeField]
+        public string Description;
         
         [SerializeField]
         public Sprite Icon;
-
-        [SerializeField]
-        [HideInInspector]
-        public int SortIndex;
 
         [SerializeField]
         public List<UpgradeItem> Upgrades;
@@ -31,6 +31,11 @@ namespace Beetle23
             }
         }
 
+        public VirtualItem()
+        {
+            Upgrades = new List<UpgradeItem>();
+        }
+
         public void ResetBalance()
         {
             int oldBalance = Balance;
@@ -38,29 +43,17 @@ namespace Beetle23
             OnBalanceChanged(oldBalance, 0);
         }
 
-        public int CompareTo(object obj)
-        {
-            VirtualItem otherItem = obj as VirtualItem;
-            return otherItem != null ?
-                SortIndex.CompareTo(otherItem.SortIndex) : 0;
-        }
-
-        public int CompareTo(VirtualItem other)
-        {
-            return SortIndex.CompareTo(other.SortIndex);
-        }
-
         public void Take(int amount)
         {
             int oldBalance = Balance;
-            TakeBalance(amount);
+            DoTake(amount);
             OnBalanceChanged(oldBalance, Balance);
         }
 
         public void Give(int amount)
         {
             int oldBalance = Balance;
-            GiveBalance(amount);
+            DoGive(amount);
             OnBalanceChanged(oldBalance, Balance);
         }
 
@@ -108,15 +101,7 @@ namespace Beetle23
             return Extend as T;
         }
 
-        protected virtual void OnEnable()
-        {
-            if (Upgrades == null)
-            {
-                Upgrades = new List<UpgradeItem>();
-            }
-        }
-
-        protected abstract void TakeBalance(int amount);
-        protected abstract void GiveBalance(int amount);
+        protected abstract void DoTake(int amount);
+        protected abstract void DoGive(int amount);
     }
 }

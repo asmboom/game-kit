@@ -14,7 +14,7 @@ namespace Beetle23
             _listControl.ItemInserted += OnItemInsert;
             _listControl.ItemRemoving += OnItemRemoving;
 
-            UpdateItemIndices();
+            UpdateItemIndices(true);
         }
 
         public void UpdateDisplayItem(VirtualItemPack pack)
@@ -25,7 +25,7 @@ namespace Beetle23
                 _listAdaptor = new GenericClassListAdaptor<PackElement>(pack.PackElements, 18,
                     CreatePackElement, DrawPackElement);
 
-                UpdateItemIndices();
+                UpdateItemIndices(true);
             }
         }
 
@@ -61,12 +61,12 @@ namespace Beetle23
 
         private void OnItemRemoving(object sender, ItemRemovingEventArgs args)
         {
-            UpdateItemIndices();
+            UpdateItemIndices(true);
         }
 
         private void OnItemInsert(object sender, ItemInsertedEventArgs args)
         {
-            UpdateItemIndices();
+            UpdateItemIndices(false);
         }
 
         public PackElement DrawPackElement(Rect position, PackElement element, int index)
@@ -76,7 +76,7 @@ namespace Beetle23
             return element;
         }
 
-        public void UpdateItemIndices()
+        public void UpdateItemIndices(bool needWarning)
         {
             if (_listAdaptor != null)
             {
@@ -86,12 +86,13 @@ namespace Beetle23
                 {
                     if (_listAdaptor[i].Item == null && VirtualItemsEditUtil.DisplayedItemIDs.Length > 0)
                     {
-                        VirtualItem item = GameKit.Config.GetItemByID(VirtualItemsEditUtil.DisplayedItemIDs[0]);
-                        if (item != null)
+                        VirtualItem item = GameKit.Config.GetVirtualItemByID(VirtualItemsEditUtil.DisplayedItemIDs[0]);
+                        if (item != null && needWarning)
                         {
-                            Debug.LogWarning("One of pack " + _currentDisplayedPack.Name + "'s items is null, correct it with default item [" + item.ID + "].");
+                            Debug.LogWarning("[" + _currentDisplayedPack.ID + "]'s [" + (i + 1) + 
+                                "] item is null, correct it with default item [" + item.ID + "].");
                         }
-                        _listAdaptor[i].Item = item;
+                        _listAdaptor[i].ItemID = item.ID;
                     }
                     _itemIndices.Add(_listAdaptor[i].Item != null ?
                         VirtualItemsEditUtil.GetItemIndexById(_listAdaptor[i].Item.ID) : 0);
