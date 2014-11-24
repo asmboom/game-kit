@@ -10,7 +10,7 @@ namespace Beetle23
             : base(gate)
         {
             _requiredScoreNumber = gate.RelatedNumber;
-            _score = gate.GetRelatedItem<Score>();
+            _score = gate.RelatedItem as Score;
 
             if (_score != null)
             {

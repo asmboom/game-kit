@@ -14,9 +14,18 @@ namespace Beetle23
         [SerializeField]
         public GateType Type;
         [SerializeField]
-        public ScriptableItem RelatedItem;
+        public string RelatedItemID;
         [SerializeField]
         public float RelatedNumber;
+
+        public IItem RelatedItem
+        {
+            get
+            {
+                return string.IsNullOrEmpty(RelatedItemID) ? null : 
+                    GameKit.Config.GetVirtualItemByID(RelatedItemID);
+            }
+        }
 
         public bool IsOpened
         {
@@ -65,11 +74,6 @@ namespace Beetle23
             {
                 Delegate.RegisterEvents();
             }
-        }
-
-        public T GetRelatedItem<T>() where T : ScriptableItem
-        {
-            return RelatedItem as T;
         }
 
         protected GateDelegate Delegate

@@ -7,7 +7,7 @@ namespace Beetle23
         public WorldCompletionGateDelegate(Gate gate)
             : base(gate)
         {
-            _world = gate.GetRelatedItem<World>();
+            _world = gate.RelatedItem as World;
 
             if (_world != null)
             {

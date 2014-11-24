@@ -3,13 +3,12 @@ using System.Collections;
 
 namespace Beetle23
 {
-    /*
     public class PurchasableGateDelegate : GateDelegate
     {
         public PurchasableGateDelegate(Gate gate)
             : base(gate)
         {
-            _lifetimeItem = gate.GetRelatedItem<LifeTimeItem>();
+            _lifetimeItem = gate.RelatedItem as LifeTimeItem;
 
             if (_lifetimeItem != null)
             {
@@ -52,6 +51,5 @@ namespace Beetle23
 
         private LifeTimeItem _lifetimeItem;
     }
-    */
 }
 

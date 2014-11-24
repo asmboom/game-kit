@@ -10,11 +10,9 @@ namespace Beetle23
             {
                 switch (type)
                 {
-                        /*
                     case RewardType.VirtualItemReward:
                         _typeToDelegate.Add(type, new VirtualItemRewardDelegate());
                         break;
-                    */
                     default:
                         return null;
                 }

@@ -2,14 +2,13 @@
 
 namespace Beetle23
 {
-    /*
     public class VirtualItemGateDelegate : GateDelegate
     {
         public VirtualItemGateDelegate(Gate gate)
             : base(gate)
         {
             _requiredBalance = gate.RelatedNumber;
-            _virtualItem = gate.GetRelatedItem<VirtualItem>();
+            _virtualItem = gate.RelatedItem as VirtualItem;
 
             if (_virtualItem != null)
             {
@@ -59,5 +58,4 @@ namespace Beetle23
         private VirtualItem _virtualItem;
         private float _requiredBalance;
     }
-    */
 }

@@ -9,7 +9,6 @@ namespace Beetle23
         {
             switch (gate.Type)
             {
-                    /*
                 case GateType.VirtualItemGate:
                     return new VirtualItemGateDelegate(gate);
                 case GateType.ScoreGate:
@@ -20,7 +19,6 @@ namespace Beetle23
                     return new PurchasableGateDelegate(gate);
                 case GateType.GateGroup:
                     return new GateGroupDelegate(gate);
-                */
                 default:
                     return null;
             }

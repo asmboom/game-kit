@@ -6,8 +6,17 @@ namespace Beetle23
     public class Reward : SerializableItem
     {
         public RewardType Type;
-        public ScriptableObject RelatedItem;
+        public string RelatedItemID;
         public int RewardNumber;
+
+        public IItem RelatedItem
+        {
+            get
+            {
+                return string.IsNullOrEmpty(RelatedItemID) ? null : 
+                    GameKit.Config.GetVirtualItemByID(RelatedItemID);
+            }
+        }
 
         public void Give()
         {
