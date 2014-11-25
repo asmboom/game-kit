@@ -21,6 +21,9 @@ namespace Beetle23
         [SerializeField]
         public List<VirtualCategory> Categories;
 
+        [SerializeField]
+        public World RootWorld;
+
         public IEnumerable<VirtualItem> VirtualItems
         {
             get

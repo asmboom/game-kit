@@ -25,7 +25,7 @@ namespace Beetle23
 
         private void OnEnable()
         {
-            _sections = new string[] { "Virtual Items", "Missions", "Rewards", "Worlds" };
+            _sections = new string[] { "Virtual Items", "Worlds" };
 
             GetConfigAndCreateIfNonExist();
 

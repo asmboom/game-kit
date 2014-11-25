@@ -5,7 +5,8 @@ using System;
 
 namespace Beetle23
 {
-    public class World : ScriptableItem
+    [System.Serializable]
+    public class World : SerializableItem
     {
         public Action OnCompleted = delegate { };
 
@@ -20,6 +21,14 @@ namespace Beetle23
 
         [SerializeField]
         public List<Mission> Missions;
+
+        public World()
+        {
+            Gate = new GateGroup();
+            SubWorlds = new List<World>();
+            Scores = new List<Score>();
+            Missions = new List<Mission>();
+        }
 
     	public bool IsCompleted
     	{
