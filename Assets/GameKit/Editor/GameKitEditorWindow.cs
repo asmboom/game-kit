@@ -16,7 +16,7 @@ namespace Beetle23
         {
             if (_instance == null)
             {
-                _instance = EditorWindow.GetWindow<GameKitEditorWindow>("Virtual Item Edit Window");
+                _instance = EditorWindow.GetWindow<GameKitEditorWindow>("GameKit");
             }
             return _instance;
         }
@@ -25,6 +25,8 @@ namespace Beetle23
 
         private void OnEnable()
         {
+            _sections = new string[] { "Virtual Items", "Missions", "Rewards", "Worlds" };
+
             GetConfigAndCreateIfNonExist();
 
             if (_config == null)
@@ -78,10 +80,23 @@ namespace Beetle23
         {
             EditorGUI.BeginChangeCheck();
 
-            _itemsExplorer.Draw(new Rect(10, 5, 250, position.height - 10));
-            if (_itemInspector != null)
+            float y = 0;
+            _currentSection = GUI.SelectionGrid(new Rect(10, 0, position.width - 20, 20), _currentSection, _sections, 8);
+            y += 25;
+
+            GUI.Box(new Rect(10, y, position.width - 20, 10), string.Empty);
+            y += 15;
+
+            if (_currentSection == 0)
             {
-                _itemInspector.Draw(new Rect(270, 5, position.width - 280, position.height - 10));
+                _itemsExplorer.Draw(new Rect(10, y, 250, position.height - 10));
+                if (_itemInspector != null)
+                {
+                    _itemInspector.Draw(new Rect(270, y, position.width - 280, position.height - 10));
+                }
+            }
+            else
+            {
             }
 
             if (EditorGUI.EndChangeCheck())
@@ -94,6 +109,7 @@ namespace Beetle23
         private VirtualItemsTreeExplorer _itemsExplorer;
         private VirtualItemsPropertyInspector _itemInspector;
 
-        private const float RowHeight = 20;
+        private string[] _sections;
+        private int _currentSection;
     }
 }

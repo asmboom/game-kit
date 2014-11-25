@@ -11,12 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 460e5bccbacdeae47a0de50350efe9ad, type: 3}
   m_Name: GameKitConfig
   m_EditorClassIdentifier: 
-  VirtualCurrencies:
-  - _id: 9b1ad4cc
-    _name: 
-    Description: 
-    Icon: {fileID: 0}
-    Extend: {fileID: 0}
+  VirtualCurrencies: []
   SingleUseItems: []
   LifeTimeItems: []
   ItemPacks: []
