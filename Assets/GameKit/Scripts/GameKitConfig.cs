@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Beetle23
 {
-    public class VirtualItemsConfig : ScriptableObject
+    public class GameKitConfig : ScriptableObject
     {
         [SerializeField]
         public List<VirtualCurrency> VirtualCurrencies;

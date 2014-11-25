@@ -84,7 +84,7 @@ namespace Beetle23
 
             if (_currentSelectedUpgrade != null)
             {
-                GUI.Label(new Rect(xOffset, 0, position.width * 0.7f, 20), "Upgrade price", VirtualItemsDrawUtil.TitleStyle);
+                GUI.Label(new Rect(xOffset, 0, position.width * 0.7f, 20), "Upgrade price", GameKitEditorDrawUtil.TitleStyle);
                 _purchaseListView.Draw(new Rect(xOffset, 20, position.width * 0.7f, position.height - 20));
             }
 
@@ -136,7 +136,7 @@ namespace Beetle23
         {
             if (item == null) return null;
             if (GUI.Button(position, item.ID, item == _currentSelectedUpgrade ?
-                    VirtualItemsDrawUtil.ItemSelectedStyle : VirtualItemsDrawUtil.ItemStyle))
+                    GameKitEditorDrawUtil.ItemSelectedStyle : GameKitEditorDrawUtil.ItemStyle))
             {
                 SelecteUpgradeItem(item);
             }

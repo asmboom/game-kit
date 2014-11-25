@@ -12,7 +12,7 @@ namespace Beetle23
         public string CurrencyCode { get; private set; }
         public string FormattedPrice { get; private set; }
 
-        public static Dictionary<string, MarketProduct> CreateProductListFromVirtualItemsConfig(VirtualItemsConfig config)
+        public static Dictionary<string, MarketProduct> CreateProductListFromVirtualItemsConfig(GameKitConfig config)
         {
             Dictionary<string, MarketProduct> list = new Dictionary<string, MarketProduct>();
 

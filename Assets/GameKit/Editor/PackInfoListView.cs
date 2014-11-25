@@ -39,10 +39,10 @@ namespace Beetle23
 
             float xOffset = 0;
             GUI.Label(new Rect(0, 0, position.width * 0.5f, 20),
-                "Item", VirtualItemsDrawUtil.TitleStyle);
+                "Item", GameKitEditorDrawUtil.TitleStyle);
             xOffset += position.width * 0.5f;
             GUI.Label(new Rect(xOffset, 0, position.width * 0.5f, 20),
-                "Amount", VirtualItemsDrawUtil.TitleStyle);
+                "Amount", GameKitEditorDrawUtil.TitleStyle);
 
             if (_listAdaptor != null)
             {

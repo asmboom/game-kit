@@ -6,12 +6,12 @@ using UnityEngine;
 
 namespace Beetle23
 {
-    [CustomEditor(typeof(VirtualItemsConfig))]
-    public class VirtualItemsConfigEditor : Editor
+    [CustomEditor(typeof(GameKitConfig))]
+    public class GameKitConfigEditor : Editor
     {
         public override void OnInspectorGUI()
         {
-            VirtualItemsConfig config = target as VirtualItemsConfig;
+            GameKitConfig config = target as GameKitConfig;
             if (config != null)
             {
                 DrawDefaultInspector();
@@ -25,7 +25,7 @@ namespace Beetle23
             }
         }
 
-        public static void CheckIfAnyInvalidRef(VirtualItemsConfig config)
+        public static void CheckIfAnyInvalidRef(GameKitConfig config)
         {
             foreach (var item in config.LifeTimeItems)
             {

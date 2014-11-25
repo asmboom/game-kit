@@ -37,13 +37,13 @@ namespace Beetle23
             GUI.BeginGroup(new Rect(position.x, position.y + 50, width, height));
             _scrollPositionOfCategory = GUI.BeginScrollView(new Rect(0, 0, width, height),
                 _scrollPositionOfCategory, new Rect(0, 0, width - 20, 20 * category.ItemIDs.Count));
-            GUI.Label(new Rect(0, 0, width, 20), "In Category", VirtualItemsDrawUtil.TitleStyle);
+            GUI.Label(new Rect(0, 0, width, 20), "In Category", GameKitEditorDrawUtil.TitleStyle);
             _categoryItemListControl.Draw(new Rect(0, 20, width, height - 20), _categoryItemListAdaptor);
             GUI.EndScrollView();
             GUI.EndGroup();
 
             GUI.BeginGroup(new Rect(position.x + position.width - width - 20, position.y + 50, width, height));
-            GUI.Label(new Rect(0, 0, width, 20), "Not in Category", VirtualItemsDrawUtil.TitleStyle);
+            GUI.Label(new Rect(0, 0, width, 20), "Not in Category", GameKitEditorDrawUtil.TitleStyle);
             GUI.BeginGroup(new Rect(0, 20, width, height - 20), string.Empty, "Box");
             _scrollPositionOfNonCategory = GUI.BeginScrollView(new Rect(0, 0, width, height - 20),
                 _scrollPositionOfNonCategory, new Rect(0, 0, width - 20, 20 * _itemsWithoutCategory.Count));
@@ -52,7 +52,7 @@ namespace Beetle23
             {
                 if (GUI.Button(new Rect(0, yOffset, position.width * 0.4f, itemHeight), item.ID,
                     item == _currentSelectedItem ?
-                        VirtualItemsDrawUtil.ItemSelectedStyle : VirtualItemsDrawUtil.ItemStyle))
+                        GameKitEditorDrawUtil.ItemSelectedStyle : GameKitEditorDrawUtil.ItemStyle))
                 {
                     _currentSelectedItem = item;
                     _isCurrentSelectedItemInCategory = false;
@@ -105,7 +105,7 @@ namespace Beetle23
         {
             if (GUI.Button(position, itemID,
                 _currentSelectedItem != null && itemID == _currentSelectedItem.ID ?
-                    VirtualItemsDrawUtil.ItemSelectedStyle : VirtualItemsDrawUtil.ItemStyle))
+                    GameKitEditorDrawUtil.ItemSelectedStyle : GameKitEditorDrawUtil.ItemStyle))
             {
                 _currentSelectedItem = GameKit.Config.GetVirtualItemByID(itemID);
                 _isCurrentSelectedItemInCategory = true;
@@ -132,7 +132,7 @@ namespace Beetle23
                 else
                 {
                     category.ID = _currentCategoryID;
-                    VirtualItemsEditorWindow.GetInstance().Repaint();
+                    GameKitEditorWindow.GetInstance().Repaint();
                 }
             }
         }

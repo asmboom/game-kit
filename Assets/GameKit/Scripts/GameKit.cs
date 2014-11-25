@@ -10,19 +10,19 @@ namespace Beetle23
             _factory = factory;
         }
 
-        public static VirtualItemsConfig Config
+        public static GameKitConfig Config
         {
             get
             {
                 if (_config == null)
                 {
-                    _config = Resources.Load<VirtualItemsConfig>("VirtualItemsConfig");
+                    _config = Resources.Load<GameKitConfig>("GameKitConfig");
                     if (_config == null)
                     {
-                        Debug.LogWarning("Create empty VirtualItemsConfig at runtime");
-                        _config = ScriptableObject.CreateInstance<VirtualItemsConfig>();
+                        Debug.LogWarning("Create empty GameKitConfig at runtime");
+                        _config = ScriptableObject.CreateInstance<GameKitConfig>();
 #if UNITY_EDITOR
-                        string fullPath = "Assets/Resources/VirtualItemsConfig.asset";
+                        string fullPath = "Assets/Resources/GameKitConfig.asset";
                         UnityEditor.AssetDatabase.CreateAsset(_config, fullPath);
 #endif
                     }
@@ -70,7 +70,7 @@ namespace Beetle23
             }
         }
 
-        private static VirtualItemsConfig _config;
+        private static GameKitConfig _config;
         private static IGameKitFactory _factory;
     }
 }

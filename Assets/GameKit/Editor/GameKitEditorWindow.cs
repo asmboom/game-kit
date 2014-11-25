@@ -4,28 +4,28 @@ using System.Collections.Generic;
 
 namespace Beetle23
 {
-    public class VirtualItemsEditorWindow : EditorWindow
+    public class GameKitEditorWindow : EditorWindow
     {
-        [MenuItem("Window/Virtual Items Editor Window")]
+        [MenuItem("Window/GameKit Editor Window")]
         private static void OpenVirutalItemEditorWindow()
         {
-            VirtualItemsEditorWindow.GetInstance();
+            GameKitEditorWindow.GetInstance();
         }
 
-        public static VirtualItemsEditorWindow GetInstance()
+        public static GameKitEditorWindow GetInstance()
         {
             if (_instance == null)
             {
-                _instance = EditorWindow.GetWindow<VirtualItemsEditorWindow>("Virtual Item Edit Window");
+                _instance = EditorWindow.GetWindow<GameKitEditorWindow>("Virtual Item Edit Window");
             }
             return _instance;
         }
 
-        private static VirtualItemsEditorWindow _instance;
+        private static GameKitEditorWindow _instance;
 
         private void OnEnable()
         {
-            GetVirtualItemsConfigAndCreateIfNonExist();
+            GetConfigAndCreateIfNonExist();
 
             if (_config == null)
             {
@@ -63,13 +63,13 @@ namespace Beetle23
             VirtualItemsEditUtil.UpdateDisplayedOptions();
         }
 
-        private static VirtualItemsConfig GetVirtualItemsConfigAndCreateIfNonExist()
+        private static GameKitConfig GetConfigAndCreateIfNonExist()
         {
-            string configFilePath = VirtualItemsEditUtil.DefaultVirtualItemDataPath + "/VirtualItemsConfig.asset";
-            VirtualItemsConfig virtualItemsConfig = AssetDatabase.LoadAssetAtPath(configFilePath, typeof(VirtualItemsConfig)) as VirtualItemsConfig;
+            string configFilePath = VirtualItemsEditUtil.DefaultVirtualItemDataPath + "/GameKitConfig.asset";
+            GameKitConfig virtualItemsConfig = AssetDatabase.LoadAssetAtPath(configFilePath, typeof(GameKitConfig)) as GameKitConfig;
             if (virtualItemsConfig == null)
             {
-                virtualItemsConfig = VirtualItemsEditUtil.CreateAsset<VirtualItemsConfig>(configFilePath);
+                virtualItemsConfig = VirtualItemsEditUtil.CreateAsset<GameKitConfig>(configFilePath);
             }
             return virtualItemsConfig;
         }
@@ -90,7 +90,7 @@ namespace Beetle23
             }
         }
 
-        private VirtualItemsConfig _config;
+        private GameKitConfig _config;
         private VirtualItemsTreeExplorer _itemsExplorer;
         private VirtualItemsPropertyInspector _itemInspector;
 

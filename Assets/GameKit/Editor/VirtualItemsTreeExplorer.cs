@@ -11,7 +11,7 @@ namespace Beetle23
         public Action<IItem> OnSelectionChange = delegate { };
         public IItem CurrentSelectedItem { get; private set; }
 
-        public VirtualItemsTreeExplorer(VirtualItemsConfig config)
+        public VirtualItemsTreeExplorer(GameKitConfig config)
         {
             _config = config;
 
@@ -60,7 +60,7 @@ namespace Beetle23
 
             if (GUILayout.Button("Check References"))
             {
-                VirtualItemsConfigEditor.CheckIfAnyInvalidRef(_config);
+                GameKitConfigEditor.CheckIfAnyInvalidRef(_config);
             }
 
             GUILayout.BeginHorizontal();
@@ -87,7 +87,7 @@ namespace Beetle23
             _isVirtualCurrencyExpanded = EditorGUILayout.Foldout(_isVirtualCurrencyExpanded,
                 new GUIContent(" Virtual Currencies", Resources.Load("VirtualCurrencyIcon") as Texture,
                     "Virtual currency can be used to purchase other items, e.g. coin, gem"),
-                VirtualItemsDrawUtil.FoldoutStyle);
+                GameKitEditorDrawUtil.FoldoutStyle);
             if (_isVirtualCurrencyExpanded)
             {
                 _virtualCurrencyListControl.Draw(_virtualCurrencyListAdaptor);
@@ -95,7 +95,7 @@ namespace Beetle23
             _isSingleUseItemExpanded = EditorGUILayout.Foldout(_isSingleUseItemExpanded,
                 new GUIContent(" Single Use Items", Resources.Load("SingleUseItemIcon") as Texture,
                     "Items that use can buy multiple times and use multiple times, e.g. magic spells."),
-                VirtualItemsDrawUtil.FoldoutStyle);
+                GameKitEditorDrawUtil.FoldoutStyle);
             if (_isSingleUseItemExpanded)
             {
                 _singleuseItemListControl.Draw(_singleuseItemListAdaptor);
@@ -103,7 +103,7 @@ namespace Beetle23
             _isLifeTimeItemExpanded = EditorGUILayout.Foldout(_isLifeTimeItemExpanded,
                 new GUIContent(" Lifetime Items", Resources.Load("LifetimeItemIcon") as Texture,
                     "Items that bought only once and kept forever, e.g. no ads, characters, weapons"),
-                VirtualItemsDrawUtil.FoldoutStyle);
+                GameKitEditorDrawUtil.FoldoutStyle);
             if (_isLifeTimeItemExpanded)
             {
                 _lifetimeItemListControl.Draw(_lifetimeItemListAdaptor);
@@ -111,14 +111,14 @@ namespace Beetle23
             _isPackExpanded = EditorGUILayout.Foldout(_isPackExpanded,
                 new GUIContent(" Packs", Resources.Load("PackIcon") as Texture,
                     "A pack contains a list of various virtual items"),
-                VirtualItemsDrawUtil.FoldoutStyle);
+                GameKitEditorDrawUtil.FoldoutStyle);
             if (_isPackExpanded)
             {
                 _packListControl.Draw(_packListAdaptor);
             }
             _isCategoryExpanded = EditorGUILayout.Foldout(_isCategoryExpanded,
                 new GUIContent(" Categories", Resources.Load("CategoryIcon") as Texture),
-                VirtualItemsDrawUtil.FoldoutStyle);
+                GameKitEditorDrawUtil.FoldoutStyle);
             if (_isCategoryExpanded)
             {
                 _categoryListControl.Draw(_categoryListAdaptor);
@@ -141,7 +141,7 @@ namespace Beetle23
 
             if (GUI.Button(position, item.ID,
                     (!string.IsNullOrEmpty(item.ID) && item == CurrentSelectedItem ?
-                        VirtualItemsDrawUtil.ItemSelectedStyle : VirtualItemsDrawUtil.ItemStyle)))
+                        GameKitEditorDrawUtil.ItemSelectedStyle : GameKitEditorDrawUtil.ItemStyle)))
             {
                 SelectItem(item);
             }
@@ -179,7 +179,7 @@ namespace Beetle23
             else
             {
                 CurrentSelectedItem.ID = id;
-                VirtualItemsEditorWindow.GetInstance().Repaint();
+                GameKitEditorWindow.GetInstance().Repaint();
             }
         }
 
@@ -194,7 +194,7 @@ namespace Beetle23
                 {
                     args.Cancel = false;
                     SelectItem(null);
-                    VirtualItemsEditorWindow.GetInstance().Repaint();
+                    GameKitEditorWindow.GetInstance().Repaint();
                 }
                 else
                 {
@@ -212,7 +212,7 @@ namespace Beetle23
             }
         }
 
-        private VirtualItemsConfig _config;
+        private GameKitConfig _config;
         private bool _isVirtualCurrencyExpanded = true;
         private bool _isSingleUseItemExpanded = true;
         private bool _isLifeTimeItemExpanded = true;

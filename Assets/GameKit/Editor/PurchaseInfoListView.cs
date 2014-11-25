@@ -39,13 +39,13 @@ namespace Beetle23
 
             float xOffset = 0;
             GUI.Label(new Rect(0, 0, position.width * PurchaseTypeWidth, 20),
-                "Purchase Type", VirtualItemsDrawUtil.TitleStyle);
+                "Purchase Type", GameKitEditorDrawUtil.TitleStyle);
             xOffset += position.width * PurchaseTypeWidth;
             GUI.Label(new Rect(xOffset, 0, position.width * PurchaseAssociatedWidth, 20),
-                "Associated ID/Item", VirtualItemsDrawUtil.TitleStyle);
+                "Associated ID/Item", GameKitEditorDrawUtil.TitleStyle);
             xOffset += position.width * PurchaseAssociatedWidth;
             GUI.Label(new Rect(xOffset, 0, position.width * PurchasePriceWidth, 20),
-                "Price", VirtualItemsDrawUtil.TitleStyle);
+                "Price", GameKitEditorDrawUtil.TitleStyle);
 
             if (_listAdaptor != null)
             {
