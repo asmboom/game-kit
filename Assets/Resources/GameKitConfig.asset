@@ -16,3 +16,17 @@ MonoBehaviour:
   LifeTimeItems: []
   ItemPacks: []
   Categories: []
+  RootWorld:
+    _id: e84380b3
+    _name: 
+    Gate:
+      _id: 984b5536
+      _name: 
+      Type: 4
+      RelatedItemID: 
+      RelatedNumber: 0
+      Gates: []
+      GroupType: 0
+    SubWorlds: []
+    Scores: []
+    Missions: []

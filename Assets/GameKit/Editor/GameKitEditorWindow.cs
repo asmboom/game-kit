@@ -42,6 +42,10 @@ namespace Beetle23
                 _itemInspector = new VirtualItemsPropertyInspector(_itemsExplorer.CurrentSelectedItem);
                 _itemsExplorer.OnSelectionChange += _itemInspector.OnExplorerSelectionChange;
             }
+            if (_worldTreeExplorer == null)
+            {
+                _worldTreeExplorer = new WorldTreeExplorer(_config);
+            }
 
             VirtualItemsEditUtil.UpdateDisplayedOptions();
         }
@@ -97,6 +101,7 @@ namespace Beetle23
             }
             else
             {
+                _worldTreeExplorer.Draw(new Rect(10, y, 250, position.height - 10));
             }
 
             if (EditorGUI.EndChangeCheck())
@@ -108,6 +113,7 @@ namespace Beetle23
         private GameKitConfig _config;
         private VirtualItemsTreeExplorer _itemsExplorer;
         private VirtualItemsPropertyInspector _itemInspector;
+        private WorldTreeExplorer _worldTreeExplorer;
 
         private string[] _sections;
         private int _currentSection;
