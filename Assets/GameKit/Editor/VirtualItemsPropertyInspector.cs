@@ -160,7 +160,5 @@ namespace Beetle23
 
         private Vector2 _scrollPosition;
         private float _currentYOffset;
-
-        private const string IDInputControlName = "virtual_item_id_field";
     }
 }

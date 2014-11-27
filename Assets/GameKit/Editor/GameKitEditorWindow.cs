@@ -33,18 +33,23 @@ namespace Beetle23
             {
                 _config = GameKit.Config;
             }
-            if (_itemsExplorer == null)
+            if (_virtualItemsExplorer == null)
             {
-                _itemsExplorer = new VirtualItemsTreeExplorer(_config);
+                _virtualItemsExplorer = new VirtualItemsTreeExplorer(_config);
             }
-            if (_itemInspector == null)
+            if (_virtualItemInspector == null)
             {
-                _itemInspector = new VirtualItemsPropertyInspector(_itemsExplorer.CurrentSelectedItem);
-                _itemsExplorer.OnSelectionChange += _itemInspector.OnExplorerSelectionChange;
+                _virtualItemInspector = new VirtualItemsPropertyInspector(_virtualItemsExplorer.CurrentSelectedItem);
+                _virtualItemsExplorer.OnSelectionChange += _virtualItemInspector.OnExplorerSelectionChange;
             }
             if (_worldTreeExplorer == null)
             {
                 _worldTreeExplorer = new WorldTreeExplorer(_config);
+            }
+            if (_worldInspector == null)
+            {
+                _worldInspector = new WorldPropertyInspector(_worldTreeExplorer.CurrentSelectedWorld);
+                _worldTreeExplorer.OnSelectionChange += _worldInspector.OnExplorerSelectionChange;
             }
 
             VirtualItemsEditUtil.UpdateDisplayedOptions();
@@ -52,9 +57,9 @@ namespace Beetle23
 
         private void OnDisable()
         {
-            if (_itemInspector != null)
+            if (_virtualItemInspector != null)
             {
-                _itemsExplorer.OnSelectionChange -= _itemInspector.OnExplorerSelectionChange;
+                _virtualItemsExplorer.OnSelectionChange -= _virtualItemInspector.OnExplorerSelectionChange;
             }
         }
 
@@ -93,15 +98,19 @@ namespace Beetle23
 
             if (_currentSection == 0)
             {
-                _itemsExplorer.Draw(new Rect(10, y, 250, position.height - 10));
-                if (_itemInspector != null)
+                _virtualItemsExplorer.Draw(new Rect(10, y, 250, position.height - 10));
+                if (_virtualItemInspector != null)
                 {
-                    _itemInspector.Draw(new Rect(270, y, position.width - 280, position.height - 10));
+                    _virtualItemInspector.Draw(new Rect(270, y, position.width - 280, position.height - 10));
                 }
             }
             else
             {
-                _worldTreeExplorer.Draw(new Rect(10, y, (position.width - 20) / 2, position.height - 10));
+                _worldTreeExplorer.Draw(new Rect(10, y, 250, position.height - 10));
+                if (_worldInspector != null)
+                {
+                    _worldInspector.Draw(new Rect(270, y, position.width - 280, position.height - 10));
+                }
             }
 
             if (EditorGUI.EndChangeCheck())
@@ -111,9 +120,10 @@ namespace Beetle23
         }
 
         private GameKitConfig _config;
-        private VirtualItemsTreeExplorer _itemsExplorer;
-        private VirtualItemsPropertyInspector _itemInspector;
+        private VirtualItemsTreeExplorer _virtualItemsExplorer;
+        private VirtualItemsPropertyInspector _virtualItemInspector;
         private WorldTreeExplorer _worldTreeExplorer;
+        private WorldPropertyInspector _worldInspector;
 
         private string[] _sections;
         private int _currentSection;

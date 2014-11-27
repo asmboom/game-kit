@@ -37,58 +37,6 @@ MonoBehaviour:
       RelatedNumber: 0
       Gates: []
       GroupType: 0
-    SubWorlds:
-    - _id: abc
-      _name: 
-      Gate:
-        _id: 
-        _name: 
-        Type: 0
-        RelatedItemID: 
-        RelatedNumber: 0
-        Gates: []
-        GroupType: 0
-      SubWorlds: []
-      Scores: []
-      Missions: []
-    - _id: 111
-      _name: 
-      Gate:
-        _id: 
-        _name: 
-        Type: 0
-        RelatedItemID: 
-        RelatedNumber: 0
-        Gates: []
-        GroupType: 0
-      SubWorlds:
-      - _id: ferwerewrwer
-        _name: 
-        Gate:
-          _id: 
-          _name: 
-          Type: 0
-          RelatedItemID: 
-          RelatedNumber: 0
-          Gates: []
-          GroupType: 0
-        SubWorlds: []
-        Scores: []
-        Missions: []
-      Scores: []
-      Missions: []
-    - _id: 222
-      _name: 
-      Gate:
-        _id: 
-        _name: 
-        Type: 0
-        RelatedItemID: 
-        RelatedNumber: 0
-        Gates: []
-        GroupType: 0
-      SubWorlds: []
-      Scores: []
-      Missions: []
+    SubWorlds: []
     Scores: []
     Missions: []

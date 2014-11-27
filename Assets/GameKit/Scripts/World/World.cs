@@ -10,6 +10,9 @@ namespace Beetle23
     {
         public Action OnCompleted = delegate { };
 
+        [SerializeField]
+        public string Description;
+        
     	[SerializeField]
     	public GateGroup Gate;
 
@@ -21,6 +24,9 @@ namespace Beetle23
 
         [SerializeField]
         public List<Mission> Missions;
+
+        [SerializeField]
+        public ScriptableObject Extend;
 
         public World()
         {
@@ -62,6 +68,11 @@ namespace Beetle23
             {
                 Scores[i].ResetRuntimeScore(save);
             }
+        }
+
+        public T GetExtend<T>() where T : ScriptableObject
+        {
+            return Extend as T;
         }
 
         private void SetCompleted(bool completed, bool recursive) 
