@@ -4,7 +4,8 @@ using System.Collections;
 
 namespace Beetle23
 {
-    public class Score : ScriptableItem
+    [System.Serializable]
+    public class Score : SerializableItem
     {
         public Action OnBeatRecord = delegate { };
         public Action<float, float> OnRuntimeScoreChange = delegate { };
@@ -15,6 +16,18 @@ namespace Beetle23
         [SerializeField]
         public bool IsHigherBetter = true;
 
+        [SerializeField]
+        public bool EnableClamp = false;
+
+    	[SerializeField]
+    	public float Min = 0;
+
+    	[SerializeField]
+    	public float Max = 999999;
+
+        [SerializeField]
+        public string RelatedVirtualItemID;
+
         public float Record
         {
             get
@@ -24,6 +37,15 @@ namespace Beetle23
         }
 
         public float RuntimeScore { get { return _runtimeScore; } }
+
+        public VirtualItem RelatedVirtualItem
+        {
+            get
+            {
+                return string.IsNullOrEmpty(RelatedVirtualItemID) ? 
+                    null : GameKit.Config.GetVirtualItemByID(RelatedVirtualItemID);
+            }
+        }
 
         public void Increase(float amount)
         {
@@ -88,12 +110,18 @@ namespace Beetle23
             return IsHigherBetter ? (srcScore >= destScore) : (srcScore <= destScore);
         }
 
-        protected virtual float ClampScore(float score)
+        private float ClampScore(float score)
         {
-            return score;
+            return EnableClamp ? Mathf.Clamp(score, Min, Max) : score;
         }
 
-        protected virtual void PerformSaveActions() { }
+        private void PerformSaveActions() 
+        {
+            if (RelatedVirtualItem != null)
+            {
+                RelatedVirtualItem.Give((int)RuntimeScore);
+            }
+        }
 
         private float _runtimeScore;
         private bool _isRecordBeatenEventSent = false;

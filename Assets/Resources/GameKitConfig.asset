@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Name: GameKitConfig
   m_EditorClassIdentifier: 
   VirtualCurrencies:
-  - _id: e2320c15
+  - _id: vial
     _name: 
     Description: 
     Icon: {fileID: 0}
     Extend: {fileID: 0}
-  - _id: 1aeac018
+  - _id: iso-8
     _name: 
     Description: 
     Icon: {fileID: 0}
@@ -27,7 +27,7 @@ MonoBehaviour:
   ItemPacks: []
   Categories: []
   RootWorld:
-    _id: root_world
+    _id: root
     _name: 
     Description: 
     Gate:
@@ -38,37 +38,6 @@ MonoBehaviour:
       RelatedNumber: 0
       Gates: []
       GroupType: 0
-    SubWorlds:
-    - _id: chapter-a
-      _name: 
-      Description: 
-      Gate:
-        _id: d938afcf
-        _name: 
-        Type: 4
-        RelatedItemID: 
-        RelatedNumber: 0
-        Gates: []
-        GroupType: 0
-      SubWorlds: []
-      Scores: []
-      Missions: []
-      Extend: {fileID: 0}
-    - _id: chapter-b
-      _name: 
-      Description: 
-      Gate:
-        _id: 253ce834
-        _name: 
-        Type: 4
-        RelatedItemID: 
-        RelatedNumber: 0
-        Gates: []
-        GroupType: 0
-      SubWorlds: []
-      Scores: []
-      Missions: []
-      Extend: {fileID: 0}
-    Scores: []
+    SubWorlds: []
     Missions: []
     Extend: {fileID: 0}
