@@ -161,7 +161,7 @@ namespace Beetle23
                 Categories = new List<VirtualCategory>();
             }
 
-            RootWorld.ID = "root_world";
+            RootWorld.ID = "root";
             UpdateMapsAndTree();
         }
 

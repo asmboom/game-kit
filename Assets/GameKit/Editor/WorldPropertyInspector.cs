@@ -122,24 +122,31 @@ namespace Beetle23
 
         private void DrawID(Rect position, World world)
         {
-            GUI.SetNextControlName(IDInputControlName);
-            if (EditorGUI.TextField(position, "ID",
-                _currentWorldID).KeyPressed<string>(IDInputControlName, KeyCode.Return, out _currentWorldID) ||
-                (GUI.GetNameOfFocusedControl() != IDInputControlName &&
-                 _currentWorldID != world.ID))
+            if (world.Parent == null)
             {
-                World worldWithID = GameKit.Config.GetWorldByID(_currentWorldID);
-                if (worldWithID != null && worldWithID != world)
+                EditorGUI.LabelField(position, "ID", world.ID);
+            }
+            else
+            {
+                GUI.SetNextControlName(IDInputControlName);
+                if (EditorGUI.TextField(position, "ID",
+                    _currentWorldID).KeyPressed<string>(IDInputControlName, KeyCode.Return, out _currentWorldID) ||
+                    (GUI.GetNameOfFocusedControl() != IDInputControlName &&
+                     _currentWorldID != world.ID))
                 {
-                    GUIUtility.keyboardControl = 0;
-                    EditorUtility.DisplayDialog("Duplicate ID", "A world with ID[" +
-                        _currentWorldID + "] already exists!!!", "OK");
-                    _currentWorldID = world.ID;
-                }
-                else
-                {
-                    world.ID = _currentWorldID;
-                    GameKitEditorWindow.GetInstance().Repaint();
+                    World worldWithID = GameKit.Config.GetWorldByID(_currentWorldID);
+                    if (worldWithID != null && worldWithID != world)
+                    {
+                        GUIUtility.keyboardControl = 0;
+                        EditorUtility.DisplayDialog("Duplicate ID", "A world with ID[" +
+                            _currentWorldID + "] already exists!!!", "OK");
+                        _currentWorldID = world.ID;
+                    }
+                    else
+                    {
+                        world.ID = _currentWorldID;
+                        GameKitEditorWindow.GetInstance().Repaint();
+                    }
                 }
             }
         }
