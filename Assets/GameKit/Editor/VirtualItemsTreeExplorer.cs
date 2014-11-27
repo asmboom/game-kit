@@ -168,7 +168,7 @@ namespace Beetle23
 
         private void OnGetNewId<T>(string id) where T : SerializableItem
         {
-            GameKit.Config.UpdateIdToItemMap();
+            GameKit.Config.UpdateMapsAndTree();
             SerializableItem itemWithID = GameKit.Config.GetVirtualItemByID(id);
             if (itemWithID != null && itemWithID != CurrentSelectedItem)
             {

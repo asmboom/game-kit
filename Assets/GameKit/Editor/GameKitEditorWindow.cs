@@ -48,7 +48,7 @@ namespace Beetle23
             }
             if (_worldInspector == null)
             {
-                _worldInspector = new WorldPropertyInspector(_worldTreeExplorer.CurrentSelectedWorld);
+                _worldInspector = new WorldPropertyInspector(_worldTreeExplorer, _worldTreeExplorer.CurrentSelectedWorld);
                 _worldTreeExplorer.OnSelectionChange += _worldInspector.OnExplorerSelectionChange;
             }
 
@@ -68,8 +68,7 @@ namespace Beetle23
             if (_config != null)
             {
                 _config.RemoveNullRefs();
-                _config.UpdateIdToCategoryMap();
-                _config.UpdateIdToItemMap();
+                _config.UpdateMapsAndTree();
             }
             VirtualItemsEditUtil.UpdateDisplayedOptions();
         }

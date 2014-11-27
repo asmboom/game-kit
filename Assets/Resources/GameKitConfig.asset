@@ -29,6 +29,7 @@ MonoBehaviour:
   RootWorld:
     _id: root_world
     _name: 
+    Description: 
     Gate:
       _id: 984b5536
       _name: 
@@ -37,6 +38,37 @@ MonoBehaviour:
       RelatedNumber: 0
       Gates: []
       GroupType: 0
-    SubWorlds: []
+    SubWorlds:
+    - _id: chapter-a
+      _name: 
+      Description: 
+      Gate:
+        _id: d938afcf
+        _name: 
+        Type: 4
+        RelatedItemID: 
+        RelatedNumber: 0
+        Gates: []
+        GroupType: 0
+      SubWorlds: []
+      Scores: []
+      Missions: []
+      Extend: {fileID: 0}
+    - _id: chapter-b
+      _name: 
+      Description: 
+      Gate:
+        _id: 253ce834
+        _name: 
+        Type: 4
+        RelatedItemID: 
+        RelatedNumber: 0
+        Gates: []
+        GroupType: 0
+      SubWorlds: []
+      Scores: []
+      Missions: []
+      Extend: {fileID: 0}
     Scores: []
     Missions: []
+    Extend: {fileID: 0}

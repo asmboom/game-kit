@@ -37,6 +37,14 @@ namespace Beetle23
             get { return _idToVirtualItems.Count; }
         }
 
+        public IEnumerable<World> Worlds
+        {
+            get
+            {
+                return _idToWorld.Values;
+            }
+        }
+
         public bool TryGetVirtualItemByID(string id, out VirtualItem item)
         {
             return _idToVirtualItems.TryGetValue(id, out item);
@@ -66,30 +74,29 @@ namespace Beetle23
             return null;
         }
 
+        public World GetWorldByID(string id)
+        {
+            foreach (var world in Worlds)
+            {
+                if (world.ID.Equals(id))
+                {
+                    return world;
+                }
+            }
+            return null;
+        }
+
         public VirtualCategory GetItemCategory(string id)
         {
             return _idToCategory.ContainsKey(id) ? _idToCategory[id] : null;
         }
 
-        public void UpdateIdToItemMap()
+        public void UpdateMapsAndTree()
         {
-            _idToVirtualItems = new Dictionary<string, VirtualItem>();
-            for (int i = 0; i < VirtualCurrencies.Count; i++)
-            {
-                TryAddToIdItemMap(VirtualCurrencies[i].ID, VirtualCurrencies[i]);
-            }
-            for (int i = 0; i < SingleUseItems.Count; i++)
-            {
-                TryAddToIdItemMap(SingleUseItems[i].ID, SingleUseItems[i]);
-            }
-            for (int i = 0; i < LifeTimeItems.Count; i++)
-            {
-                TryAddToIdItemMap(LifeTimeItems[i].ID, LifeTimeItems[i]);
-            }
-            for (int i = 0; i < ItemPacks.Count; i++)
-            {
-                TryAddToIdItemMap(ItemPacks[i].ID, ItemPacks[i]);
-            }
+            UpdateIdToItemMap();
+            UpdateIdToCategoryMap();
+            UpdateIdToWorldMap();
+            UpdateWorldTree();
         }
 
         public void RemoveNullRefs()
@@ -131,36 +138,6 @@ namespace Beetle23
             }
         }
 
-        public void UpdateIdToCategoryMap()
-        {
-            _idToCategory = new Dictionary<string, VirtualCategory>();
-            for (int i = 0; i < Categories.Count; i++)
-            {
-                foreach (var itemID in Categories[i].ItemIDs)
-                {
-                    if (itemID != null && GetVirtualItemByID(itemID) != null)
-                    {
-                        _idToCategory.Add(itemID, Categories[i]);
-                    }
-                }
-            }
-        }
-
-        private void TryAddToIdItemMap(string id, VirtualItem item)
-        {
-            if (!string.IsNullOrEmpty(id))
-            {
-                if (!_idToVirtualItems.ContainsKey(id))
-                {
-                    _idToVirtualItems.Add(id, item);
-                }
-                else
-                {
-                    Debug.LogWarning("Found duplicated id " + id + " for item."); ;
-                }
-            }
-        }
-
         private void OnEnable()
         {
             if (VirtualCurrencies == null)
@@ -184,12 +161,92 @@ namespace Beetle23
                 Categories = new List<VirtualCategory>();
             }
 
-            UpdateIdToItemMap();
-            UpdateIdToCategoryMap();
             RootWorld.ID = "root_world";
+            UpdateMapsAndTree();
+        }
+
+        private void UpdateIdToItemMap()
+        {
+            _idToVirtualItems = new Dictionary<string, VirtualItem>();
+            for (int i = 0; i < VirtualCurrencies.Count; i++)
+            {
+                TryAddToIdItemMap(VirtualCurrencies[i].ID, VirtualCurrencies[i]);
+            }
+            for (int i = 0; i < SingleUseItems.Count; i++)
+            {
+                TryAddToIdItemMap(SingleUseItems[i].ID, SingleUseItems[i]);
+            }
+            for (int i = 0; i < LifeTimeItems.Count; i++)
+            {
+                TryAddToIdItemMap(LifeTimeItems[i].ID, LifeTimeItems[i]);
+            }
+            for (int i = 0; i < ItemPacks.Count; i++)
+            {
+                TryAddToIdItemMap(ItemPacks[i].ID, ItemPacks[i]);
+            }
+        }
+
+        private void UpdateIdToWorldMap()
+        {
+            _idToWorld = new Dictionary<string, World>();
+            LoopThroughWorld(RootWorld, (world) =>
+            {
+                _idToWorld.Add(world.ID, world);
+            });
+        }
+
+        private void UpdateWorldTree()
+        {
+            LoopThroughWorld(RootWorld, (world) =>
+            {
+                foreach (var subworld in world.SubWorlds)
+                {
+                    subworld.Parent = world;
+                }
+            });
+        }
+
+        private void UpdateIdToCategoryMap()
+        {
+            _idToCategory = new Dictionary<string, VirtualCategory>();
+            for (int i = 0; i < Categories.Count; i++)
+            {
+                foreach (var itemID in Categories[i].ItemIDs)
+                {
+                    if (itemID != null && GetVirtualItemByID(itemID) != null)
+                    {
+                        _idToCategory.Add(itemID, Categories[i]);
+                    }
+                }
+            }
+        }
+
+        private void LoopThroughWorld(World world, System.Action<World> action)
+        {
+            action(world);
+            foreach (var subworld in world.SubWorlds)
+            {
+                LoopThroughWorld(subworld, action);
+            }
+        }
+
+        private void TryAddToIdItemMap(string id, VirtualItem item)
+        {
+            if (!string.IsNullOrEmpty(id))
+            {
+                if (!_idToVirtualItems.ContainsKey(id))
+                {
+                    _idToVirtualItems.Add(id, item);
+                }
+                else
+                {
+                    Debug.LogWarning("Found duplicated id " + id + " for item."); ;
+                }
+            }
         }
 
         private Dictionary<string, VirtualItem> _idToVirtualItems;
         private Dictionary<string, VirtualCategory> _idToCategory;
+        private Dictionary<string, World> _idToWorld;
     }
 }

@@ -18,6 +18,44 @@ namespace Beetle23
             InitWorldToExpanded(_config.RootWorld);
         }
 
+        public void AddWorld(World world)
+        {
+            if (!_worldToExpanded.ContainsKey(world))
+            {
+                _worldToExpanded.Add(world, false);
+            }
+        }
+
+        public void RemoveWorld(World world)
+        {
+            if (_worldToExpanded.ContainsKey(world))
+            {
+                _worldToExpanded.Remove(world);
+            }
+        }
+
+        public void SelectWorld(World world)
+        {
+            if (world != CurrentSelectedWorld)
+            {
+                CurrentSelectedWorld = world;
+                World w = CurrentSelectedWorld.Parent;
+                while (w != null)
+                {
+                    if (_worldToExpanded.ContainsKey(w))
+                    {
+                        _worldToExpanded[w] = true;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                    w = w.Parent;
+                }
+                OnSelectionChange(world);
+            }
+        }
+
         public void Draw(Rect position)
         {
             GUILayout.BeginArea(position, string.Empty, "Box");
@@ -133,21 +171,8 @@ namespace Beetle23
                     GUILayout.EndHorizontal();
                 }
             }
-            else
-            {
-                _worldToExpanded.Add(world, false);
-            }
             GUILayout.EndArea();
             return y;
-        }
-
-        private void SelectWorld(World world)
-        {
-            if (world != CurrentSelectedWorld)
-            {
-                CurrentSelectedWorld = world;
-                OnSelectionChange(world);
-            }
         }
 
         private GameKitConfig _config;

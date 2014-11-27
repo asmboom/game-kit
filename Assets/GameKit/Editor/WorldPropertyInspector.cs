@@ -7,9 +7,14 @@ namespace Beetle23
 {
     public class WorldPropertyInspector
     {
-        public WorldPropertyInspector(World currentDisplayWorld)
+        public WorldPropertyInspector(WorldTreeExplorer treeExplorer, World currentDisplayWorld)
         {
+            _treeExplorer = treeExplorer;
             _currentDisplayWorld = currentDisplayWorld;
+            _subWorldListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand |
+                ReorderableListFlags.ShowIndices);
+            _subWorldListControl.ItemInserted += OnInsertSubworld;
+            _subWorldListControl.ItemRemoving += OnRemoveSubworld;
             /*
             _purchaseListView = new PurchaseInfoListView(currentDisplayedItem as PurchasableItem);
             _packListView = new PackInfoListView(currentDisplayedItem as VirtualItemPack);
@@ -21,30 +26,21 @@ namespace Beetle23
         public void OnExplorerSelectionChange(World world)
         {
             _currentDisplayWorld = world;
-
-            /*
-            if (world is VirtualItem)
-            {
-                GUI.FocusControl(string.Empty);
-
-                if (world is SingleUseItem || world is LifeTimeItem)
+            _currentWorldID = _currentDisplayWorld.ID;
+            _subWorldListAdaptor = new GenericClassListAdaptor<World>(_currentDisplayWorld.SubWorlds, 20,
+                () => { return new World(); },
+                (position, item, index) =>
                 {
-                    _upgradesListView.UpdateDisplayItem(world as VirtualItem);
-                }
-                if (world is PurchasableItem)
-                {
-                    if (world is VirtualItemPack)
+                    var size = GUI.skin.GetStyle("label").CalcSize(new GUIContent(item.ID));
+                    GUI.Label(new Rect(position.x, position.y, size.x, position.height), item.ID);
+                    if (GUI.Button(new Rect(position.x + size.x + 10, position.y, 50, position.height), "Go"))
                     {
-                        _packListView.UpdateDisplayItem(world as VirtualItemPack);
+                        _treeExplorer.SelectWorld(item);
                     }
-                    _purchaseListView.UpdateDisplayItem(world as PurchasableItem);
-                }
-            }
-            else if (world is VirtualCategory)
-            {
-                _categoryPropertyView.UpdateDisplayItem(world as VirtualCategory);
-            }
-            */
+                    return item;
+                });
+            //_packListView.UpdateDisplayItem(world as VirtualItemPack);
+            //_purchaseListView.UpdateDisplayItem(world as PurchasableItem);
         }
 
         public void Draw(Rect position)
@@ -82,6 +78,42 @@ namespace Beetle23
                 yOffset += 20;
             }
 
+            yOffset += 20;
+            EditorGUI.LabelField(new Rect(0, yOffset, 250, 20), "Parent World", 
+                _currentDisplayWorld.Parent == null ? "NULL" : _currentDisplayWorld.Parent.ID);
+            if (_currentDisplayWorld.Parent != null)
+            {
+                if (GUI.Button(new Rect(255, yOffset, 50, 20), "Go"))
+                {
+                    _treeExplorer.SelectWorld(_currentDisplayWorld.Parent);
+                }
+            }
+            yOffset += 20;
+
+            yOffset += 20;
+            _isSubWorldExpanded = EditorGUI.Foldout(new Rect(0, yOffset, width, 20), _isSubWorldExpanded, "Child Worlds");
+            yOffset += 20;
+            if (_isSubWorldExpanded)
+            {
+                float height = _subWorldListControl.CalculateListHeight(_subWorldListAdaptor);
+                _subWorldListControl.Draw(new Rect(0, yOffset, width, height), _subWorldListAdaptor);
+                yOffset += height;
+            }
+
+            yOffset += 20;
+            _isScoreInfoExpanded = EditorGUI.Foldout(new Rect(0, yOffset, width, 20), _isScoreInfoExpanded, "Scores");
+            yOffset += 20;
+            if (_isScoreInfoExpanded)
+            {
+            }
+
+            yOffset += 20;
+            _isMissionInfoExpanded = EditorGUI.Foldout(new Rect(0, yOffset, width, 20), _isMissionInfoExpanded, "Missions");
+            yOffset += 20;
+            if (_isMissionInfoExpanded)
+            {
+            }
+
             _currentYOffset = yOffset;
 
             GUI.EndScrollView();
@@ -90,15 +122,65 @@ namespace Beetle23
 
         private void DrawID(Rect position, World world)
         {
-            EditorGUI.LabelField(position, "ID", world.ID);
+            GUI.SetNextControlName(IDInputControlName);
+            if (EditorGUI.TextField(position, "ID",
+                _currentWorldID).KeyPressed<string>(IDInputControlName, KeyCode.Return, out _currentWorldID) ||
+                (GUI.GetNameOfFocusedControl() != IDInputControlName &&
+                 _currentWorldID != world.ID))
+            {
+                World worldWithID = GameKit.Config.GetWorldByID(_currentWorldID);
+                if (worldWithID != null && worldWithID != world)
+                {
+                    GUIUtility.keyboardControl = 0;
+                    EditorUtility.DisplayDialog("Duplicate ID", "A world with ID[" +
+                        _currentWorldID + "] already exists!!!", "OK");
+                    _currentWorldID = world.ID;
+                }
+                else
+                {
+                    world.ID = _currentWorldID;
+                    GameKitEditorWindow.GetInstance().Repaint();
+                }
+            }
+        }
+
+        private void OnInsertSubworld(object sender, ItemInsertedEventArgs args)
+        {
+            GameKit.Config.UpdateMapsAndTree();
+            GenericClassListAdaptor<World> listAdaptor = args.adaptor as GenericClassListAdaptor<World>;
+            World world = listAdaptor[args.itemIndex];
+            _treeExplorer.AddWorld(world);
+        }
+
+        private void OnRemoveSubworld(object sender, ItemRemovingEventArgs args)
+        {
+            GenericClassListAdaptor<World> listAdaptor = args.adaptor as GenericClassListAdaptor<World>;
+            World world = listAdaptor[args.itemIndex];
+            if (listAdaptor != null)
+            {
+                if (EditorUtility.DisplayDialog("Confirm to delete",
+                        "Confirm to delete world [" + world.ID + "]?", "OK", "Cancel"))
+                {
+                    args.Cancel = false;
+                    _treeExplorer.RemoveWorld(world);
+                    GameKit.Config.UpdateMapsAndTree();
+                    GameKitEditorWindow.GetInstance().Repaint();
+                }
+                else
+                {
+                    args.Cancel = true;
+                }
+            }
         }
 
         private bool _isBasicPropertiesExpanded = true;
-        private bool _isPackInfoExpanded = true;
-        private bool _isPurchaseInfoExpanded = true;
-        private bool _isUpgradeInfoExpanded = false;
+        private bool _isSubWorldExpanded = true;
+        private bool _isScoreInfoExpanded = true;
+        private bool _isMissionInfoExpanded = false;
 
         private World _currentDisplayWorld;
+        private ReorderableListControl _subWorldListControl;
+        private GenericClassListAdaptor<World> _subWorldListAdaptor;
 
         //private PurchaseInfoListView _purchaseListView;
         //private PackInfoListView _packListView;
@@ -107,5 +189,9 @@ namespace Beetle23
 
         private Vector2 _scrollPosition;
         private float _currentYOffset;
+        private WorldTreeExplorer _treeExplorer;
+
+        private string _currentWorldID;
+        private const string IDInputControlName = "world_id_field";
     }
 }

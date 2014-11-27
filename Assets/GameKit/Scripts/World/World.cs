@@ -36,6 +36,8 @@ namespace Beetle23
             Missions = new List<Mission>();
         }
 
+        public World Parent { get; internal set; }
+
     	public bool IsCompleted
     	{
     		get

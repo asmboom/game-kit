@@ -18,8 +18,7 @@ namespace Beetle23
 
                 if (GUILayout.Button("Update & Check Errors"))
                 {
-                    config.UpdateIdToItemMap();
-                    config.UpdateIdToCategoryMap();
+                    config.UpdateMapsAndTree();
                     CheckIfAnyInvalidRef(config);
                 }
             }

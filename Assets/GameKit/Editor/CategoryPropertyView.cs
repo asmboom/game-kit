@@ -139,8 +139,7 @@ namespace Beetle23
 
         private void UpdateItemsWithoutCategory()
         {
-            GameKit.Config.UpdateIdToItemMap();
-            GameKit.Config.UpdateIdToCategoryMap();
+            GameKit.Config.UpdateMapsAndTree();
             _itemsWithoutCategory.Clear();
             foreach (var item in GameKit.Config.VirtualItems)
             {
