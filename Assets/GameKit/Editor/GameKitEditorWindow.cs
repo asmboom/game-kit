@@ -101,7 +101,7 @@ namespace Beetle23
             }
             else
             {
-                _worldTreeExplorer.Draw(new Rect(10, y, 250, position.height - 10));
+                _worldTreeExplorer.Draw(new Rect(10, y, (position.width - 20) / 2, position.height - 10));
             }
 
             if (EditorGUI.EndChangeCheck())

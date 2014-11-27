@@ -186,6 +186,7 @@ namespace Beetle23
 
             UpdateIdToItemMap();
             UpdateIdToCategoryMap();
+            RootWorld.ID = "root_world";
         }
 
         private Dictionary<string, VirtualItem> _idToVirtualItems;

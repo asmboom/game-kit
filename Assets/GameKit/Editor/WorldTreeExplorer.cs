@@ -14,8 +14,7 @@ namespace Beetle23
         public WorldTreeExplorer(GameKitConfig config)
         {
             _config = config;
-            _idToWorldUIData = new Dictionary<string, WorldUIData>();
-            _idToWorldUIData.Add(_config.RootWorld.ID, new WorldUIData(_config.RootWorld));
+            UpdateWorldUIData();
         }
 
         public void Draw(Rect position)
@@ -37,13 +36,39 @@ namespace Beetle23
             GUILayout.EndHorizontal();
 
             _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
-
+            DrawWorldUIData(_rootWorldUIData);
 
             GUILayout.Space(30);
 
             GUILayout.EndScrollView();
 
             GUILayout.EndArea();
+        }
+
+        private void UpdateWorldUIData()
+        {
+            _rootWorldUIData = new WorldUIData(_config.RootWorld, 
+                CreateWorld, DrawWorld, GetWorldItemHeight);
+        }
+
+        private void DrawWorldUIData(WorldUIData worldUIData)
+        {
+            worldUIData.Expanded = EditorGUILayout.Foldout(worldUIData.Expanded,
+                worldUIData.RelatedWorld.ID, GameKitEditorDrawUtil.FoldoutStyle);
+            if (worldUIData.Expanded)
+            {
+                worldUIData.ListControl.Draw(worldUIData.ListAdaptor);
+            }
+        }
+
+        private World CreateWorld()
+        {
+            return new World();
+        }
+
+        private float GetWorldItemHeight(World world)
+        {
+            return 20;
         }
 
         private World DrawWorld(Rect position, World item, int index)
@@ -127,25 +152,33 @@ namespace Beetle23
             }
         }
 
-        private GameKitConfig _config;
-        private Dictionary<string, WorldUIData> _idToWorldUIData;
-
         private class WorldUIData
         {
             public World RelatedWorld;
             public bool Expanded;
             public ReorderableListControl ListControl;
             public GenericClassListAdaptor<World> ListAdaptor;
+            //public List<WorldUIData> SubWorldUIData;
 
-            public WorldUIData(World world)
+            public WorldUIData(World world, 
+                GenericListAdaptorDelegate.ItemCreator<World> itemCreator, 
+                GenericListAdaptorDelegate.ClassItemDrawer<World> itemDrawer,
+                GenericListAdaptorDelegate.ItemHeightGetter<World> itemHeightGetter)
             {
                 Expanded = false;
                 RelatedWorld = world;
-                ListAdaptor = new GenericClassListAdaptor<World>(world.SubWorlds, 20, null, null, null);
+                //SubWorldUIData = new List<WorldUIData>();
+                //foreach (var subworld in world.SubWorlds)
+                //{
+                    //SubWorldUIData.Add(new WorldUIData(subworld));
+                //}
+                ListAdaptor = new GenericClassListAdaptor<World>(world.SubWorlds, 20, itemCreator, itemDrawer, itemHeightGetter);
                 ListControl = new ReorderableListControl();
             }
         }
 
+        private GameKitConfig _config;
         private Vector2 _scrollPosition;
+        private WorldUIData _rootWorldUIData;
     }
 }
