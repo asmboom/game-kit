@@ -58,7 +58,7 @@ namespace Beetle23
         {
             GUILayout.BeginArea(position, string.Empty, "Box");
 
-            if (GUILayout.Button("Check References"))
+            if (GUILayout.Button("Check References", GUILayout.Width(185)))
             {
                 GameKitConfigEditor.CheckIfAnyInvalidRef(_config);
             }
@@ -141,7 +141,7 @@ namespace Beetle23
 
             if (GUI.Button(position, item.ID,
                     (!string.IsNullOrEmpty(item.ID) && item == CurrentSelectedItem ?
-                        GameKitEditorDrawUtil.ItemSelectedStyle : GameKitEditorDrawUtil.ItemStyle)))
+                        GameKitEditorDrawUtil.ItemSelectedCenterStyle : GameKitEditorDrawUtil.ItemCenterLabelStyle)))
             {
                 SelectItem(item);
             }

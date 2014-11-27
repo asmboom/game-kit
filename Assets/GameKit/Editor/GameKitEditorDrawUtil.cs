@@ -11,19 +11,28 @@ namespace Beetle23
             TitleStyle.alignment = TextAnchor.MiddleCenter;
             TitleStyle.fontStyle = FontStyle.Bold;
 
-            ItemStyle = new GUIStyle(GUI.skin.GetStyle("Label"));
-            ItemStyle.alignment = TextAnchor.MiddleCenter;
+            ItemCenterLabelStyle = new GUIStyle(GUI.skin.GetStyle("Label"));
+            ItemCenterLabelStyle.alignment = TextAnchor.MiddleCenter;
 
-            ItemSelectedStyle = new GUIStyle(GUI.skin.GetStyle("Box"));
-            ItemSelectedStyle.normal.textColor = Color.cyan;
+            ItemLeftLabelStyle = new GUIStyle(GUI.skin.GetStyle("Label"));
+            ItemLeftLabelStyle.alignment = TextAnchor.MiddleLeft;
+
+            ItemSelectedCenterStyle = new GUIStyle(GUI.skin.GetStyle("Box"));
+            ItemSelectedCenterStyle.normal.textColor = Color.cyan;
+
+            ItemSelectedLeftStyle = new GUIStyle(GUI.skin.GetStyle("Box"));
+            ItemSelectedLeftStyle.normal.textColor = Color.cyan;
+            ItemSelectedLeftStyle.alignment = TextAnchor.MiddleLeft;
 
             FoldoutStyle = new GUIStyle(EditorStyles.foldout);
             FoldoutStyle.fixedHeight = FoldoutStyle.fixedWidth = 0;
         }
 
         public static GUIStyle TitleStyle { get; private set; }
-        public static GUIStyle ItemStyle { get; private set; }
-        public static GUIStyle ItemSelectedStyle { get; private set; }
+        public static GUIStyle ItemCenterLabelStyle { get; private set; }
+        public static GUIStyle ItemLeftLabelStyle { get; private set; }
+        public static GUIStyle ItemSelectedCenterStyle { get; private set; }
+        public static GUIStyle ItemSelectedLeftStyle { get; private set; }
         public static GUIStyle FoldoutStyle { get; private set; }
 
         public static bool KeyPressed<T>(this T s, string controlName, KeyCode key, out T fieldValue)

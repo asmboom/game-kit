@@ -14,14 +14,15 @@ namespace Beetle23
         public WorldTreeExplorer(GameKitConfig config)
         {
             _config = config;
-            UpdateWorldUIData();
+            _worldToExpanded = new Dictionary<World, bool>();
+            InitWorldToExpanded(_config.RootWorld);
         }
 
         public void Draw(Rect position)
         {
             GUILayout.BeginArea(position, string.Empty, "Box");
 
-            if (GUILayout.Button("Check References"))
+            if (GUILayout.Button("Check References", GUILayout.Width(185)))
             {
                 GameKitConfigEditor.CheckIfAnyInvalidRef(_config);
             }
@@ -29,118 +30,115 @@ namespace Beetle23
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("+Expand All", GUILayout.Width(90)))
             {
+                ExpandWorld(_config.RootWorld, true);
             }
             if (GUILayout.Button("-Collapse All", GUILayout.Width(90)))
             {
+                CollapseWorld(_config.RootWorld, true);
             }
             GUILayout.EndHorizontal();
 
             _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
-            DrawWorldUIData(_rootWorldUIData);
-
-            GUILayout.Space(30);
-
+            DrawWorld(new Rect(0, 0, position.width, position.height - 50), _config.RootWorld);
             GUILayout.EndScrollView();
 
             GUILayout.EndArea();
         }
 
-        private void UpdateWorldUIData()
+        private void InitWorldToExpanded(World world)
         {
-            _rootWorldUIData = new WorldUIData(_config.RootWorld, 
-                CreateWorld, DrawWorld, GetWorldItemHeight);
-        }
-
-        private void DrawWorldUIData(WorldUIData worldUIData)
-        {
-            worldUIData.Expanded = EditorGUILayout.Foldout(worldUIData.Expanded,
-                worldUIData.RelatedWorld.ID, GameKitEditorDrawUtil.FoldoutStyle);
-            if (worldUIData.Expanded)
+            _worldToExpanded.Add(world, false);
+            foreach (var subworld in world.SubWorlds)
             {
-                worldUIData.ListControl.Draw(worldUIData.ListAdaptor);
+                InitWorldToExpanded(subworld);
             }
         }
 
-        private World CreateWorld()
+        private void ExpandWorld(World world, bool resursive = false)
         {
-            return new World();
-        }
-
-        private float GetWorldItemHeight(World world)
-        {
-            return 20;
-        }
-
-        private World DrawWorld(Rect position, World item, int index)
-        {
-            if (item == null)
+            if (_worldToExpanded.ContainsKey(world))
             {
-                GUI.Label(position, "NULL");
-                return item;
-            }
-
-            if (GUI.Button(position, item.ID,
-                    (!string.IsNullOrEmpty(item.ID) && item == CurrentSelectedWorld ?
-                        GameKitEditorDrawUtil.ItemSelectedStyle : GameKitEditorDrawUtil.ItemStyle)))
-            {
-                SelectWorld(item);
-            }
-            return item;
-        }
-
-        private void OnItemInsert(object sender, ItemInsertedEventArgs args)
-        {
-            GenericClassListAdaptor<World> listAdaptor = args.adaptor as GenericClassListAdaptor<World>;
-            if (listAdaptor != null)
-            {
-                SelectWorld(listAdaptor[args.itemIndex]);
-                if (listAdaptor[args.itemIndex] is World)
+                _worldToExpanded[world] = true;
+                if (resursive)
                 {
-                    ShowInputDialogForId<World>(CurrentSelectedWorld.ID);
+                    foreach (var subworld in world.SubWorlds)
+                    {
+                        ExpandWorld(subworld, true);
+                    }
                 }
             }
         }
 
-        private void ShowInputDialogForId<T>(string defaultId) where T : SerializableItem
+        private void CollapseWorld(World world, bool resursive = false)
         {
-            SingleInputDialog.Show("Enter id for the new item", defaultId, "OK", OnGetNewId<T>);
-        }
-
-        private void OnGetNewId<T>(string id) where T : SerializableItem
-        {
-            GameKit.Config.UpdateIdToItemMap();
-            SerializableItem itemWithID = GameKit.Config.GetVirtualItemByID(id);
-            if (itemWithID != null && itemWithID != CurrentSelectedWorld)
+            if (_worldToExpanded.ContainsKey(world))
             {
-                Debug.LogWarning("Id [" + id + "] is already used by [" + 
-                    itemWithID.Name + "], please change one.");
-                ShowInputDialogForId<T>(id);
-            }
-            else
-            {
-                CurrentSelectedWorld.ID = id;
-                GameKitEditorWindow.GetInstance().Repaint();
-            }
-        }
-
-        private void OnItemRemoving(object sender, ItemRemovingEventArgs args)
-        {
-            GenericClassListAdaptor<World> listAdaptor = args.adaptor as GenericClassListAdaptor<World>;
-            World item = listAdaptor[args.itemIndex];
-            if (listAdaptor != null)
-            {
-                if (EditorUtility.DisplayDialog("Confirm to delete",
-                        "Confirm to delete item [" + item.ID + "]?", "OK", "Cancel"))
+                _worldToExpanded[world] = false;
+                if (resursive)
                 {
-                    args.Cancel = false;
-                    SelectWorld(null);
-                    GameKitEditorWindow.GetInstance().Repaint();
+                    foreach (var subworld in world.SubWorlds)
+                    {
+                        ExpandWorld(subworld, false);
+                    }
+                }
+            }
+        }
+
+        private float DrawWorld(Rect position, World world)
+        {
+            GUILayout.BeginArea(position);
+            if (world == null)
+            {
+                GUILayout.Label("NULL");
+                GUILayout.EndArea();
+                return 20;
+            }
+
+            float x = 0;
+            float y = 0;
+            if (_worldToExpanded.ContainsKey(world))
+            {
+                GUILayout.BeginHorizontal();
+                var size = GameKitEditorDrawUtil.ItemSelectedLeftStyle.CalcSize(new GUIContent(world.ID));
+                size.x = Mathf.Max(100, size.x);
+                if (GUILayout.Button(world.ID,
+                        (!string.IsNullOrEmpty(world.ID) && world == CurrentSelectedWorld ?
+                            GameKitEditorDrawUtil.ItemSelectedCenterStyle : GameKitEditorDrawUtil.ItemCenterLabelStyle),
+                        GUILayout.Width(size.x), GUILayout.Height(20)))
+                {
+                    SelectWorld(world);
+                }
+
+                x += size.x;
+                y += 20;
+
+                if (world.SubWorlds.Count > 0)
+                {
+                    _worldToExpanded[world] = EditorGUILayout.Foldout(_worldToExpanded[world],
+                        "child worlds", GameKitEditorDrawUtil.FoldoutStyle);
+
+                    GUILayout.EndHorizontal();
+
+                    if (_worldToExpanded[world])
+                    {
+                        foreach (var subworld in world.SubWorlds)
+                        {
+                            y += DrawWorld(new Rect(x, y,
+                                position.width - 100, position.height), subworld);
+                        }
+                    }
                 }
                 else
                 {
-                    args.Cancel = true;
+                    GUILayout.EndHorizontal();
                 }
             }
+            else
+            {
+                _worldToExpanded.Add(world, false);
+            }
+            GUILayout.EndArea();
+            return y;
         }
 
         private void SelectWorld(World world)
@@ -152,33 +150,8 @@ namespace Beetle23
             }
         }
 
-        private class WorldUIData
-        {
-            public World RelatedWorld;
-            public bool Expanded;
-            public ReorderableListControl ListControl;
-            public GenericClassListAdaptor<World> ListAdaptor;
-            //public List<WorldUIData> SubWorldUIData;
-
-            public WorldUIData(World world, 
-                GenericListAdaptorDelegate.ItemCreator<World> itemCreator, 
-                GenericListAdaptorDelegate.ClassItemDrawer<World> itemDrawer,
-                GenericListAdaptorDelegate.ItemHeightGetter<World> itemHeightGetter)
-            {
-                Expanded = false;
-                RelatedWorld = world;
-                //SubWorldUIData = new List<WorldUIData>();
-                //foreach (var subworld in world.SubWorlds)
-                //{
-                    //SubWorldUIData.Add(new WorldUIData(subworld));
-                //}
-                ListAdaptor = new GenericClassListAdaptor<World>(world.SubWorlds, 20, itemCreator, itemDrawer, itemHeightGetter);
-                ListControl = new ReorderableListControl();
-            }
-        }
-
         private GameKitConfig _config;
         private Vector2 _scrollPosition;
-        private WorldUIData _rootWorldUIData;
+        private Dictionary<World, bool> _worldToExpanded;
     }
 }

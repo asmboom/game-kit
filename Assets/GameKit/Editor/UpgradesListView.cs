@@ -136,7 +136,7 @@ namespace Beetle23
         {
             if (item == null) return null;
             if (GUI.Button(position, item.ID, item == _currentSelectedUpgrade ?
-                    GameKitEditorDrawUtil.ItemSelectedStyle : GameKitEditorDrawUtil.ItemStyle))
+                    GameKitEditorDrawUtil.ItemSelectedCenterStyle : GameKitEditorDrawUtil.ItemCenterLabelStyle))
             {
                 SelecteUpgradeItem(item);
             }

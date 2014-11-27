@@ -52,7 +52,7 @@ namespace Beetle23
             {
                 if (GUI.Button(new Rect(0, yOffset, position.width * 0.4f, itemHeight), item.ID,
                     item == _currentSelectedItem ?
-                        GameKitEditorDrawUtil.ItemSelectedStyle : GameKitEditorDrawUtil.ItemStyle))
+                        GameKitEditorDrawUtil.ItemSelectedCenterStyle : GameKitEditorDrawUtil.ItemCenterLabelStyle))
                 {
                     _currentSelectedItem = item;
                     _isCurrentSelectedItemInCategory = false;
@@ -105,7 +105,7 @@ namespace Beetle23
         {
             if (GUI.Button(position, itemID,
                 _currentSelectedItem != null && itemID == _currentSelectedItem.ID ?
-                    GameKitEditorDrawUtil.ItemSelectedStyle : GameKitEditorDrawUtil.ItemStyle))
+                    GameKitEditorDrawUtil.ItemSelectedCenterStyle : GameKitEditorDrawUtil.ItemCenterLabelStyle))
             {
                 _currentSelectedItem = GameKit.Config.GetVirtualItemByID(itemID);
                 _isCurrentSelectedItemInCategory = true;
