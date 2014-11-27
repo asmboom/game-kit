@@ -25,7 +25,7 @@ namespace Beetle23
 
         private void OnEnable()
         {
-            _sections = new string[] { "Virtual Items", "Worlds" };
+            _sections = new string[] { "Virtual Items", "Worlds", "Scores", "Missions" };
 
             GetConfigAndCreateIfNonExist();
 
@@ -33,33 +33,32 @@ namespace Beetle23
             {
                 _config = GameKit.Config;
             }
-            if (_virtualItemsExplorer == null)
+            if (_treeExplorers == null)
             {
-                _virtualItemsExplorer = new VirtualItemsTreeExplorer(_config);
+                _treeExplorers = new Dictionary<TabType, ItemTreeExplorer>();
+                _treeExplorers.Add(TabType.VirtualItems, new VirtualItemsTreeExplorer(_config));
+                _treeExplorers.Add(TabType.Worlds, new WorldTreeExplorer(_config));
             }
-            if (_virtualItemInspector == null)
+            if (_propertyInspectors == null)
             {
-                _virtualItemInspector = new VirtualItemsPropertyInspector(_virtualItemsExplorer.CurrentSelectedItem);
-                _virtualItemsExplorer.OnSelectionChange += _virtualItemInspector.OnExplorerSelectionChange;
+                _propertyInspectors = new Dictionary<TabType, ItemPropertyInspector>();
+                _propertyInspectors.Add(TabType.VirtualItems, 
+                    new VirtualItemsPropertyInspector(_treeExplorers[TabType.VirtualItems] as VirtualItemsTreeExplorer));
+                _propertyInspectors.Add(TabType.Worlds, 
+                    new WorldPropertyInspector(_treeExplorers[TabType.Worlds] as WorldTreeExplorer));
             }
-            if (_worldTreeExplorer == null)
-            {
-                _worldTreeExplorer = new WorldTreeExplorer(_config);
-            }
-            if (_worldInspector == null)
-            {
-                _worldInspector = new WorldPropertyInspector(_worldTreeExplorer, _worldTreeExplorer.CurrentSelectedWorld);
-                _worldTreeExplorer.OnSelectionChange += _worldInspector.OnExplorerSelectionChange;
-            }
+            _treeExplorers[TabType.VirtualItems].OnSelectionChange += _propertyInspectors[TabType.VirtualItems].OnExplorerSelectionChange;
+            _treeExplorers[TabType.Worlds].OnSelectionChange += _propertyInspectors[TabType.Worlds].OnExplorerSelectionChange;
 
             VirtualItemsEditUtil.UpdateDisplayedOptions();
         }
 
         private void OnDisable()
         {
-            if (_virtualItemInspector != null)
+            if (_treeExplorers != null)
             {
-                _virtualItemsExplorer.OnSelectionChange -= _virtualItemInspector.OnExplorerSelectionChange;
+                _treeExplorers[TabType.VirtualItems].OnSelectionChange -= _propertyInspectors[TabType.VirtualItems].OnExplorerSelectionChange;
+                _treeExplorers[TabType.Worlds].OnSelectionChange -= _propertyInspectors[TabType.Worlds].OnExplorerSelectionChange;
             }
         }
 
@@ -95,21 +94,10 @@ namespace Beetle23
             GUI.Box(new Rect(10, y, position.width - 20, 10), string.Empty);
             y += 15;
 
-            if (_currentSection == 0)
+            if (_currentSection >= 0 && _currentSection <= (int)TabType.Worlds)
             {
-                _virtualItemsExplorer.Draw(new Rect(10, y, 250, position.height - 10));
-                if (_virtualItemInspector != null)
-                {
-                    _virtualItemInspector.Draw(new Rect(270, y, position.width - 280, position.height - 10));
-                }
-            }
-            else
-            {
-                _worldTreeExplorer.Draw(new Rect(10, y, 250, position.height - 10));
-                if (_worldInspector != null)
-                {
-                    _worldInspector.Draw(new Rect(270, y, position.width - 280, position.height - 10));
-                }
+                _treeExplorers[(TabType)_currentSection].Draw(new Rect(10, y, 250, position.height - 10));
+                _propertyInspectors[(TabType)_currentSection].Draw(new Rect(270, y, position.width - 280, position.height - 10));
             }
 
             if (EditorGUI.EndChangeCheck())
@@ -119,10 +107,16 @@ namespace Beetle23
         }
 
         private GameKitConfig _config;
-        private VirtualItemsTreeExplorer _virtualItemsExplorer;
-        private VirtualItemsPropertyInspector _virtualItemInspector;
-        private WorldTreeExplorer _worldTreeExplorer;
-        private WorldPropertyInspector _worldInspector;
+        private Dictionary<TabType, ItemTreeExplorer> _treeExplorers;
+        private Dictionary<TabType, ItemPropertyInspector> _propertyInspectors;
+
+        private enum TabType
+        {
+            VirtualItems = 0,
+            Worlds = 1,
+            Scores = 2,
+            Missions = 3
+        }
 
         private string[] _sections;
         private int _currentSection;

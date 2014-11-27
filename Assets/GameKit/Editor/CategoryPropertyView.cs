@@ -42,7 +42,7 @@ namespace Beetle23
             GUI.EndScrollView();
             GUI.EndGroup();
 
-            GUI.BeginGroup(new Rect(position.x + position.width - width - 20, position.y + 50, width, height));
+            GUI.BeginGroup(new Rect(position.x + position.width - width, position.y + 50, width, height));
             GUI.Label(new Rect(0, 0, width, 20), "Not in Category", GameKitEditorDrawUtil.TitleStyle);
             GUI.BeginGroup(new Rect(0, 20, width, height - 20), string.Empty, "Box");
             _scrollPositionOfNonCategory = GUI.BeginScrollView(new Rect(0, 0, width, height - 20),

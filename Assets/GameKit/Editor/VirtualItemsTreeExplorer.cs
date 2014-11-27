@@ -6,15 +6,11 @@ using System;
 
 namespace Beetle23
 {
-    public class VirtualItemsTreeExplorer
+    public class VirtualItemsTreeExplorer : ItemTreeExplorer
     {
-        public Action<IItem> OnSelectionChange = delegate { };
-        public IItem CurrentSelectedItem { get; private set; }
-
         public VirtualItemsTreeExplorer(GameKitConfig config)
+            : base(config)
         {
-            _config = config;
-
             _virtualCurrencyListAdaptor = new GenericClassListAdaptor<VirtualCurrency>(config.VirtualCurrencies, 20,
                                     () => { return new VirtualCurrency(); },
                                     DrawItem<VirtualCurrency>);
@@ -54,36 +50,28 @@ namespace Beetle23
             _categoryListControl.ItemRemoving += OnItemRemoving<VirtualCategory>;
         }
 
-        public void Draw(Rect position)
+        protected override void DoOnSelectItem(IItem item) { }
+
+        protected override void DoExpandAll()
         {
-            GUILayout.BeginArea(position, string.Empty, "Box");
+            _isVirtualCurrencyExpanded = true;
+            _isSingleUseItemExpanded = true;
+            _isLifeTimeItemExpanded = true;
+            _isPackExpanded = true;
+            _isCategoryExpanded = true;
+        }
 
-            if (GUILayout.Button("Check References", GUILayout.Width(185)))
-            {
-                GameKitConfigEditor.CheckIfAnyInvalidRef(_config);
-            }
+        protected override void DoCollapseAll()
+        {
+            _isVirtualCurrencyExpanded = false;
+            _isSingleUseItemExpanded = false;
+            _isLifeTimeItemExpanded = false;
+            _isPackExpanded = false;
+            _isCategoryExpanded = false;
+        }
 
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button("+Expand All", GUILayout.Width(90)))
-            {
-                _isVirtualCurrencyExpanded = true;
-                _isSingleUseItemExpanded = true;
-                _isLifeTimeItemExpanded = true;
-                _isPackExpanded = true;
-                _isCategoryExpanded = true;
-            }
-            if (GUILayout.Button("-Collapse All", GUILayout.Width(90)))
-            {
-                _isVirtualCurrencyExpanded = false;
-                _isSingleUseItemExpanded = false;
-                _isLifeTimeItemExpanded = false;
-                _isPackExpanded = false;
-                _isCategoryExpanded = false;
-            }
-            GUILayout.EndHorizontal();
-
-            _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
-
+        protected override void DoDraw(Rect position)
+        {
             _isVirtualCurrencyExpanded = EditorGUILayout.Foldout(_isVirtualCurrencyExpanded,
                 new GUIContent(" Virtual Currencies", Resources.Load("VirtualCurrencyIcon") as Texture,
                     "Virtual currency can be used to purchase other items, e.g. coin, gem"),
@@ -125,10 +113,6 @@ namespace Beetle23
             }
 
             GUILayout.Space(30);
-
-            GUILayout.EndScrollView();
-
-            GUILayout.EndArea();
         }
 
         private T DrawItem<T>(Rect position, T item, int index) where T : SerializableItem
@@ -172,7 +156,7 @@ namespace Beetle23
             SerializableItem itemWithID = GameKit.Config.GetVirtualItemByID(id);
             if (itemWithID != null && itemWithID != CurrentSelectedItem)
             {
-                Debug.LogWarning("Id [" + id + "] is already used by [" + 
+                Debug.LogWarning("Id [" + id + "] is already used by [" +
                     itemWithID.Name + "], please change one.");
                 ShowInputDialogForId<T>(id);
             }
@@ -203,16 +187,6 @@ namespace Beetle23
             }
         }
 
-        private void SelectItem(IItem item)
-        {
-            if (item != CurrentSelectedItem)
-            {
-                CurrentSelectedItem = item;
-                OnSelectionChange(item);
-            }
-        }
-
-        private GameKitConfig _config;
         private bool _isVirtualCurrencyExpanded = true;
         private bool _isSingleUseItemExpanded = true;
         private bool _isLifeTimeItemExpanded = true;

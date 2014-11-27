@@ -6,14 +6,11 @@ using System;
 
 namespace Beetle23
 {
-    public class WorldTreeExplorer
+    public class WorldTreeExplorer : ItemTreeExplorer
     {
-        public Action<World> OnSelectionChange = delegate { };
-        public World CurrentSelectedWorld { get; private set; }
-
         public WorldTreeExplorer(GameKitConfig config)
+            : base(config)
         {
-            _config = config;
             _worldToExpanded = new Dictionary<World, bool>();
             InitWorldToExpanded(_config.RootWorld);
         }
@@ -32,55 +29,6 @@ namespace Beetle23
             {
                 _worldToExpanded.Remove(world);
             }
-        }
-
-        public void SelectWorld(World world)
-        {
-            if (world != CurrentSelectedWorld)
-            {
-                CurrentSelectedWorld = world;
-                World w = CurrentSelectedWorld.Parent;
-                while (w != null)
-                {
-                    if (_worldToExpanded.ContainsKey(w))
-                    {
-                        _worldToExpanded[w] = true;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                    w = w.Parent;
-                }
-                OnSelectionChange(world);
-            }
-        }
-
-        public void Draw(Rect position)
-        {
-            GUILayout.BeginArea(position, string.Empty, "Box");
-
-            if (GUILayout.Button("Check References", GUILayout.Width(185)))
-            {
-                GameKitConfigEditor.CheckIfAnyInvalidRef(_config);
-            }
-
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button("+Expand All", GUILayout.Width(90)))
-            {
-                ExpandWorld(_config.RootWorld, true);
-            }
-            if (GUILayout.Button("-Collapse All", GUILayout.Width(90)))
-            {
-                CollapseWorld(_config.RootWorld, true);
-            }
-            GUILayout.EndHorizontal();
-
-            _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
-            DrawWorld(new Rect(0, 0, position.width, position.height - 50), _config.RootWorld);
-            GUILayout.EndScrollView();
-
-            GUILayout.EndArea();
         }
 
         private void InitWorldToExpanded(World world)
@@ -140,11 +88,11 @@ namespace Beetle23
                 var size = GameKitEditorDrawUtil.ItemSelectedLeftStyle.CalcSize(new GUIContent(world.ID));
                 size.x = Mathf.Max(100, size.x);
                 if (GUILayout.Button(world.ID,
-                        (!string.IsNullOrEmpty(world.ID) && world == CurrentSelectedWorld ?
+                        (!string.IsNullOrEmpty(world.ID) && world == CurrentSelectedItem ?
                             GameKitEditorDrawUtil.ItemSelectedCenterStyle : GameKitEditorDrawUtil.ItemCenterLabelStyle),
                         GUILayout.Width(size.x), GUILayout.Height(20)))
                 {
-                    SelectWorld(world);
+                    SelectItem(world);
                 }
 
                 x += size.x;
@@ -175,8 +123,38 @@ namespace Beetle23
             return y;
         }
 
-        private GameKitConfig _config;
-        private Vector2 _scrollPosition;
+        protected override void DoOnSelectItem(IItem item)
+        {
+            World w = (item as World).Parent;
+            while (w != null)
+            {
+                if (_worldToExpanded.ContainsKey(w))
+                {
+                    _worldToExpanded[w] = true;
+                }
+                else
+                {
+                    break;
+                }
+                w = w.Parent;
+            }
+        }
+
+        protected override void DoExpandAll()
+        {
+            ExpandWorld(_config.RootWorld, true);
+        }
+
+        protected override void DoCollapseAll()
+        {
+            CollapseWorld(_config.RootWorld, true);
+        }
+
+        protected override void DoDraw(Rect position)
+        {
+            DrawWorld(position, _config.RootWorld);
+        }
+
         private Dictionary<World, bool> _worldToExpanded;
     }
 }

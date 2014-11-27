@@ -5,63 +5,42 @@ using System.Collections.Generic;
 
 namespace Beetle23
 {
-    public class WorldPropertyInspector
+    public class WorldPropertyInspector : ItemPropertyInspector
     {
-        public WorldPropertyInspector(WorldTreeExplorer treeExplorer, World currentDisplayWorld)
+        public WorldPropertyInspector(WorldTreeExplorer treeExplorer)
+            :base(treeExplorer)
         {
-            _treeExplorer = treeExplorer;
-            _currentDisplayWorld = currentDisplayWorld;
             _subWorldListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand |
                 ReorderableListFlags.ShowIndices);
             _subWorldListControl.ItemInserted += OnInsertSubworld;
             _subWorldListControl.ItemRemoving += OnRemoveSubworld;
-            /*
-            _purchaseListView = new PurchaseInfoListView(currentDisplayedItem as PurchasableItem);
-            _packListView = new PackInfoListView(currentDisplayedItem as VirtualItemPack);
-            _upgradesListView = new UpgradesListView(currentDisplayedItem as VirtualItem);
-            _categoryPropertyView = new CategoryPropertyView(currentDisplayedItem as VirtualCategory);
-            */
+
+            _scoresListView = new ScoresInfoListView(_currentDisplayItem as World);
         }
 
-        public void OnExplorerSelectionChange(World world)
+        protected override void DoOnExplorerSelectionChange(IItem item)
         {
-            _currentDisplayWorld = world;
-            _currentWorldID = _currentDisplayWorld.ID;
-            _subWorldListAdaptor = new GenericClassListAdaptor<World>(_currentDisplayWorld.SubWorlds, 20,
+            World world = item as World;
+            _subWorldListAdaptor = new GenericClassListAdaptor<World>(world.SubWorlds, 20,
                 () => { return new World(); },
-                (position, item, index) =>
+                (position, theItem, index) =>
                 {
-                    var size = GUI.skin.GetStyle("label").CalcSize(new GUIContent(item.ID));
-                    GUI.Label(new Rect(position.x, position.y, size.x, position.height), item.ID);
+                    var size = GUI.skin.GetStyle("label").CalcSize(new GUIContent(theItem.ID));
+                    GUI.Label(new Rect(position.x, position.y, size.x, position.height), theItem.ID);
                     if (GUI.Button(new Rect(position.x + size.x + 10, position.y, 50, position.height), "Go"))
                     {
-                        _treeExplorer.SelectWorld(item);
+                        _treeExplorer.SelectItem(theItem);
                     }
-                    return item;
+                    return theItem;
                 });
-            //_packListView.UpdateDisplayItem(world as VirtualItemPack);
-            //_purchaseListView.UpdateDisplayItem(world as PurchasableItem);
+            _scoresListView.UpdateDisplayItem(world);
         }
 
-        public void Draw(Rect position)
+        protected override float DoDrawItem(Rect rect, IItem item)
         {
-            GUI.BeginGroup(position, string.Empty, "Box");
-            if (_currentDisplayWorld != null)
-            {
-                DrawWorld(new Rect(10, 0, position.width - 10, position.height), _currentDisplayWorld);
-            }
-            GUI.EndGroup();
-        }
-
-        private void DrawWorld(Rect position, World world)
-        {
-            GUI.BeginGroup(position);
-            _scrollPosition = GUI.BeginScrollView(new Rect(0, 0, position.width, position.height),
-                _scrollPosition, new Rect(0, 0, position.width - 20, _currentYOffset));
-
             float yOffset = 0;
-            bool showScrollbar = position.height < _currentYOffset;
-            float width = position.width - (showScrollbar ? 20 : 10);
+            float width = rect.width;
+            World world = item as World;
             _isBasicPropertiesExpanded = EditorGUI.Foldout(new Rect(0, 0, width, 20),
                 _isBasicPropertiesExpanded, "Basic Property");
             yOffset += 20;
@@ -80,12 +59,12 @@ namespace Beetle23
 
             yOffset += 20;
             EditorGUI.LabelField(new Rect(0, yOffset, 250, 20), "Parent World", 
-                _currentDisplayWorld.Parent == null ? "NULL" : _currentDisplayWorld.Parent.ID);
-            if (_currentDisplayWorld.Parent != null)
+                world.Parent == null ? "NULL" : world.Parent.ID);
+            if (world.Parent != null)
             {
                 if (GUI.Button(new Rect(255, yOffset, 50, 20), "Go"))
                 {
-                    _treeExplorer.SelectWorld(_currentDisplayWorld.Parent);
+                    _treeExplorer.SelectItem(world.Parent);
                 }
             }
             yOffset += 20;
@@ -105,6 +84,8 @@ namespace Beetle23
             yOffset += 20;
             if (_isScoreInfoExpanded)
             {
+                _scoresListView.Draw(new Rect(0, yOffset, width, 100));
+                yOffset += 100;
             }
 
             yOffset += 20;
@@ -114,10 +95,12 @@ namespace Beetle23
             {
             }
 
-            _currentYOffset = yOffset;
+            return yOffset;
+        }
 
-            GUI.EndScrollView();
-            GUI.EndGroup();
+        protected override IItem GetItemFromConfig(string id)
+        {
+            return GameKit.Config.GetWorldByID(id);
         }
 
         private void DrawID(Rect position, World world)
@@ -128,26 +111,7 @@ namespace Beetle23
             }
             else
             {
-                GUI.SetNextControlName(IDInputControlName);
-                if (EditorGUI.TextField(position, "ID",
-                    _currentWorldID).KeyPressed<string>(IDInputControlName, KeyCode.Return, out _currentWorldID) ||
-                    (GUI.GetNameOfFocusedControl() != IDInputControlName &&
-                     _currentWorldID != world.ID))
-                {
-                    World worldWithID = GameKit.Config.GetWorldByID(_currentWorldID);
-                    if (worldWithID != null && worldWithID != world)
-                    {
-                        GUIUtility.keyboardControl = 0;
-                        EditorUtility.DisplayDialog("Duplicate ID", "A world with ID[" +
-                            _currentWorldID + "] already exists!!!", "OK");
-                        _currentWorldID = world.ID;
-                    }
-                    else
-                    {
-                        world.ID = _currentWorldID;
-                        GameKitEditorWindow.GetInstance().Repaint();
-                    }
-                }
+                DrawIDTextField(position, world);
             }
         }
 
@@ -156,7 +120,7 @@ namespace Beetle23
             GameKit.Config.UpdateMapsAndTree();
             GenericClassListAdaptor<World> listAdaptor = args.adaptor as GenericClassListAdaptor<World>;
             World world = listAdaptor[args.itemIndex];
-            _treeExplorer.AddWorld(world);
+            (_treeExplorer as WorldTreeExplorer).AddWorld(world);
         }
 
         private void OnRemoveSubworld(object sender, ItemRemovingEventArgs args)
@@ -169,7 +133,7 @@ namespace Beetle23
                         "Confirm to delete world [" + world.ID + "]?", "OK", "Cancel"))
                 {
                     args.Cancel = false;
-                    _treeExplorer.RemoveWorld(world);
+                    (_treeExplorer as WorldTreeExplorer).RemoveWorld(world);
                     GameKit.Config.UpdateMapsAndTree();
                     GameKitEditorWindow.GetInstance().Repaint();
                 }
@@ -185,20 +149,14 @@ namespace Beetle23
         private bool _isScoreInfoExpanded = true;
         private bool _isMissionInfoExpanded = false;
 
-        private World _currentDisplayWorld;
         private ReorderableListControl _subWorldListControl;
         private GenericClassListAdaptor<World> _subWorldListAdaptor;
 
-        //private PurchaseInfoListView _purchaseListView;
-        //private PackInfoListView _packListView;
-        //private UpgradesListView _upgradesListView;
-        //private CategoryPropertyView _categoryPropertyView;
+        private ScoresInfoListView _scoresListView;
 
         private Vector2 _scrollPosition;
         private float _currentYOffset;
-        private WorldTreeExplorer _treeExplorer;
 
-        private string _currentWorldID;
         private const string IDInputControlName = "world_id_field";
     }
 }

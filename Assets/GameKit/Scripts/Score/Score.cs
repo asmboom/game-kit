@@ -47,6 +47,11 @@ namespace Beetle23
             }
         }
 
+        public bool IsVirtualItemScore
+        {
+            get { return RelatedVirtualItem != null; }
+        }
+
         public void Increase(float amount)
         {
             SetRuntimeScore(_runtimeScore + amount);

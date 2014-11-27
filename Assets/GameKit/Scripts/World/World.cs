@@ -54,12 +54,12 @@ namespace Beetle23
             }
         }
 
-        public void Complete(bool recursive)
+        public void Complete(bool recursive = false)
         {
             SetCompleted(true, recursive);
         }
 
-        public void RevokeComplete(bool resursive)
+        public void RevokeComplete(bool resursive = false)
         {
             SetCompleted(false, resursive);
         }

@@ -5,21 +5,19 @@ using System.Collections.Generic;
 
 namespace Beetle23
 {
-    public class VirtualItemsPropertyInspector
+    public class VirtualItemsPropertyInspector : ItemPropertyInspector
     {
-        public VirtualItemsPropertyInspector(IItem currentDisplayedItem)
+        public VirtualItemsPropertyInspector(VirtualItemsTreeExplorer treeExplorer)
+            :base(treeExplorer)
         {
-            _currentDisplayedItem = currentDisplayedItem;
-            _purchaseListView = new PurchaseInfoListView(currentDisplayedItem as PurchasableItem);
-            _packListView = new PackInfoListView(currentDisplayedItem as VirtualItemPack);
-            _upgradesListView = new UpgradesListView(currentDisplayedItem as VirtualItem);
-            _categoryPropertyView = new CategoryPropertyView(currentDisplayedItem as VirtualCategory);
+            _purchaseListView = new PurchaseInfoListView(_currentDisplayItem as PurchasableItem);
+            _packListView = new PackInfoListView(_currentDisplayItem as VirtualItemPack);
+            _upgradesListView = new UpgradesListView(_currentDisplayItem as VirtualItem);
+            _categoryPropertyView = new CategoryPropertyView(_currentDisplayItem as VirtualCategory);
         }
 
-        public void OnExplorerSelectionChange(IItem item)
+        protected override void DoOnExplorerSelectionChange(IItem item)
         {
-            _currentDisplayedItem = item;
-
             if (item is VirtualItem)
             {
                 GUI.FocusControl(string.Empty);
@@ -43,42 +41,43 @@ namespace Beetle23
             }
         }
 
-        public void Draw(Rect position)
+        protected override float DoDrawItem(Rect position, IItem item)
         {
-            VirtualItem item = _currentDisplayedItem as VirtualItem;
-            if (item != null)
+            VirtualItem virtualItem = item as VirtualItem;
+            if (virtualItem != null)
             {
-                GUI.BeginGroup(position, string.Empty, "Box");
-                DrawVirtualItem(new Rect(10, 0, position.width - 10, position.height), item);
-                GUI.EndGroup();
+                return DrawVirtualItem(position, virtualItem);
             }
             else
             {
-                VirtualCategory category = _currentDisplayedItem as VirtualCategory;
+                VirtualCategory category = item as VirtualCategory;
                 if (category != null)
                 {
-                    GUILayout.BeginArea(position, string.Empty, "Box");
-                    _categoryPropertyView.Draw(new Rect(10, 0, position.width, position.height), category);
+                    GUILayout.BeginArea(new Rect(position.x, position.y + 5, position.width, position.height - 10));
+                    _categoryPropertyView.Draw(position, category);
                     GUILayout.EndArea();
+                    return position.height;
                 }
             }
+            return 0;
         }
 
-        private void DrawVirtualItem(Rect position, VirtualItem item)
+        protected override IItem GetItemFromConfig(string id)
         {
-            GUI.BeginGroup(position);
-            _scrollPosition = GUI.BeginScrollView(new Rect(0, 0, position.width, position.height),
-                _scrollPosition, new Rect(0, 0, position.width - 20, _currentYOffset));
+            return GameKit.Config.GetVirtualItemByID(id);
+        }
 
+        private float DrawVirtualItem(Rect position, VirtualItem item)
+        {
             float yOffset = 0;
-            bool showScrollbar = position.height < _currentYOffset;
-            float width = position.width - (showScrollbar ? 20 : 10);
+            float width = position.width;
+
             _isVirtualItemPropertiesExpanded = EditorGUI.Foldout(new Rect(0, 0, width, 20),
                 _isVirtualItemPropertiesExpanded, "Basic Property");
             yOffset += 20;
             if (_isVirtualItemPropertiesExpanded)
             {
-                DrawID(new Rect(0, yOffset, width, 20), item);
+                DrawVirtualItemID(new Rect(0, yOffset, width, 20), item);
                 yOffset += 20;
                 item.Name = EditorGUI.TextField(new Rect(0, yOffset, width, 20), "Name", item.Name);
                 yOffset += 20;
@@ -134,16 +133,12 @@ namespace Beetle23
                     yOffset += 200;
                 }
             }
-
-            _currentYOffset = yOffset;
-
-            GUI.EndScrollView();
-            GUI.EndGroup();
+            return yOffset;
         }
 
-        private void DrawID(Rect position, VirtualItem item)
+        private void DrawVirtualItemID(Rect position, VirtualItem item)
         {
-            EditorGUI.LabelField(position, "ID", item.ID);
+            DrawIDTextField(position, item);
         }
 
         private bool _isVirtualItemPropertiesExpanded = true;
@@ -151,14 +146,9 @@ namespace Beetle23
         private bool _isPurchaseInfoExpanded = true;
         private bool _isUpgradeInfoExpanded = false;
 
-        private IItem _currentDisplayedItem;
-
         private PurchaseInfoListView _purchaseListView;
         private PackInfoListView _packListView;
         private UpgradesListView _upgradesListView;
         private CategoryPropertyView _categoryPropertyView;
-
-        private Vector2 _scrollPosition;
-        private float _currentYOffset;
     }
 }
