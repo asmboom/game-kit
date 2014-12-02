@@ -40,7 +40,7 @@ namespace Beetle23
 
         protected override void DoOnSelectItem(IItem item) 
         {
-            World w = FindWorldThatScoreBelongsTo(item as Score);
+            World w = _config.FindWorldThatScoreBelongsTo(item as Score);
             while (w != null)
             {
                 if (_worldToExpanded.ContainsKey(w))
@@ -152,21 +152,6 @@ namespace Beetle23
                     }
                 }
             }
-        }
-
-        private World FindWorldThatScoreBelongsTo(Score score)
-        {
-            foreach (var world in _config.Worlds)
-            {
-                foreach (var oneScore in world.Scores)
-                {
-                    if (oneScore == score)
-                    {
-                        return world;
-                    }
-                }
-            }
-            return null;
         }
 
         private Dictionary<World, bool> _worldToExpanded;

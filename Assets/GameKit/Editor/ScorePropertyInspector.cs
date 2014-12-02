@@ -8,12 +8,13 @@ namespace Beetle23
     public class ScorePropertyInspector : ItemPropertyInspector
     {
         public ScorePropertyInspector(ScoreTreeExplorer treeExplorer)
-            :base(treeExplorer)
+            : base(treeExplorer)
         {
         }
 
         protected override void DoOnExplorerSelectionChange(IItem item)
         {
+            _currentWorldOfScore = GameKit.Config.FindWorldThatScoreBelongsTo(item as Score);
         }
 
         protected override float DoDrawItem(Rect rect, IItem item)
@@ -32,16 +33,20 @@ namespace Beetle23
                 yOffset += 20;
             }
 
-            //yOffset += 20;
-            //EditorGUI.LabelField(new Rect(0, yOffset, 250, 20), "World", 
-            //if (world.Parent != null)
-            //{
-                //if (GUI.Button(new Rect(255, yOffset, 50, 20), "Go"))
-                //{
-                    //_treeExplorer.SelectItem(world.Parent);
-                //}
-            //}
-            //yOffset += 20;
+            yOffset += 20;
+            EditorGUI.LabelField(new Rect(0, yOffset, 250, 20), "World", 
+                _currentWorldOfScore == null ? "NULL" : _currentWorldOfScore.ID);
+            if (_currentWorldOfScore != null)
+            {
+                if (GUI.Button(new Rect(255, yOffset, 50, 20), "Go"))
+                {
+                    WorldTreeExplorer worldTreeExplorer = (GameKitEditorWindow.GetInstance().GetTreeExplorer(
+                        GameKitEditorWindow.TabType.Worlds) as WorldTreeExplorer);
+                    GameKitEditorWindow.GetInstance().SelectTab(GameKitEditorWindow.TabType.Worlds);
+                    worldTreeExplorer.SelectItem(_currentWorldOfScore);
+                }
+            }
+            yOffset += 20;
 
             return yOffset;
         }
@@ -52,5 +57,6 @@ namespace Beetle23
         }
 
         private bool _isBasicPropertiesExpanded = true;
+        private World _currentWorldOfScore;
     }
 }

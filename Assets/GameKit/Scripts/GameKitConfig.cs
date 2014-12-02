@@ -91,6 +91,21 @@ namespace Beetle23
             return _idToCategory.ContainsKey(id) ? _idToCategory[id] : null;
         }
 
+        public World FindWorldThatScoreBelongsTo(Score score)
+        {
+            foreach (var world in Worlds)
+            {
+                foreach (var oneScore in world.Scores)
+                {
+                    if (oneScore == score)
+                    {
+                        return world;
+                    }
+                }
+            }
+            return null;
+        }
+
         public void UpdateMapsAndTree()
         {
             UpdateIdToItemMap();
