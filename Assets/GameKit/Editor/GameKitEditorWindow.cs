@@ -38,6 +38,7 @@ namespace Beetle23
                 _treeExplorers = new Dictionary<TabType, ItemTreeExplorer>();
                 _treeExplorers.Add(TabType.VirtualItems, new VirtualItemsTreeExplorer(_config));
                 _treeExplorers.Add(TabType.Worlds, new WorldTreeExplorer(_config));
+                _treeExplorers.Add(TabType.Scores, new ScoreTreeExplorer(_config));
             }
             if (_propertyInspectors == null)
             {
@@ -46,9 +47,14 @@ namespace Beetle23
                     new VirtualItemsPropertyInspector(_treeExplorers[TabType.VirtualItems] as VirtualItemsTreeExplorer));
                 _propertyInspectors.Add(TabType.Worlds, 
                     new WorldPropertyInspector(_treeExplorers[TabType.Worlds] as WorldTreeExplorer));
+                _propertyInspectors.Add(TabType.Scores, 
+                    new ScorePropertyInspector(_treeExplorers[TabType.Scores] as ScoreTreeExplorer));
             }
-            _treeExplorers[TabType.VirtualItems].OnSelectionChange += _propertyInspectors[TabType.VirtualItems].OnExplorerSelectionChange;
-            _treeExplorers[TabType.Worlds].OnSelectionChange += _propertyInspectors[TabType.Worlds].OnExplorerSelectionChange;
+
+            for (TabType type = TabType.VirtualItems; type <= TabType.Scores; type++)
+            {
+                _treeExplorers[type].OnSelectionChange += _propertyInspectors[type].OnExplorerSelectionChange;
+            }
 
             VirtualItemsEditUtil.UpdateDisplayedOptions();
         }
@@ -57,8 +63,10 @@ namespace Beetle23
         {
             if (_treeExplorers != null)
             {
-                _treeExplorers[TabType.VirtualItems].OnSelectionChange -= _propertyInspectors[TabType.VirtualItems].OnExplorerSelectionChange;
-                _treeExplorers[TabType.Worlds].OnSelectionChange -= _propertyInspectors[TabType.Worlds].OnExplorerSelectionChange;
+                for (TabType type = TabType.VirtualItems; type <= TabType.Scores; type++)
+                {
+                    _treeExplorers[type].OnSelectionChange -= _propertyInspectors[type].OnExplorerSelectionChange;
+                }
             }
         }
 
@@ -94,7 +102,7 @@ namespace Beetle23
             GUI.Box(new Rect(10, y, position.width - 20, 10), string.Empty);
             y += 15;
 
-            if (_currentSection >= 0 && _currentSection <= (int)TabType.Worlds)
+            if (_currentSection >= 0 && _currentSection <= (int)TabType.Scores)
             {
                 _treeExplorers[(TabType)_currentSection].Draw(new Rect(10, y, 250, position.height - 10));
                 _propertyInspectors[(TabType)_currentSection].Draw(new Rect(270, y, position.width - 280, position.height - 10));

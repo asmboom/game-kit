@@ -22,10 +22,19 @@ MonoBehaviour:
     Description: 
     Icon: {fileID: 0}
     Extend: {fileID: 0}
-  SingleUseItems: []
+  SingleUseItems:
+  - _id: 77a8b678
+    _name: 
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
   LifeTimeItems: []
   ItemPacks: []
-  Categories: []
+  Categories:
+  - _id: consumables
+    _name: 
+    ItemIDs: []
   RootWorld:
     _id: root
     _name: 
@@ -38,6 +47,82 @@ MonoBehaviour:
       RelatedNumber: 0
       Gates: []
       GroupType: 0
-    SubWorlds: []
+    SubWorlds:
+    - _id: chapter-1
+      _name: 
+      Description: 
+      Gate:
+        _id: 72688a53
+        _name: 
+        Type: 4
+        RelatedItemID: 
+        RelatedNumber: 0
+        Gates: []
+        GroupType: 0
+      SubWorlds: []
+      Scores: []
+      Missions: []
+      Extend: {fileID: 0}
+    - _id: chapter-2
+      _name: 
+      Description: 
+      Gate:
+        _id: 80678cb2
+        _name: 
+        Type: 4
+        RelatedItemID: 
+        RelatedNumber: 0
+        Gates: []
+        GroupType: 0
+      SubWorlds: []
+      Scores: []
+      Missions: []
+      Extend: {fileID: 0}
+    - _id: chapter-3
+      _name: 
+      Description: 
+      Gate:
+        _id: 27a0f3d3
+        _name: 
+        Type: 4
+        RelatedItemID: 
+        RelatedNumber: 0
+        Gates: []
+        GroupType: 0
+      SubWorlds: []
+      Scores: []
+      Missions: []
+      Extend: {fileID: 0}
+    - _id: chapter-4
+      _name: 
+      Description: 
+      Gate:
+        _id: ef098bee
+        _name: 
+        Type: 4
+        RelatedItemID: 
+        RelatedNumber: 0
+        Gates: []
+        GroupType: 0
+      SubWorlds: []
+      Scores: []
+      Missions: []
+      Extend: {fileID: 0}
+    - _id: chapter-5
+      _name: 
+      Description: 
+      Gate:
+        _id: e2ed3f5b
+        _name: 
+        Type: 4
+        RelatedItemID: 
+        RelatedNumber: 0
+        Gates: []
+        GroupType: 0
+      SubWorlds: []
+      Scores: []
+      Missions: []
+      Extend: {fileID: 0}
+    Scores: []
     Missions: []
     Extend: {fileID: 0}
