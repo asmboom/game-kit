@@ -15,7 +15,10 @@ namespace Beetle23
             _subWorldListControl.ItemInserted += OnInsertSubworld;
             _subWorldListControl.ItemRemoving += OnRemoveSubworld;
 
-            _scoresListView = new ScoresInfoListView(_currentDisplayItem as World);
+            _scoreListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand |
+                ReorderableListFlags.ShowIndices);
+            _scoreListControl.ItemInserted += OnInsertScore;
+            _scoreListControl.ItemRemoving += OnRemoveScore;
         }
 
         protected override void DoOnExplorerSelectionChange(IItem item)
@@ -33,7 +36,21 @@ namespace Beetle23
                     }
                     return theItem;
                 });
-            _scoresListView.UpdateDisplayItem(world);
+            _scoreListAdaptor = new GenericClassListAdaptor<Score>(world.Scores, 20,
+                () => { return new Score(); },
+                (position, theItem, index) =>
+                {
+                    var size = GUI.skin.GetStyle("label").CalcSize(new GUIContent(theItem.ID));
+                    GUI.Label(new Rect(position.x, position.y, size.x, position.height), theItem.ID);
+                    if (GUI.Button(new Rect(position.x + size.x + 10, position.y, 50, position.height), "Go"))
+                    {
+                        ScoreTreeExplorer scoreTreeExplorer = (GameKitEditorWindow.GetInstance().GetTreeExplorer(
+                            GameKitEditorWindow.TabType.Scores) as ScoreTreeExplorer);
+                        GameKitEditorWindow.GetInstance().SelectTab(GameKitEditorWindow.TabType.Scores);
+                        scoreTreeExplorer.SelectItem(theItem);
+                    }
+                    return theItem;
+                });
         }
 
         protected override float DoDrawItem(Rect rect, IItem item)
@@ -84,8 +101,9 @@ namespace Beetle23
             yOffset += 20;
             if (_isScoreInfoExpanded)
             {
-                _scoresListView.Draw(new Rect(0, yOffset, width, 100));
-                yOffset += 100;
+                float height = _scoreListControl.CalculateListHeight(_scoreListAdaptor);
+                _scoreListControl.Draw(new Rect(0, yOffset, width, height), _scoreListAdaptor);
+                yOffset += height;
             }
 
             yOffset += 20;
@@ -121,6 +139,9 @@ namespace Beetle23
             GenericClassListAdaptor<World> listAdaptor = args.adaptor as GenericClassListAdaptor<World>;
             World world = listAdaptor[args.itemIndex];
             (_treeExplorer as WorldTreeExplorer).AddWorld(world);
+            ScoreTreeExplorer scoreTreeExplorer = (GameKitEditorWindow.GetInstance().GetTreeExplorer(
+                GameKitEditorWindow.TabType.Scores) as ScoreTreeExplorer);
+            scoreTreeExplorer.AddWorld(world);
         }
 
         private void OnRemoveSubworld(object sender, ItemRemovingEventArgs args)
@@ -134,6 +155,34 @@ namespace Beetle23
                 {
                     args.Cancel = false;
                     (_treeExplorer as WorldTreeExplorer).RemoveWorld(world);
+                    ScoreTreeExplorer scoreTreeExplorer = (GameKitEditorWindow.GetInstance().GetTreeExplorer(
+                        GameKitEditorWindow.TabType.Scores) as ScoreTreeExplorer);
+                    scoreTreeExplorer.RemoveWorld(world);
+                    GameKit.Config.UpdateMapsAndTree();
+                    GameKitEditorWindow.GetInstance().Repaint();
+                }
+                else
+                {
+                    args.Cancel = true;
+                }
+            }
+        }
+
+        private void OnInsertScore(object sender, ItemInsertedEventArgs args)
+        {
+            GameKit.Config.UpdateMapsAndTree();
+        }
+
+        private void OnRemoveScore(object sender, ItemRemovingEventArgs args)
+        {
+            GenericClassListAdaptor<Score> listAdaptor = args.adaptor as GenericClassListAdaptor<Score>;
+            Score score = listAdaptor[args.itemIndex];
+            if (listAdaptor != null)
+            {
+                if (EditorUtility.DisplayDialog("Confirm to delete",
+                        "Confirm to delete score [" + score.ID + "]?", "OK", "Cancel"))
+                {
+                    args.Cancel = false;
                     GameKit.Config.UpdateMapsAndTree();
                     GameKitEditorWindow.GetInstance().Repaint();
                 }
@@ -151,8 +200,8 @@ namespace Beetle23
 
         private ReorderableListControl _subWorldListControl;
         private GenericClassListAdaptor<World> _subWorldListAdaptor;
-
-        private ScoresInfoListView _scoresListView;
+        private ReorderableListControl _scoreListControl;
+        private GenericClassListAdaptor<Score> _scoreListAdaptor;
 
         private Vector2 _scrollPosition;
         private float _currentYOffset;

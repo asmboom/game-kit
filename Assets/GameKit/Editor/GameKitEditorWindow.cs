@@ -12,6 +12,14 @@ namespace Beetle23
             GameKitEditorWindow.GetInstance();
         }
 
+        public enum TabType
+        {
+            VirtualItems = 0,
+            Worlds = 1,
+            Scores = 2,
+            Missions = 3
+        }
+
         public static GameKitEditorWindow GetInstance()
         {
             if (_instance == null)
@@ -22,6 +30,23 @@ namespace Beetle23
         }
 
         private static GameKitEditorWindow _instance;
+
+        public ItemTreeExplorer GetTreeExplorer(TabType tabtype)
+        {
+            if (_treeExplorers.ContainsKey(tabtype))
+            {
+                return _treeExplorers[tabtype];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public void SelectTab(TabType tabtype)
+        {
+            _currentSection = (int)tabtype;
+        }
 
         private void OnEnable()
         {
@@ -117,14 +142,6 @@ namespace Beetle23
         private GameKitConfig _config;
         private Dictionary<TabType, ItemTreeExplorer> _treeExplorers;
         private Dictionary<TabType, ItemPropertyInspector> _propertyInspectors;
-
-        private enum TabType
-        {
-            VirtualItems = 0,
-            Worlds = 1,
-            Scores = 2,
-            Missions = 3
-        }
 
         private string[] _sections;
         private int _currentSection;
