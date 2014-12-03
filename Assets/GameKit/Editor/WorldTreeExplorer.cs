@@ -33,7 +33,7 @@ namespace Beetle23
 
         private void InitWorldToExpanded(World world)
         {
-            _worldToExpanded.Add(world, false);
+            _worldToExpanded.Add(world, true);
             foreach (var subworld in world.SubWorlds)
             {
                 InitWorldToExpanded(subworld);
@@ -85,38 +85,34 @@ namespace Beetle23
             if (_worldToExpanded.ContainsKey(world))
             {
                 GUILayout.BeginHorizontal();
-                var size = GameKitEditorDrawUtil.ItemSelectedLeftStyle.CalcSize(new GUIContent(world.ID));
-                size.x = Mathf.Max(100, size.x);
-                if (GUILayout.Button(world.ID,
-                        (!string.IsNullOrEmpty(world.ID) && world == CurrentSelectedItem ?
-                            GameKitEditorDrawUtil.ItemSelectedCenterStyle : GameKitEditorDrawUtil.ItemCenterLabelStyle),
-                        GUILayout.Width(size.x), GUILayout.Height(20)))
+                GUILayout.Space(5);
+                if (GUILayout.Button(" " + world.ID, GetItemLeftStyle(world),
+                        GUILayout.Width(position.width - 15f), GUILayout.Height(20)))
                 {
                     SelectItem(world);
                 }
+                GUILayout.EndHorizontal();
 
-                x += size.x;
+                x += 20;
                 y += 20;
 
                 if (world.SubWorlds.Count > 0)
                 {
                     _worldToExpanded[world] = EditorGUILayout.Foldout(_worldToExpanded[world],
-                        "child worlds", GameKitEditorDrawUtil.FoldoutStyle);
+                        "child", GameKitEditorDrawUtil.FoldoutStyle);
 
-                    GUILayout.EndHorizontal();
+                    y += 20;
 
                     if (_worldToExpanded[world])
                     {
                         foreach (var subworld in world.SubWorlds)
                         {
                             y += DrawWorld(new Rect(x, y,
-                                position.width - 100, position.height), subworld);
+                                position.width - 20, position.height), subworld);
                         }
                     }
-                }
-                else
-                {
-                    GUILayout.EndHorizontal();
+
+                    y += 5;
                 }
             }
             GUILayout.EndArea();

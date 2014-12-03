@@ -53,6 +53,18 @@ namespace Beetle23
             GUILayout.EndArea();
         }
 
+        protected GUIStyle GetItemCenterStyle(IItem item)
+        {
+            return !string.IsNullOrEmpty(item.ID) && item == CurrentSelectedItem ?
+                        GameKitEditorDrawUtil.ItemSelectedCenterStyle : GameKitEditorDrawUtil.ItemCenterLabelStyle;
+        }
+
+        protected GUIStyle GetItemLeftStyle(IItem item)
+        {
+            return !string.IsNullOrEmpty(item.ID) && item == CurrentSelectedItem ?
+                        GameKitEditorDrawUtil.ItemSelectedLeftStyle : GameKitEditorDrawUtil.ItemLeftLabelStyle;
+        }
+
         protected abstract void DoOnSelectItem(IItem item);
         protected abstract void DoExpandAll();
         protected abstract void DoCollapseAll();

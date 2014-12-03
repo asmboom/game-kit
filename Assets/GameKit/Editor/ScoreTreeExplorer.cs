@@ -31,7 +31,7 @@ namespace Beetle23
 
         private void InitWorldToExpanded(World world)
         {
-            _worldToExpanded.Add(world, false);
+            _worldToExpanded.Add(world, true);
             foreach (var subworld in world.SubWorlds)
             {
                 InitWorldToExpanded(subworld);
@@ -88,29 +88,29 @@ namespace Beetle23
                     world.ID, GameKitEditorDrawUtil.FoldoutStyle);
                 if (_worldToExpanded[world])
                 {
-                    var size = GameKitEditorDrawUtil.ItemSelectedLeftStyle.CalcSize(new GUIContent(world.ID));
-                    size.x = Mathf.Max(100, size.x);
                     for (int i = 0; i < world.Scores.Count; i++)
                     {
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Space(15);
                         Score score = world.Scores[i];
-                        if (GUILayout.Button(score.ID,
-                                (!string.IsNullOrEmpty(score.ID) && score == CurrentSelectedItem ?
-                                    GameKitEditorDrawUtil.ItemSelectedCenterStyle : GameKitEditorDrawUtil.ItemCenterLabelStyle),
-                                GUILayout.Width(size.x), GUILayout.Height(20)))
+                        if (GUILayout.Button(" " + score.ID, GetItemLeftStyle(score),
+                                GUILayout.Width(position.width - 25), GUILayout.Height(20)))
                         {
                             SelectItem(score);
                         }
+                        GUILayout.EndHorizontal();
+                        y += 20;
                     }
 
-                    x += size.x;
-                    y += 20;
+                    x += 20;
+                    y += 25;
 
                     if (world.SubWorlds.Count > 0)
                     {
                         foreach (var subworld in world.SubWorlds)
                         {
                             y += DrawWorldScores(new Rect(x, y,
-                                    position.width - 100, position.height), subworld);
+                                    position.width - 20, position.height), subworld);
                         }
                     }
                 }

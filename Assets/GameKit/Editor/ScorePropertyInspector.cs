@@ -34,7 +34,7 @@ namespace Beetle23
             }
 
             yOffset += 20;
-            EditorGUI.LabelField(new Rect(0, yOffset, 250, 20), "World", 
+            EditorGUI.LabelField(new Rect(0, yOffset, 250, 20), "Belong to World", 
                 _currentWorldOfScore == null ? "NULL" : _currentWorldOfScore.ID);
             if (_currentWorldOfScore != null)
             {

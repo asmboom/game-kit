@@ -106,7 +106,8 @@ namespace Beetle23
             {
                 _packListControl.Draw(_packListAdaptor);
             }
-            _isUpgradeItemExpanded = EditorGUILayout.Foldout(_isUpgradeItemExpanded, "Upgrade Items",
+            _isUpgradeItemExpanded = EditorGUILayout.Foldout(_isUpgradeItemExpanded, 
+                new GUIContent(" Upgrade Items", Resources.Load("PackIcon") as Texture),
                 GameKitEditorDrawUtil.FoldoutStyle);
             if (_isUpgradeItemExpanded)
             {
@@ -114,16 +115,14 @@ namespace Beetle23
                 {
                     foreach (var upgrade in item.Upgrades)
                     {
-                        EditorGUILayout.BeginHorizontal();
-                        EditorGUILayout.Space();
-                        EditorGUILayout.BeginVertical();
-                        if (GUILayout.Button(upgrade.ID, GetItemCenterStyle(upgrade), GUILayout.Height(22), 
-                            GUILayout.Width(position.width - 20)))
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Space(20);
+                        if (GUILayout.Button(" " + upgrade.ID, GetItemLeftStyle(upgrade), GUILayout.Height(20), 
+                            GUILayout.Width(position.width - 30)))
                         {
                             SelectItem(upgrade);
                         }
-                        EditorGUILayout.EndVertical();
-                        EditorGUILayout.EndHorizontal();
+                        GUILayout.EndHorizontal();
                     }
                 }
                 EditorGUILayout.Space();
@@ -152,18 +151,6 @@ namespace Beetle23
                 SelectItem(item);
             }
             return item;
-        }
-
-        private GUIStyle GetItemCenterStyle(IItem item)
-        {
-            return !string.IsNullOrEmpty(item.ID) && item == CurrentSelectedItem ?
-                        GameKitEditorDrawUtil.ItemSelectedCenterStyle : GameKitEditorDrawUtil.ItemCenterLabelStyle;
-        }
-
-        private GUIStyle GetItemLeftStyle(IItem item)
-        {
-            return !string.IsNullOrEmpty(item.ID) && item == CurrentSelectedItem ?
-                        GameKitEditorDrawUtil.ItemSelectedLeftStyle : GameKitEditorDrawUtil.ItemLeftLabelStyle;
         }
 
         private void OnItemInsert<T>(object sender, ItemInsertedEventArgs args) where T : SerializableItem
