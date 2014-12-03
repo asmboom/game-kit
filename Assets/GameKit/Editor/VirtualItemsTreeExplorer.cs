@@ -58,6 +58,7 @@ namespace Beetle23
             _isSingleUseItemExpanded = true;
             _isLifeTimeItemExpanded = true;
             _isPackExpanded = true;
+            _isUpgradeItemExpanded = true;
             _isCategoryExpanded = true;
         }
 
@@ -67,6 +68,7 @@ namespace Beetle23
             _isSingleUseItemExpanded = false;
             _isLifeTimeItemExpanded = false;
             _isPackExpanded = false;
+            _isUpgradeItemExpanded = false;
             _isCategoryExpanded = false;
         }
 
@@ -104,6 +106,27 @@ namespace Beetle23
             {
                 _packListControl.Draw(_packListAdaptor);
             }
+            _isUpgradeItemExpanded = EditorGUILayout.Foldout(_isUpgradeItemExpanded, "Upgrade Items",
+                GameKitEditorDrawUtil.FoldoutStyle);
+            if (_isUpgradeItemExpanded)
+            {
+                foreach (var item in _config.VirtualItems)
+                {
+                    foreach (var upgrade in item.Upgrades)
+                    {
+                        EditorGUILayout.BeginHorizontal();
+                        EditorGUILayout.Space();
+                        EditorGUILayout.BeginVertical();
+                        if (GUILayout.Button(upgrade.ID, GetItemLeftStyle(upgrade)))
+                        {
+                            SelectItem(upgrade);
+                        }
+                        EditorGUILayout.EndVertical();
+                        EditorGUILayout.EndHorizontal();
+                    }
+                }
+                EditorGUILayout.Space();
+            }
             _isCategoryExpanded = EditorGUILayout.Foldout(_isCategoryExpanded,
                 new GUIContent(" Categories", Resources.Load("CategoryIcon") as Texture),
                 GameKitEditorDrawUtil.FoldoutStyle);
@@ -123,13 +146,23 @@ namespace Beetle23
                 return item;
             }
 
-            if (GUI.Button(position, item.ID,
-                    (!string.IsNullOrEmpty(item.ID) && item == CurrentSelectedItem ?
-                        GameKitEditorDrawUtil.ItemSelectedCenterStyle : GameKitEditorDrawUtil.ItemCenterLabelStyle)))
+            if (GUI.Button(position, item.ID, GetItemCenterStyle(item)))
             {
                 SelectItem(item);
             }
             return item;
+        }
+
+        private GUIStyle GetItemCenterStyle(IItem item)
+        {
+            return !string.IsNullOrEmpty(item.ID) && item == CurrentSelectedItem ?
+                        GameKitEditorDrawUtil.ItemSelectedCenterStyle : GameKitEditorDrawUtil.ItemCenterLabelStyle;
+        }
+
+        private GUIStyle GetItemLeftStyle(IItem item)
+        {
+            return !string.IsNullOrEmpty(item.ID) && item == CurrentSelectedItem ?
+                        GameKitEditorDrawUtil.ItemSelectedLeftStyle : GameKitEditorDrawUtil.ItemLeftLabelStyle;
         }
 
         private void OnItemInsert<T>(object sender, ItemInsertedEventArgs args) where T : SerializableItem
@@ -191,6 +224,7 @@ namespace Beetle23
         private bool _isSingleUseItemExpanded = true;
         private bool _isLifeTimeItemExpanded = true;
         private bool _isPackExpanded = true;
+        private bool _isUpgradeItemExpanded = true;
         private bool _isCategoryExpanded = true;
 
         private ReorderableListControl _virtualCurrencyListControl;

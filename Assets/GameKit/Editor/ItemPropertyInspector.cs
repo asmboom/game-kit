@@ -16,7 +16,10 @@ namespace Beetle23
         public void OnExplorerSelectionChange(IItem item)
         {
             _currentDisplayItem = item;
-            _currentItemID = item.ID;
+            if (item != null)
+            {
+                _currentItemID = item.ID;
+            }
             DoOnExplorerSelectionChange(_currentDisplayItem);
         }
 

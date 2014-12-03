@@ -31,15 +31,6 @@ namespace Beetle23
             purchase.VirtualCurrencyID = DisplayedVirtualCurrencyIDs[newCurrencyIndex];
         }
 
-        public static void UpdateRelatedItemByIndex(VirtualItem item, int newItemIndex)
-        {
-            if (item is UpgradeItem)
-            {
-                UpgradeItem upgradeItem = item as UpgradeItem;
-                upgradeItem.RelatedItem = GameKit.Config.GetVirtualItemByID(DisplayedItemIDs[newItemIndex]);
-            }
-        }
-
         public static void UpdatePackElementItemByIndex(PackElement element, int newItemIndex)
         {
             if (element != null)

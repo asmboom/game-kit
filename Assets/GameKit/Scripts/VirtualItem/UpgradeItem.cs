@@ -2,10 +2,15 @@ using UnityEngine;
 
 namespace Beetle23
 {
+    [System.Serializable]
     public class UpgradeItem : PurchasableItem
     {
-        [SerializeField]
-        public VirtualItem RelatedItem;
+        public UpgradeItem(VirtualItem relatedItem)
+        {
+            RelatedItem = relatedItem;
+        }
+
+        public VirtualItem RelatedItem { get; private set; }
 
         public override bool CanPurchaseNow()
         {

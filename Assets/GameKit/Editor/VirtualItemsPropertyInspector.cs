@@ -12,8 +12,12 @@ namespace Beetle23
         {
             _purchaseListView = new PurchaseInfoListView(_currentDisplayItem as PurchasableItem);
             _packListView = new PackInfoListView(_currentDisplayItem as VirtualItemPack);
-            _upgradesListView = new UpgradesListView(_currentDisplayItem as VirtualItem);
             _categoryPropertyView = new CategoryPropertyView(_currentDisplayItem as VirtualCategory);
+
+            _upgradeListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand |
+                ReorderableListFlags.ShowIndices);
+            _upgradeListControl.ItemInserted += OnInsertUpgradeItem;
+            _upgradeListControl.ItemRemoving += OnRemoveUpgradeItem;
         }
 
         protected override void DoOnExplorerSelectionChange(IItem item)
@@ -24,7 +28,18 @@ namespace Beetle23
 
                 if (item is SingleUseItem || item is LifeTimeItem)
                 {
-                    _upgradesListView.UpdateDisplayItem(item as VirtualItem);
+                    _upgradeListAdaptor = new UpgradeItemListAdaptor((item as VirtualItem).Upgrades, 20,
+                        () => { return new UpgradeItem(item as VirtualItem); },
+                        (position, theItem, index) =>
+                        {
+                            var size = GUI.skin.GetStyle("label").CalcSize(new GUIContent(theItem.ID));
+                            GUI.Label(new Rect(position.x, position.y, size.x, position.height), theItem.ID);
+                            if (GUI.Button(new Rect(position.x + size.x + 10, position.y, 50, position.height), "Go"))
+                            {
+                                _treeExplorer.SelectItem(theItem);
+                            }
+                            return theItem;
+                        });
                 }
                 if (item is PurchasableItem)
                 {
@@ -83,8 +98,11 @@ namespace Beetle23
                 yOffset += 20;
                 item.Description = EditorGUI.TextField(new Rect(0, yOffset, width, 20), "Desription", item.Description);
                 yOffset += 20;
-                EditorGUI.LabelField(new Rect(0, yOffset, width, 20), "Category", item.Category == null ? "None" : item.Category.ID);
-                yOffset += 20;
+                if (!(item is UpgradeItem))
+                {
+                    EditorGUI.LabelField(new Rect(0, yOffset, width, 20), "Category", item.Category == null ? "None" : item.Category.ID);
+                    yOffset += 20;
+                }
                 item.Icon = EditorGUI.ObjectField(new Rect(0, yOffset, width, 20), "Icon", item.Icon, typeof(Sprite), false) as Sprite;
                 yOffset += 20;
                 item.Extend = EditorGUI.ObjectField(new Rect(0, yOffset, width, 20), "Extend",
@@ -129,8 +147,9 @@ namespace Beetle23
                 yOffset += 20;
                 if (_isUpgradeInfoExpanded)
                 {
-                    _upgradesListView.Draw(new Rect(0, yOffset, width, 200));
-                    yOffset += 200;
+                    float height = _upgradeListControl.CalculateListHeight(_upgradeListAdaptor);
+                    _upgradeListControl.Draw(new Rect(0, yOffset, width, height), _upgradeListAdaptor);
+                    yOffset += height;
                 }
             }
             return yOffset;
@@ -141,14 +160,63 @@ namespace Beetle23
             DrawIDTextField(position, item);
         }
 
+        private void OnInsertUpgradeItem(object sender, ItemInsertedEventArgs args)
+        { 
+            int upgradeIndex = args.itemIndex + 1;
+            string suffix = upgradeIndex < 10 ? "00" + upgradeIndex : 
+                upgradeIndex < 100 ? "0" + upgradeIndex : upgradeIndex.ToString();
+            GenericClassListAdaptor<UpgradeItem> listAdaptor = args.adaptor as GenericClassListAdaptor<UpgradeItem>;
+            listAdaptor[args.itemIndex].ID = string.Format("{0}-upgrade{1}", _currentDisplayItem.ID, suffix);
+        }
+
+        private void OnRemoveUpgradeItem(object sender, ItemRemovingEventArgs args)
+        {
+            GenericClassListAdaptor<UpgradeItem> listAdaptor = args.adaptor as GenericClassListAdaptor<UpgradeItem>;
+            UpgradeItem upgradeItem = listAdaptor[args.itemIndex];
+            if (listAdaptor != null)
+            {
+                if (EditorUtility.DisplayDialog("Confirm to delete",
+                        "Confirm to delete upgrade [" + upgradeItem.ID + "]?", "OK", "Cancel"))
+                {
+                    args.Cancel = false;
+                }
+                else
+                {
+                    args.Cancel = true;
+                }
+            }
+        }
+
         private bool _isVirtualItemPropertiesExpanded = true;
         private bool _isPackInfoExpanded = true;
         private bool _isPurchaseInfoExpanded = true;
-        private bool _isUpgradeInfoExpanded = false;
+        private bool _isUpgradeInfoExpanded = true;
 
         private PurchaseInfoListView _purchaseListView;
         private PackInfoListView _packListView;
-        private UpgradesListView _upgradesListView;
         private CategoryPropertyView _categoryPropertyView;
+        private ReorderableListControl _upgradeListControl;
+        private UpgradeItemListAdaptor _upgradeListAdaptor;
+
+        private class UpgradeItemListAdaptor : GenericClassListAdaptor<UpgradeItem>
+        {
+            public UpgradeItemListAdaptor(List<UpgradeItem> list, float itemHeight,
+                GenericListAdaptorDelegate.ItemCreator<UpgradeItem> itemCreator,
+                GenericListAdaptorDelegate.ClassItemDrawer<UpgradeItem> itemDrawer)
+                : base(list, itemHeight, itemCreator, itemDrawer, null)
+            {
+            }
+
+            public override bool CanDrag(int index)
+            {
+                return false;
+            }
+
+            public override bool CanRemove(int index)
+            {
+                return index == Count - 1;
+            }
+        }
+
     }
 }
