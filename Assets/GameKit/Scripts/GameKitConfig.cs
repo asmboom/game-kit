@@ -175,6 +175,10 @@ namespace Beetle23
             {
                 Categories = new List<VirtualCategory>();
             }
+            if (RootWorld == null)
+            {
+                RootWorld = new World();
+            }
 
             RootWorld.ID = "root";
             UpdateMapsAndTree();

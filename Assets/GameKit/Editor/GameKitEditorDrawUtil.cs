@@ -14,7 +14,8 @@ namespace Beetle23
             ItemCenterLabelStyle = new GUIStyle(GUI.skin.GetStyle("Label"));
             ItemCenterLabelStyle.alignment = TextAnchor.MiddleCenter;
 
-            ItemLeftLabelStyle = new GUIStyle(GUI.skin.GetStyle("Label"));
+            ItemLeftLabelStyle = new GUIStyle(GUI.skin.GetStyle("Box"));
+            ItemLeftLabelStyle.normal.textColor = TitleStyle.normal.textColor;
             ItemLeftLabelStyle.alignment = TextAnchor.MiddleLeft;
 
             ItemSelectedCenterStyle = new GUIStyle(GUI.skin.GetStyle("Box"));

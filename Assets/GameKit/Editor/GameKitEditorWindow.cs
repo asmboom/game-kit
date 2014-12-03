@@ -107,7 +107,7 @@ namespace Beetle23
 
         private static GameKitConfig GetConfigAndCreateIfNonExist()
         {
-            string configFilePath = VirtualItemsEditUtil.DefaultVirtualItemDataPath + "/GameKitConfig.asset";
+            string configFilePath = GameKit.DefaultConfigDataPath + "/GameKitConfig.asset";
             GameKitConfig virtualItemsConfig = AssetDatabase.LoadAssetAtPath(configFilePath, typeof(GameKitConfig)) as GameKitConfig;
             if (virtualItemsConfig == null)
             {

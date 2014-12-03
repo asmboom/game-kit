@@ -16,20 +16,52 @@ MonoBehaviour:
     _name: 
     Description: 
     Icon: {fileID: 0}
+    Upgrades: []
     Extend: {fileID: 0}
   - _id: iso-8
     _name: 
     Description: 
     Icon: {fileID: 0}
+    Upgrades: []
     Extend: {fileID: 0}
   SingleUseItems:
   - _id: test-item
     _name: 
     Description: 
     Icon: {fileID: 0}
+    Upgrades:
+    - _id: test-item-upgrade001
+      _name: 
+      Description: 
+      Icon: {fileID: 0}
+      Upgrades: []
+      Extend: {fileID: 0}
+      PurchaseInfo: []
+    - _id: test-item-upgrade002
+      _name: 
+      Description: 
+      Icon: {fileID: 0}
+      Upgrades: []
+      Extend: {fileID: 0}
+      PurchaseInfo: []
+    - _id: test-item-upgrade003
+      _name: 
+      Description: 
+      Icon: {fileID: 0}
+      Upgrades: []
+      Extend: {fileID: 0}
+      PurchaseInfo: []
     Extend: {fileID: 0}
     PurchaseInfo: []
-  LifeTimeItems: []
+  LifeTimeItems:
+  - _id: 91d2e466121
+    _name: 
+    Description: 
+    Icon: {fileID: 0}
+    Upgrades: []
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
   ItemPacks: []
   Categories:
   - _id: consumables

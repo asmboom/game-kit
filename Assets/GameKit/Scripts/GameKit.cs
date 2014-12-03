@@ -5,6 +5,10 @@ namespace Beetle23
 {
     public static class GameKit
     {
+#if UNITY_EDITOR
+        public const string DefaultConfigDataPath = "Assets/GameKit/Resources";
+#endif
+
         public static void Init(IGameKitFactory factory)
         {
             _factory = factory;
@@ -22,7 +26,7 @@ namespace Beetle23
                         Debug.LogWarning("Create empty GameKitConfig at runtime");
                         _config = ScriptableObject.CreateInstance<GameKitConfig>();
 #if UNITY_EDITOR
-                        string fullPath = "Assets/Resources/GameKitConfig.asset";
+                        string fullPath = DefaultConfigDataPath + "/GameKitConfig.asset";
                         UnityEditor.AssetDatabase.CreateAsset(_config, fullPath);
 #endif
                     }
