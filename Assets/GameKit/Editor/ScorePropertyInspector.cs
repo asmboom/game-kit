@@ -22,6 +22,7 @@ namespace Beetle23
             float yOffset = 0;
             float width = rect.width;
             Score score = item as Score;
+
             _isBasicPropertiesExpanded = EditorGUI.Foldout(new Rect(0, 0, width, 20),
                 _isBasicPropertiesExpanded, "Basic Property");
             yOffset += 20;
@@ -32,21 +33,52 @@ namespace Beetle23
                 score.Name = EditorGUI.TextField(new Rect(0, yOffset, width, 20), "Name", score.Name);
                 yOffset += 20;
             }
-
             yOffset += 20;
+
             EditorGUI.LabelField(new Rect(0, yOffset, 250, 20), "Belong to World", 
                 _currentWorldOfScore == null ? "NULL" : _currentWorldOfScore.ID);
             if (_currentWorldOfScore != null)
             {
-                if (GUI.Button(new Rect(255, yOffset, 50, 20), "Go"))
+                if (GUI.Button(new Rect(255, yOffset, 50, 20), "Edit"))
                 {
                     WorldTreeExplorer worldTreeExplorer = (GameKitEditorWindow.GetInstance().GetTreeExplorer(
                         GameKitEditorWindow.TabType.Worlds) as WorldTreeExplorer);
                     GameKitEditorWindow.GetInstance().SelectTab(GameKitEditorWindow.TabType.Worlds);
                     worldTreeExplorer.SelectItem(_currentWorldOfScore);
                 }
+                yOffset += 20;
             }
             yOffset += 20;
+
+            _isScorePropertiesExpanded = EditorGUI.Foldout(new Rect(0, yOffset, width, 20),
+                _isScorePropertiesExpanded, "Score Property");
+            yOffset += 20;
+            if (_isScorePropertiesExpanded)
+            {
+                score.EnableClamp = EditorGUI.Toggle(new Rect(0, yOffset, width, 20),
+                    "Clamp Score", score.EnableClamp);
+                yOffset += 20;
+                if (score.EnableClamp)
+                {
+                    score.Min = EditorGUI.FloatField(new Rect(10, yOffset, width, 20),
+                        "Mininum Value", score.Min);
+                    yOffset += 20;
+                    score.Max = EditorGUI.FloatField(new Rect(10, yOffset, width, 20),
+                        "Maximum Value", score.Max);
+                    yOffset += 20;
+                    score.DefaultValue = EditorGUI.Slider(new Rect(0, yOffset, width, 20),
+                        "Default Score", score.DefaultValue, score.Min, score.Max);
+                }
+                else
+                {
+                    score.DefaultValue = EditorGUI.FloatField(new Rect(0, yOffset, width, 20),
+                        "Default Score", score.DefaultValue);
+                }
+                yOffset += 20;
+                score.IsHigherBetter = EditorGUI.Toggle(new Rect(0, yOffset, width, 20),
+                    "Is Higher Better", score.IsHigherBetter);
+                yOffset += 20;
+            }
 
             return yOffset;
         }
@@ -57,6 +89,7 @@ namespace Beetle23
         }
 
         private bool _isBasicPropertiesExpanded = true;
+        private bool _isScorePropertiesExpanded = true;
         private World _currentWorldOfScore;
     }
 }

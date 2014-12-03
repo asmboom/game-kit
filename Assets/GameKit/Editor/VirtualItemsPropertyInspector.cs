@@ -34,7 +34,7 @@ namespace Beetle23
                         {
                             var size = GUI.skin.GetStyle("label").CalcSize(new GUIContent(theItem.ID));
                             GUI.Label(new Rect(position.x, position.y, size.x, position.height), theItem.ID);
-                            if (GUI.Button(new Rect(position.x + size.x + 10, position.y, 50, position.height), "Go"))
+                            if (GUI.Button(new Rect(position.x + size.x + 10, position.y, 50, position.height), "Edit"))
                             {
                                 _treeExplorer.SelectItem(theItem);
                             }
@@ -92,7 +92,14 @@ namespace Beetle23
             yOffset += 20;
             if (_isVirtualItemPropertiesExpanded)
             {
-                DrawVirtualItemID(new Rect(0, yOffset, width, 20), item);
+                if (item is UpgradeItem)
+                {
+                    EditorGUI.LabelField(new Rect(0, yOffset, width, 20), "ID", item.ID);
+                }
+                else
+                {
+                    DrawVirtualItemID(new Rect(0, yOffset, width, 20), item);
+                }
                 yOffset += 20;
                 item.Name = EditorGUI.TextField(new Rect(0, yOffset, width, 20), "Name", item.Name);
                 yOffset += 20;

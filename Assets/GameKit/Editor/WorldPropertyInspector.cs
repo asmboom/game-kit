@@ -30,7 +30,7 @@ namespace Beetle23
                 {
                     var size = GUI.skin.GetStyle("label").CalcSize(new GUIContent(theItem.ID));
                     GUI.Label(new Rect(position.x, position.y, size.x, position.height), theItem.ID);
-                    if (GUI.Button(new Rect(position.x + size.x + 10, position.y, 50, position.height), "Go"))
+                    if (GUI.Button(new Rect(position.x + size.x + 10, position.y, 50, position.height), "Edit"))
                     {
                         _treeExplorer.SelectItem(theItem);
                     }
@@ -42,7 +42,7 @@ namespace Beetle23
                 {
                     var size = GUI.skin.GetStyle("label").CalcSize(new GUIContent(theItem.ID));
                     GUI.Label(new Rect(position.x, position.y, size.x, position.height), theItem.ID);
-                    if (GUI.Button(new Rect(position.x + size.x + 10, position.y, 50, position.height), "Go"))
+                    if (GUI.Button(new Rect(position.x + size.x + 10, position.y, 50, position.height), "Edit"))
                     {
                         ScoreTreeExplorer scoreTreeExplorer = (GameKitEditorWindow.GetInstance().GetTreeExplorer(
                             GameKitEditorWindow.TabType.Scores) as ScoreTreeExplorer);
@@ -79,7 +79,7 @@ namespace Beetle23
                 world.Parent == null ? "NULL" : world.Parent.ID);
             if (world.Parent != null)
             {
-                if (GUI.Button(new Rect(255, yOffset, 50, 20), "Go"))
+                if (GUI.Button(new Rect(255, yOffset, 50, 20), "Edit"))
                 {
                     _treeExplorer.SelectItem(world.Parent);
                 }
