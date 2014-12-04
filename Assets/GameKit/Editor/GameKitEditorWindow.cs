@@ -29,6 +29,14 @@ namespace Beetle23
             return _instance;
         }
 
+        public static SerializedObject SerializedConfig
+        {
+            get
+            {
+                return GetInstance()._serializedConfig;
+            }
+        }
+
         private static GameKitEditorWindow _instance;
 
         public ItemTreeExplorer GetTreeExplorer(TabType tabtype)
@@ -48,6 +56,45 @@ namespace Beetle23
             _currentSection = (int)tabtype;
         }
 
+        public string FindWorldPropertyPath(World worldToFind)
+        {
+            if (worldToFind == null) return string.Empty;
+
+            World world = worldToFind;
+            string path = string.Empty;
+            while (world.Parent != null)
+            {
+                for (int i = 0; i < world.Parent.SubWorlds.Count; i++)
+                {
+                    if (world.Parent.SubWorlds[i] == world)
+                    {
+                        path = string.Format(".SubWorlds.Array.data[{0}]", i) + path;
+                        break;
+                    }
+                }
+                world = world.Parent;
+            }
+            return "RootWorld" + path;
+        }
+
+        public string FindScorePropertyPath(Score score)
+        {
+            World world = GameKit.Config.FindWorldThatScoreBelongsTo(score);
+            if (world == null) return string.Empty;
+
+            string path = GameKitEditorWindow.GetInstance().FindWorldPropertyPath(world);
+            for (int i = 0; i < world.Scores.Count; i++)
+            {
+                if (world.Scores[i] == score)
+                {
+                    return path + string.Format(".Scores.Array.data[{0}]", i);
+                }
+            }
+
+            Debug.LogError("Code shoul never run here.");
+            return string.Empty;
+        }
+
         private void OnEnable()
         {
             _sections = new string[] { "Virtual Items", "Worlds", "Scores", "Missions" };
@@ -57,6 +104,10 @@ namespace Beetle23
             if (_config == null)
             {
                 _config = GameKit.Config;
+            }
+            if (_serializedConfig == null)
+            {
+                _serializedConfig = new SerializedObject(_config);
             }
             if (_treeExplorers == null)
             {
@@ -140,6 +191,7 @@ namespace Beetle23
         }
 
         private GameKitConfig _config;
+        private SerializedObject _serializedConfig;
         private Dictionary<TabType, ItemTreeExplorer> _treeExplorers;
         private Dictionary<TabType, ItemPropertyInspector> _propertyInspectors;
 

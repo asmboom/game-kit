@@ -12,67 +12,22 @@ MonoBehaviour:
   m_Name: GameKitConfig
   m_EditorClassIdentifier: 
   VirtualCurrencies:
-  - _id: vial
+  - _id: 9cb2588e
     _name: 
     Description: 
     Icon: {fileID: 0}
     Upgrades: []
     Extend: {fileID: 0}
-  - _id: iso-8
-    _name: 
-    Description: 
-    Icon: {fileID: 0}
-    Upgrades: []
-    Extend: {fileID: 0}
-  SingleUseItems:
-  - _id: test-item
-    _name: 
-    Description: 
-    Icon: {fileID: 0}
-    Upgrades:
-    - _id: test-item-upgrade001
-      _name: 
-      Description: 
-      Icon: {fileID: 0}
-      Upgrades: []
-      Extend: {fileID: 0}
-      PurchaseInfo: []
-    - _id: test-item-upgrade002
-      _name: 
-      Description: 
-      Icon: {fileID: 0}
-      Upgrades: []
-      Extend: {fileID: 0}
-      PurchaseInfo: []
-    - _id: test-item-upgrade003
-      _name: 
-      Description: 
-      Icon: {fileID: 0}
-      Upgrades: []
-      Extend: {fileID: 0}
-      PurchaseInfo: []
-    Extend: {fileID: 0}
-    PurchaseInfo: []
+  SingleUseItems: []
   LifeTimeItems: []
-  ItemPacks:
-  - _id: 5d96a284
-    _name: 
-    Description: 
-    Icon: {fileID: 0}
-    Upgrades: []
-    Extend: {fileID: 0}
-    PurchaseInfo: []
-    PackElements: []
-  Categories:
-  - _id: consumables
-    _name: 
-    ItemIDs: []
+  ItemPacks: []
+  Categories: []
   RootWorld:
     _id: root
     _name: 
     Description: 
     Gate:
-      _id: 984b5536
+      _id: 8806700c
       _name: 
       Type: 4
       RelatedItemID: 
@@ -80,11 +35,41 @@ MonoBehaviour:
       Gates: []
       GroupType: 0
     SubWorlds:
-    - _id: chapter-1
+    - _id: chapter-01
       _name: 
       Description: 
       Gate:
-        _id: 72688a53
+        _id: deafdf21
+        _name: 
+        Type: 4
+        RelatedItemID: 
+        RelatedNumber: 0
+        Gates: []
+        GroupType: 0
+      SubWorlds:
+      - _id: 9965ec26
+        _name: 
+        Description: 
+        Gate:
+          _id: 30f505e9
+          _name: 
+          Type: 4
+          RelatedItemID: 
+          RelatedNumber: 0
+          Gates: []
+          GroupType: 0
+        SubWorlds: []
+        Scores: []
+        Missions: []
+        Extend: {fileID: 0}
+      Scores: []
+      Missions: []
+      Extend: {fileID: 0}
+    - _id: chapter-02
+      _name: 
+      Description: 
+      Gate:
+        _id: 590d278c
         _name: 
         Type: 4
         RelatedItemID: 
@@ -95,56 +80,11 @@ MonoBehaviour:
       Scores: []
       Missions: []
       Extend: {fileID: 0}
-    - _id: chapter-2
+    - _id: chapter-03
       _name: 
       Description: 
       Gate:
-        _id: 80678cb2
-        _name: 
-        Type: 4
-        RelatedItemID: 
-        RelatedNumber: 0
-        Gates: []
-        GroupType: 0
-      SubWorlds: []
-      Scores: []
-      Missions: []
-      Extend: {fileID: 0}
-    - _id: chapter-3
-      _name: 
-      Description: 
-      Gate:
-        _id: 27a0f3d3
-        _name: 
-        Type: 4
-        RelatedItemID: 
-        RelatedNumber: 0
-        Gates: []
-        GroupType: 0
-      SubWorlds: []
-      Scores: []
-      Missions: []
-      Extend: {fileID: 0}
-    - _id: chapter-4
-      _name: 
-      Description: 
-      Gate:
-        _id: ef098bee
-        _name: 
-        Type: 4
-        RelatedItemID: 
-        RelatedNumber: 0
-        Gates: []
-        GroupType: 0
-      SubWorlds: []
-      Scores: []
-      Missions: []
-      Extend: {fileID: 0}
-    - _id: chapter-5
-      _name: 
-      Description: 
-      Gate:
-        _id: e2ed3f5b
+        _id: 91d28413
         _name: 
         Type: 4
         RelatedItemID: 
@@ -156,16 +96,16 @@ MonoBehaviour:
       Missions: []
       Extend: {fileID: 0}
     Scores:
-    - _id: best_distance
-      _name: Best Distance
+    - _id: 44beab24
+      _name: 
       DefaultValue: 0
       IsHigherBetter: 1
-      EnableClamp: 1
+      EnableClamp: 0
       Min: 0
       Max: 999999
-      RelatedVirtualItemID: 
-    - _id: max_combo
-      _name: Max Combo
+      RelatedVirtualItemID: none
+    - _id: db1578bf
+      _name: 
       DefaultValue: 0
       IsHigherBetter: 1
       EnableClamp: 0

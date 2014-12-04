@@ -15,6 +15,10 @@ namespace Beetle23
         protected override void DoOnExplorerSelectionChange(IItem item)
         {
             _currentWorldOfScore = GameKit.Config.FindWorldThatScoreBelongsTo(item as Score);
+
+            string path = GameKitEditorWindow.GetInstance().FindScorePropertyPath(item as Score);
+            SerializedProperty scoreProperty = GameKitEditorWindow.SerializedConfig.FindProperty(path);
+            _relatedVirtualItemIDProperty = scoreProperty.FindPropertyRelative("RelatedVirtualItemID");
         }
 
         protected override float DoDrawItem(Rect rect, IItem item)
@@ -78,6 +82,11 @@ namespace Beetle23
                 score.IsHigherBetter = EditorGUI.Toggle(new Rect(0, yOffset, width, 20),
                     "Is Higher Better", score.IsHigherBetter);
                 yOffset += 20;
+                EditorGUI.PropertyField(new Rect(0, yOffset, width, 20), _relatedVirtualItemIDProperty, 
+                    new GUIContent("Related Virtual Item"));
+                score.RelatedVirtualItemID = _relatedVirtualItemIDProperty.stringValue;
+                //yOffset += 20;
+                //EditorGUI.LabelField(new Rect(0, yOffset, width, 20), "Related Virtual Item ID", score.RelatedVirtualItemID);
             }
 
             return yOffset;
@@ -91,5 +100,6 @@ namespace Beetle23
         private bool _isBasicPropertiesExpanded = true;
         private bool _isScorePropertiesExpanded = true;
         private World _currentWorldOfScore;
+        private SerializedProperty _relatedVirtualItemIDProperty;
     }
 }

@@ -26,6 +26,7 @@ namespace Beetle23
     	public float Max = 999999;
 
         [SerializeField]
+        [VirtualItemPopupAttritube(true)]
         public string RelatedVirtualItemID;
 
         public float Record
