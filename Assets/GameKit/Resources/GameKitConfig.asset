@@ -12,15 +12,50 @@ MonoBehaviour:
   m_Name: GameKitConfig
   m_EditorClassIdentifier: 
   VirtualCurrencies:
-  - _id: 9cb2588e
+  - _id: vial
     _name: 
     Description: 
     Icon: {fileID: 0}
     Upgrades: []
     Extend: {fileID: 0}
-  SingleUseItems: []
-  LifeTimeItems: []
-  ItemPacks: []
+  - _id: iso-8
+    _name: 
+    Description: 
+    Icon: {fileID: 0}
+    Upgrades: []
+    Extend: {fileID: 0}
+  SingleUseItems:
+  - _id: coin-magnet
+    _name: 
+    Description: 
+    Icon: {fileID: 0}
+    Upgrades: []
+    Extend: {fileID: 0}
+    PurchaseInfo:
+    - Type: 1
+      Price: 0
+      MarketID: 
+      VirtualCurrencyID: vial
+  LifeTimeItems:
+  - _id: permant-life
+    _name: 
+    Description: 
+    Icon: {fileID: 0}
+    Upgrades: []
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  ItemPacks:
+  - _id: 4b8f4b67
+    _name: 
+    Description: 
+    Icon: {fileID: 0}
+    Upgrades: []
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    PackElements:
+    - ItemID: vial
+      Amount: 0
   Categories: []
   RootWorld:
     _id: root
@@ -46,22 +81,7 @@ MonoBehaviour:
         RelatedNumber: 0
         Gates: []
         GroupType: 0
-      SubWorlds:
-      - _id: 9965ec26
-        _name: 
-        Description: 
-        Gate:
-          _id: 30f505e9
-          _name: 
-          Type: 4
-          RelatedItemID: 
-          RelatedNumber: 0
-          Gates: []
-          GroupType: 0
-        SubWorlds: []
-        Scores: []
-        Missions: []
-        Extend: {fileID: 0}
+      SubWorlds: []
       Scores: []
       Missions: []
       Extend: {fileID: 0}
@@ -96,15 +116,15 @@ MonoBehaviour:
       Missions: []
       Extend: {fileID: 0}
     Scores:
-    - _id: 44beab24
+    - _id: best-distance
       _name: 
       DefaultValue: 0
       IsHigherBetter: 1
       EnableClamp: 0
       Min: 0
       Max: 999999
-      RelatedVirtualItemID: none
-    - _id: db1578bf
+      RelatedVirtualItemID: 
+    - _id: max-combo
       _name: 
       DefaultValue: 0
       IsHigherBetter: 1

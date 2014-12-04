@@ -62,17 +62,26 @@ namespace Beetle23
                 _itemIDs.Add(None);
             }
 
-            foreach (var item in GameKit.Config.VirtualCurrencies)
+            if ((PopupAttribute.TypeInclude & VirtualItemType.VirtualCurrency) != 0)
             {
-                _itemIDs.Add(item.ID);
+                foreach (var item in GameKit.Config.VirtualCurrencies)
+                {
+                    _itemIDs.Add(item.ID);
+                }
             }
-            foreach (var item in GameKit.Config.SingleUseItems)
+            if ((PopupAttribute.TypeInclude & VirtualItemType.SingleUseItem) != 0)
             {
-                _itemIDs.Add(item.ID);
+                foreach (var item in GameKit.Config.SingleUseItems)
+                {
+                    _itemIDs.Add(item.ID);
+                }
             }
-            foreach (var item in GameKit.Config.LifeTimeItems)
+            if ((PopupAttribute.TypeInclude & VirtualItemType.LifeTimeItem) != 0)
             {
-                _itemIDs.Add(item.ID);
+                foreach (var item in GameKit.Config.LifeTimeItems)
+                {
+                    _itemIDs.Add(item.ID);
+                }
             }
 
             return _itemIDs.ToArray();

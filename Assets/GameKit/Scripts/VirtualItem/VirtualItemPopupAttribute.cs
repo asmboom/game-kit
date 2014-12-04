@@ -7,9 +7,11 @@ namespace Beetle23
     {
         public int SelectedValue = 0;
         public bool AllowNone = true;
+        public VirtualItemType TypeInclude = VirtualItemType.None;
 
-        public VirtualItemPopupAttritube(bool allowNone = true)
+        public VirtualItemPopupAttritube(VirtualItemType typeInclude, bool allowNone = true)
         {
+            this.TypeInclude = typeInclude;
             this.AllowNone = allowNone;
         }
     }
