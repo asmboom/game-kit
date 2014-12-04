@@ -18,7 +18,14 @@ namespace Beetle23
 
             string path = GameKitEditorWindow.GetInstance().FindScorePropertyPath(item as Score);
             SerializedProperty scoreProperty = GameKitEditorWindow.SerializedConfig.FindProperty(path);
-            _relatedVirtualItemIDProperty = scoreProperty.FindPropertyRelative("RelatedVirtualItemID");
+            if (scoreProperty != null)
+            {
+                _relatedVirtualItemIDProperty = scoreProperty.FindPropertyRelative("RelatedVirtualItemID");
+            }
+            else
+            {
+                Debug.LogError("Couldn't find score property from config, maybe the change is not applied yet.");
+            }
         }
 
         protected override float DoDrawItem(Rect rect, IItem item)

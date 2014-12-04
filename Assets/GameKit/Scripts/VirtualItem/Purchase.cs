@@ -14,6 +14,7 @@ namespace Beetle23
         public PurchaseType Type;
         public float Price;
         public string MarketID; // only useful if purchasing with market
+        [VirtualItemPopupAttritube(VirtualItemType.VirtualCurrency, false)]
         public string VirtualCurrencyID;
 
         public VirtualCurrency VirtualCurrency
