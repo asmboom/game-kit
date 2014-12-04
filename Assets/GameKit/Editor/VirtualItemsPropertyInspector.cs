@@ -161,6 +161,19 @@ namespace Beetle23
                     yOffset += height;
                 }
             }
+            if (item is UpgradeItem)
+            {
+                yOffset += 20;
+                VirtualItem relatedItem = (item as UpgradeItem).RelatedItem;
+                EditorGUI.LabelField(new Rect(0, yOffset, 250, 20), "Related Item", 
+                    relatedItem == null ? "NULL" : relatedItem .ID);
+                var size = GUI.skin.GetStyle("label").CalcSize(new GUIContent(relatedItem.ID));
+                if (GUI.Button(new Rect(255, yOffset, 50, 20), "Edit"))
+                {
+                    _treeExplorer.SelectItem(relatedItem);
+                }
+                yOffset += 20;
+            }
             return yOffset;
         }
 
