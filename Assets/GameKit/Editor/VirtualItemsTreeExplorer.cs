@@ -161,8 +161,9 @@ namespace Beetle23
                 SelectItem(listAdaptor[args.itemIndex]);
                 if (listAdaptor[args.itemIndex] is VirtualItem)
                 {
-                    ShowInputDialogForId<T>(CurrentSelectedItem.ID);
+                    //ShowInputDialogForId<T>(CurrentSelectedItem.ID);
                 }
+                GameKitEditorWindow.GetInstance().Repaint();
             }
         }
 
