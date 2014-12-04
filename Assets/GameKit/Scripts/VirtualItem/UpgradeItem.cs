@@ -5,12 +5,17 @@ namespace Beetle23
     [System.Serializable]
     public class UpgradeItem : PurchasableItem
     {
-        public UpgradeItem(VirtualItem relatedItem)
+        public VirtualItem RelatedItem
         {
-            RelatedItem = relatedItem;
+            get
+            {
+                if (_relatedItem == null)
+                {
+                    _relatedItem = GameKit.Config.FindVirtualItemThatUpgradeBelongsTo(this);
+                }
+                return _relatedItem;
+            }
         }
-
-        public VirtualItem RelatedItem { get; private set; }
 
         public override bool CanPurchaseNow()
         {
@@ -30,5 +35,7 @@ namespace Beetle23
             VirtualItemStorage.SetGoodCurrentLevel(RelatedItem.ID,
                 VirtualItemStorage.GetGoodCurrentLevel(RelatedItem.ID) + 1);
         }
+
+        private VirtualItem _relatedItem;
     }
 }

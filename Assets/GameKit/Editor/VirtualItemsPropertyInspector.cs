@@ -29,7 +29,7 @@ namespace Beetle23
                 if (item is SingleUseItem || item is LifeTimeItem)
                 {
                     _upgradeListAdaptor = new UpgradeItemListAdaptor((item as VirtualItem).Upgrades, 20,
-                        () => { return new UpgradeItem(item as VirtualItem); },
+                        () => { return new UpgradeItem(); },
                         (position, theItem, index) =>
                         {
                             var size = GUI.skin.GetStyle("label").CalcSize(new GUIContent(theItem.ID));
@@ -49,6 +49,8 @@ namespace Beetle23
                     }
                     _purchaseListView.UpdateDisplayItem(item as PurchasableItem);
                 }
+
+                //Debug.Log(GameKitEditorWindow.GetInstance().FindVirtualItemPropertyPath(item as VirtualItem));
             }
             else if (item is VirtualCategory)
             {

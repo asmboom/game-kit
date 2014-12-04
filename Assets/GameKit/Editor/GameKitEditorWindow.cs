@@ -91,7 +91,81 @@ namespace Beetle23
                 }
             }
 
-            Debug.LogError("Code shoul never run here.");
+            Debug.LogError("FindScorePropertyPath::Code shoul never run here.");
+            return string.Empty;
+        }
+
+        public string FindVirtualItemPropertyPath(VirtualItem item)
+        {
+            if (item is VirtualCurrency)
+            {
+                for (int i = 0; i < _config.VirtualCurrencies.Count; i++)
+                {
+                    if (_config.VirtualCurrencies[i] == item)
+                    {
+                        return string.Format("VirtualCurrencies.Array.data[{0}]", i);
+                    }
+                }
+            }
+            else if (item is SingleUseItem)
+            {
+                for (int i = 0; i < _config.SingleUseItems.Count; i++)
+                {
+                    if (_config.SingleUseItems[i] == item)
+                    {
+                        return string.Format("SingleUseItems.Array.data[{0}]", i);
+                    }
+                }
+            }
+            else if (item is LifeTimeItem)
+            {
+                for (int i = 0; i < _config.LifeTimeItems.Count; i++)
+                {
+                    if (_config.LifeTimeItems[i] == item)
+                    {
+                        return string.Format("LifeTimeItems.Array.data[{0}]", i);
+                    }
+                }
+            }
+            else if (item is VirtualItemPack)
+            {
+                for (int i = 0; i < _config.ItemPacks.Count; i++)
+                {
+                    if (_config.ItemPacks[i] == item)
+                    {
+                        return string.Format("ItemPacks.Array.data[{0}]", i);
+                    }
+                }
+            }
+            else if (item is UpgradeItem)
+            {
+                VirtualItem relatedItem = (item as UpgradeItem).RelatedItem;
+                string path = FindVirtualItemPropertyPath(relatedItem);
+                for (int i = 0; i < relatedItem.Upgrades.Count; i++)
+                {
+                    if (relatedItem.Upgrades[i] == item)
+                    {
+                        return path + string.Format(".Upgrades.Array.data[{0}]", i);
+                    }
+                }
+            }
+
+            Debug.LogError("FindVirtualItemPropertyPath::Code shoul never run here.");
+            return string.Empty;
+        }
+
+        public string FindPurchasePropertyPath(PurchasableItem purchasableItem, Purchase purchase)
+        {
+            string path = FindVirtualItemPropertyPath(purchasableItem);
+            for (int i = 0; i < purchasableItem.PurchaseInfo.Count; i++)
+            {
+                if (purchasableItem.PurchaseInfo[i] == purchase)
+                {
+                    return path + string.Format(".PurchaseInfo.Array.data[{0}]", i);
+                }
+            }
+
+            Debug.LogError("FindPurchasePropertyPath::Code shoul never run here.");
             return string.Empty;
         }
 

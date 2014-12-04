@@ -117,6 +117,21 @@ namespace Beetle23
             return null;
         }
 
+        public VirtualItem FindVirtualItemThatUpgradeBelongsTo(UpgradeItem upgrade)
+        {
+            foreach (var item in VirtualItems)
+            {
+                foreach (var oneUpgrade in item.Upgrades)
+                {
+                    if (oneUpgrade == upgrade)
+                    {
+                        return item;
+                    }
+                }
+            }
+            return null;
+        }
+
         public void UpdateMapsAndTree()
         {
             UpdateIdToItemMap();
