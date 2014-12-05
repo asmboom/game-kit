@@ -46,8 +46,8 @@ namespace Beetle23
             }
             GUILayout.EndHorizontal();
 
-            _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
-            DoDraw(new Rect(0, 0, position.width, position.height - 50));
+            _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, false, true);
+            DoDraw(new Rect(0, 0, position.width - 15, position.height - 50));
             GUILayout.EndScrollView();
 
             GUILayout.EndArea();

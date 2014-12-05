@@ -117,7 +117,7 @@ namespace Beetle23
                     {
                         GUILayout.BeginHorizontal();
                         GUILayout.Space(20);
-                        if (GUILayout.Button(" " + upgrade.ID, GetItemLeftStyle(upgrade), GUILayout.Height(20), 
+                        if (GUILayout.Button(" " + upgrade.ID, GetItemLeftStyle(upgrade), GUILayout.Height(22), 
                             GUILayout.Width(position.width - 30)))
                         {
                             SelectItem(upgrade);

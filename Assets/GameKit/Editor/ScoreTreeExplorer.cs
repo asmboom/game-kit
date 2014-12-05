@@ -88,22 +88,29 @@ namespace Beetle23
                     world.ID, GameKitEditorDrawUtil.FoldoutStyle);
                 if (_worldToExpanded[world])
                 {
-                    for (int i = 0; i < world.Scores.Count; i++)
+                    if (world.Scores.Count > 0)
                     {
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Space(15);
-                        Score score = world.Scores[i];
-                        if (GUILayout.Button(" " + score.ID, GetItemLeftStyle(score),
-                                GUILayout.Width(position.width - 25), GUILayout.Height(20)))
+                        for (int i = 0; i < world.Scores.Count; i++)
                         {
-                            SelectItem(score);
+                            GUILayout.BeginHorizontal();
+                            GUILayout.Space(15);
+                            Score score = world.Scores[i];
+                            if (GUILayout.Button(" " + score.ID, GetItemLeftStyle(score),
+                                    GUILayout.Width(position.width - 25), GUILayout.Height(20)))
+                            {
+                                SelectItem(score);
+                            }
+                            GUILayout.EndHorizontal();
+                            y += 20;
                         }
-                        GUILayout.EndHorizontal();
+                        y += 30;
+                    }
+                    else
+                    {
                         y += 20;
                     }
 
                     x += 20;
-                    y += 25;
 
                     if (world.SubWorlds.Count > 0)
                     {
