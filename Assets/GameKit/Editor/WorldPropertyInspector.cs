@@ -185,6 +185,13 @@ namespace Beetle23
                     args.Cancel = false;
                     GameKit.Config.UpdateMapsAndTree();
                     GameKitEditorWindow.GetInstance().Repaint();
+
+                    ScoreTreeExplorer scoreTreeExplorer = GameKitEditorWindow.GetInstance().GetTreeExplorer(
+                        GameKitEditorWindow.TabType.Scores) as ScoreTreeExplorer;
+                    if (scoreTreeExplorer.CurrentSelectedItem == score)
+                    {
+                        scoreTreeExplorer.SelectItem(null);
+                    }
                 }
                 else
                 {

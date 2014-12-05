@@ -14,18 +14,26 @@ namespace Beetle23
 
         protected override void DoOnExplorerSelectionChange(IItem item)
         {
-            _currentWorldOfScore = GameKit.Config.FindWorldThatScoreBelongsTo(item as Score);
-
-            string path = GameKitEditorWindow.GetInstance().FindScorePropertyPath(item as Score);
-            SerializedProperty scoreProperty = GameKitEditorWindow.SerializedConfig.FindProperty(path);
-            if (scoreProperty != null)
+            if (item == null)
             {
-                _relatedVirtualItemIDProperty = scoreProperty.FindPropertyRelative("RelatedVirtualItemID");
+                _currentWorldOfScore = null;
+                _relatedVirtualItemIDProperty = null;
             }
             else
             {
-                _relatedVirtualItemIDProperty = null;
-                Debug.LogError("Couldn't find score property from config, maybe the change is not applied yet.");
+                _currentWorldOfScore = GameKit.Config.FindWorldThatScoreBelongsTo(item as Score);
+
+                string path = GameKitEditorWindow.GetInstance().FindScorePropertyPath(item as Score);
+                SerializedProperty scoreProperty = GameKitEditorWindow.SerializedConfig.FindProperty(path);
+                if (scoreProperty != null)
+                {
+                    _relatedVirtualItemIDProperty = scoreProperty.FindPropertyRelative("RelatedVirtualItemID");
+                }
+                else
+                {
+                    _relatedVirtualItemIDProperty = null;
+                    Debug.LogError("Couldn't find score property from config, maybe the change is not applied yet.");
+                }
             }
         }
 

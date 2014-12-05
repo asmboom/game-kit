@@ -43,7 +43,7 @@ MonoBehaviour:
     PurchaseInfo: []
     IsEquippable: 0
   ItemPacks:
-  - _id: 682bbb6e
+  - _id: iso-8-pack01
     _name: 
     Description: 
     Icon: {fileID: 0}
