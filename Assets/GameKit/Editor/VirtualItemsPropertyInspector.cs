@@ -12,7 +12,7 @@ namespace Beetle23
         {
             _purchaseListView = new PurchaseInfoListView(_currentDisplayItem as PurchasableItem);
             _packListView = new PackInfoListView(_currentDisplayItem as VirtualItemPack);
-            _categoryPropertyView = new CategoryPropertyView(_currentDisplayItem as VirtualCategory);
+            _categoryPropertyView = new CategoryPropertyView(this, _currentDisplayItem as VirtualCategory);
 
             _upgradeListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand |
                 ReorderableListFlags.ShowIndices);

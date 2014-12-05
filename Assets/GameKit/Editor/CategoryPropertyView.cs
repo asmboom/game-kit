@@ -7,8 +7,9 @@ namespace Beetle23
 {
     public class CategoryPropertyView
     {
-        public CategoryPropertyView(VirtualCategory category)
+        public CategoryPropertyView(ItemPropertyInspector propertyInspector, VirtualCategory category)
         {
+            _propertyInspector = propertyInspector;
             _itemsWithoutCategory = new List<VirtualItem>();
             _categoryItemListControl = new ReorderableListControl(ReorderableListFlags.HideAddButton |
                 ReorderableListFlags.HideRemoveButtons | ReorderableListFlags.DisableDuplicateCommand);
@@ -18,14 +19,13 @@ namespace Beetle23
         public void UpdateDisplayItem(VirtualCategory category)
         {
             _currentCategory = category;
-            _currentCategoryID = category.ID;
             _categoryItemListAdaptor = new GenericClassListAdaptor<string>(category.ItemIDs, 20, null, DrawItemInCategory);
             UpdateItemsWithoutCategory();
         }
 
         public void Draw(Rect position, VirtualCategory category)
         {
-            DrawCategoryID(category);
+            _propertyInspector.DrawIDField(category, true, true);
             category.Name = EditorGUILayout.TextField("Name", category.Name);
 
             float itemHeight = 20;
@@ -113,30 +113,6 @@ namespace Beetle23
             return itemID;
         }
 
-        private void DrawCategoryID(VirtualCategory category)
-        {
-            GUI.SetNextControlName(IDInputControlName);
-            if (EditorGUILayout.TextField("Unique ID",
-                _currentCategoryID).KeyPressed<string>(IDInputControlName, KeyCode.Return, out _currentCategoryID) ||
-                (GUI.GetNameOfFocusedControl() != IDInputControlName &&
-                 _currentCategoryID != category.ID))
-            {
-                VirtualCategory categoryWithID = GameKit.Config.GetCategoryByID(_currentCategoryID);
-                if (categoryWithID != null && categoryWithID != category)
-                {
-                    GUIUtility.keyboardControl = 0;
-                    EditorUtility.DisplayDialog("Duplicate ID", "A category with ID[" +
-                        _currentCategoryID + "] already exists!!!", "OK");
-                    _currentCategoryID = category.ID;
-                }
-                else
-                {
-                    category.ID = _currentCategoryID;
-                    GameKitEditorWindow.GetInstance().Repaint();
-                }
-            }
-        }
-
         private void UpdateItemsWithoutCategory()
         {
             GameKit.Config.UpdateMapsAndTree();
@@ -150,8 +126,8 @@ namespace Beetle23
             }
         }
 
+        private ItemPropertyInspector _propertyInspector;
         private VirtualCategory _currentCategory;
-        private string _currentCategoryID;
         private GenericClassListAdaptor<string> _categoryItemListAdaptor;
         private ReorderableListControl _categoryItemListControl;
         private VirtualCategory _currentDisplayedCategory;

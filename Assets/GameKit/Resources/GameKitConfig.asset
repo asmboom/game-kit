@@ -30,7 +30,14 @@ MonoBehaviour:
     _name: 
     Description: 
     Icon: {fileID: 0}
-    Upgrades: []
+    Upgrades:
+    - _id: coin-magnet-upgrade001
+      _name: 
+      Description: 
+      Icon: {fileID: 0}
+      Upgrades: []
+      Extend: {fileID: 0}
+      PurchaseInfo: []
     Extend: {fileID: 0}
     PurchaseInfo: []
     IsEquippable: 0

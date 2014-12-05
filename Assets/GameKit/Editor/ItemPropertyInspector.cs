@@ -43,6 +43,32 @@ namespace Beetle23
             GUI.EndGroup();
         }
 
+        public void DrawIDField(IItem item, bool isEditable, bool isUnique)
+        {
+            if (isEditable)
+            {
+                if (isUnique)
+                {
+                    GUI.SetNextControlName(IDInputControlName);
+                    if (EditorGUILayout.TextField(IDLabelName,
+                        _currentItemID).KeyPressed<string>(IDInputControlName, KeyCode.Return, out _currentItemID) ||
+                        (GUI.GetNameOfFocusedControl() != IDInputControlName &&
+                         _currentItemID != item.ID))
+                    {
+                        OnGetNewIDFromTextField(item);
+                    }
+                }
+                else
+                {
+                    item.ID = EditorGUILayout.TextField(IDLabelName, item.ID);
+                }
+            }
+            else
+            {
+                EditorGUILayout.LabelField(IDLabelName, item.ID);
+            }
+        }
+
         public void DrawIDField(Rect position, IItem item, bool isEditable, bool isUnique)
         {
             if (isEditable)
@@ -50,34 +76,39 @@ namespace Beetle23
                 if (isUnique)
                 {
                     GUI.SetNextControlName(IDInputControlName);
-                    if (EditorGUI.TextField(position, "Unique ID",
+                    if (EditorGUI.TextField(position, IDLabelName,
                         _currentItemID).KeyPressed<string>(IDInputControlName, KeyCode.Return, out _currentItemID) ||
                         (GUI.GetNameOfFocusedControl() != IDInputControlName &&
                          _currentItemID != item.ID))
                     {
-                        IItem itemWithID = GetItemWithConflictingID(item, _currentItemID);
-                        if (itemWithID != null && itemWithID != item)
-                        {
-                            GUIUtility.keyboardControl = 0;
-                            EditorUtility.DisplayDialog("Duplicate ID", "A " + item.GetType().ToString() + " with ID[" +
-                                _currentItemID + "] already exists!!!", "OK");
-                            _currentItemID = item.ID;
-                        }
-                        else
-                        {
-                            item.ID = _currentItemID;
-                            GameKitEditorWindow.GetInstance().Repaint();
-                        }
+                        OnGetNewIDFromTextField(item);
                     }
                 }
                 else
                 {
-                    item.ID = EditorGUI.TextField(position, "Unique ID", item.ID);
+                    item.ID = EditorGUI.TextField(position, IDLabelName, item.ID);
                 }
             }
             else
             {
-                EditorGUI.LabelField(position, "Unique ID", item.ID);
+                EditorGUI.LabelField(position, IDLabelName, item.ID);
+            }
+        }
+
+        private void OnGetNewIDFromTextField(IItem item)
+        {
+            IItem itemWithID = GetItemWithConflictingID(item, _currentItemID);
+            if (itemWithID != null && itemWithID != item)
+            {
+                GUIUtility.keyboardControl = 0;
+                EditorUtility.DisplayDialog("Duplicate ID", "A " + item.GetType().ToString() + " with ID[" +
+                    _currentItemID + "] already exists!!!", "OK");
+                _currentItemID = item.ID;
+            }
+            else
+            {
+                item.ID = _currentItemID;
+                GameKitEditorWindow.GetInstance().Repaint();
             }
         }
 
@@ -90,6 +121,8 @@ namespace Beetle23
         protected string _currentItemID;
         private Vector2 _scrollPosition;
         private float _currentYOffset;
+
+        private const string IDLabelName = "Unique ID";
         private const string IDInputControlName = "game_kit_id_field";
     }
 }
