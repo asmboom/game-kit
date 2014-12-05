@@ -48,7 +48,7 @@ namespace Beetle23
             yOffset += 20;
             if (_isBasicPropertiesExpanded)
             {
-                DrawIDField(new Rect(0, yOffset, width, 20), score, true, false);
+                DrawIDField(new Rect(0, yOffset, width, 20), score, true, true);
                 yOffset += 20;
                 score.Name = EditorGUI.TextField(new Rect(0, yOffset, width, 20), "Name", score.Name);
                 yOffset += 20;

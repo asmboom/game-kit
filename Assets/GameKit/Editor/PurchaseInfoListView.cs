@@ -15,6 +15,14 @@ namespace Beetle23
             _listControl.ItemRemoving += OnItemRemoving;
         }
 
+        public PurchasableItem CurrentPurchasableItem
+        {
+            get
+            {
+                return _currentPurchasableItem;
+            }
+        }
+
         public void UpdateDisplayItem(PurchasableItem item)
         {
             _currentPurchasableItem = item;

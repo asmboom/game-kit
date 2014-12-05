@@ -43,7 +43,7 @@ namespace Beetle23
             GUI.EndGroup();
         }
 
-        protected void DrawIDField(Rect position, IItem item, bool isEditable, bool isUnique)
+        public void DrawIDField(Rect position, IItem item, bool isEditable, bool isUnique)
         {
             if (isEditable)
             {
