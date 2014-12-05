@@ -24,6 +24,7 @@ namespace Beetle23
             }
             else
             {
+                _relatedVirtualItemIDProperty = null;
                 Debug.LogError("Couldn't find score property from config, maybe the change is not applied yet.");
             }
         }
@@ -89,9 +90,16 @@ namespace Beetle23
                 score.IsHigherBetter = EditorGUI.Toggle(new Rect(0, yOffset, width, 20),
                     "Is Higher Better", score.IsHigherBetter);
                 yOffset += 20;
-                EditorGUI.PropertyField(new Rect(0, yOffset, width, 20), _relatedVirtualItemIDProperty, 
-                    new GUIContent("Related Virtual Item"));
-                score.RelatedVirtualItemID = _relatedVirtualItemIDProperty.stringValue;
+                if (_relatedVirtualItemIDProperty != null)
+                {
+                    EditorGUI.PropertyField(new Rect(0, yOffset, width, 20), _relatedVirtualItemIDProperty,
+                        new GUIContent("Related Virtual Item"));
+                    score.RelatedVirtualItemID = _relatedVirtualItemIDProperty.stringValue;
+                }
+                else
+                {
+                    EditorGUI.LabelField(new Rect(0, yOffset, width, 20), "ERROR:Not applied yet");
+                }
                 //yOffset += 20;
                 //EditorGUI.LabelField(new Rect(0, yOffset, width, 20), "Related Virtual Item ID", score.RelatedVirtualItemID);
             }

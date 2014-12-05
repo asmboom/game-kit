@@ -111,9 +111,8 @@ namespace Beetle23
                                 position.width - 20, position.height), subworld);
                         }
                     }
-
-                    y += 5;
                 }
+                y += 5;
             }
             GUILayout.EndArea();
             return y;
