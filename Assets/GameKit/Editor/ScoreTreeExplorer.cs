@@ -86,6 +86,7 @@ namespace Beetle23
             {
                 _worldToExpanded[world] = EditorGUILayout.Foldout(_worldToExpanded[world],
                     world.ID, GameKitEditorDrawUtil.FoldoutStyle);
+                y += 20;
                 if (_worldToExpanded[world])
                 {
                     if (world.Scores.Count > 0)
@@ -101,13 +102,8 @@ namespace Beetle23
                                 SelectItem(score);
                             }
                             GUILayout.EndHorizontal();
-                            y += 20;
+                            y += 25;
                         }
-                        y += 35;
-                    }
-                    else
-                    {
-                        y += 20;
                     }
 
                     x += 20;
