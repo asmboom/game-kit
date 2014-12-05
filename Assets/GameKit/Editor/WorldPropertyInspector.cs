@@ -59,11 +59,11 @@ namespace Beetle23
             float width = rect.width;
             World world = item as World;
             _isBasicPropertiesExpanded = EditorGUI.Foldout(new Rect(0, 0, width, 20),
-                _isBasicPropertiesExpanded, "Basic Property");
+                _isBasicPropertiesExpanded, "Item");
             yOffset += 20;
             if (_isBasicPropertiesExpanded)
             {
-                DrawID(new Rect(0, yOffset, width, 20), world);
+                DrawIDField(new Rect(0, yOffset, width, 20), world, world.Parent != null, true);
                 yOffset += 20;
                 world.Name = EditorGUI.TextField(new Rect(0, yOffset, width, 20), "Name", world.Name);
                 yOffset += 20;
@@ -113,24 +113,19 @@ namespace Beetle23
             {
             }
 
+            yOffset += 20;
+            _isGateInfoExpanded = EditorGUI.Foldout(new Rect(0, yOffset, width, 20), _isGateInfoExpanded, "Gate");
+            yOffset += 20;
+            if (_isGateInfoExpanded)
+            {
+            }
+
             return yOffset;
         }
 
-        protected override IItem GetItemFromConfig(string id)
+        protected override IItem GetItemWithConflictingID(IItem item, string id)
         {
             return GameKit.Config.GetWorldByID(id);
-        }
-
-        private void DrawID(Rect position, World world)
-        {
-            if (world.Parent == null)
-            {
-                EditorGUI.LabelField(position, "ID", world.ID);
-            }
-            else
-            {
-                DrawIDTextField(position, world);
-            }
         }
 
         private void OnInsertSubworld(object sender, ItemInsertedEventArgs args)
@@ -203,7 +198,8 @@ namespace Beetle23
         private bool _isBasicPropertiesExpanded = true;
         private bool _isSubWorldExpanded = true;
         private bool _isScoreInfoExpanded = true;
-        private bool _isMissionInfoExpanded = false;
+        private bool _isMissionInfoExpanded = true;
+        private bool _isGateInfoExpanded = true;
 
         private ReorderableListControl _subWorldListControl;
         private GenericClassListAdaptor<World> _subWorldListAdaptor;

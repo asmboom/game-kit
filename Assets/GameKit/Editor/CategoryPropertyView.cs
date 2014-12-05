@@ -116,7 +116,7 @@ namespace Beetle23
         private void DrawCategoryID(VirtualCategory category)
         {
             GUI.SetNextControlName(IDInputControlName);
-            if (EditorGUILayout.TextField("ID",
+            if (EditorGUILayout.TextField("Unique ID",
                 _currentCategoryID).KeyPressed<string>(IDInputControlName, KeyCode.Return, out _currentCategoryID) ||
                 (GUI.GetNameOfFocusedControl() != IDInputControlName &&
                  _currentCategoryID != category.ID))

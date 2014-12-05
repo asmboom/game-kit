@@ -44,11 +44,11 @@ namespace Beetle23
             Score score = item as Score;
 
             _isBasicPropertiesExpanded = EditorGUI.Foldout(new Rect(0, 0, width, 20),
-                _isBasicPropertiesExpanded, "Basic Property");
+                _isBasicPropertiesExpanded, "Item");
             yOffset += 20;
             if (_isBasicPropertiesExpanded)
             {
-                DrawIDTextField(new Rect(0, yOffset, width, 20), score);
+                DrawIDField(new Rect(0, yOffset, width, 20), score, true, false);
                 yOffset += 20;
                 score.Name = EditorGUI.TextField(new Rect(0, yOffset, width, 20), "Name", score.Name);
                 yOffset += 20;
@@ -125,9 +125,16 @@ namespace Beetle23
             return yOffset;
         }
 
-        protected override IItem GetItemFromConfig(string id)
+        protected override IItem GetItemWithConflictingID(IItem item, string id)
         {
-            return GameKit.Config.GetWorldByID(id);
+            foreach (var score in _currentWorldOfScore.Scores)
+            {
+                if (score.ID.Equals(id))
+                {
+                    return score;
+                }
+            }
+            return null;
         }
 
         private bool _isBasicPropertiesExpanded = true;

@@ -117,10 +117,6 @@ namespace Beetle23
                         }
                     }
                 }
-                else
-                {
-                    y += 20;
-                }
             }
 
             GUILayout.EndArea();

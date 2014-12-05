@@ -79,9 +79,16 @@ namespace Beetle23
             return 0;
         }
 
-        protected override IItem GetItemFromConfig(string id)
+        protected override IItem GetItemWithConflictingID(IItem item, string id)
         {
-            return GameKit.Config.GetVirtualItemByID(id);
+            if (item is VirtualItem)
+            {
+                return GameKit.Config.GetVirtualItemByID(id);
+            }
+            else
+            {
+                return GameKit.Config.GetCategoryByID(id);
+            }
         }
 
         private float DrawVirtualItem(Rect position, VirtualItem item)
@@ -90,18 +97,13 @@ namespace Beetle23
             float width = position.width;
 
             _isVirtualItemPropertiesExpanded = EditorGUI.Foldout(new Rect(0, 0, width, 20),
-                _isVirtualItemPropertiesExpanded, "Basic Property");
+                _isVirtualItemPropertiesExpanded, "Item");
             yOffset += 20;
             if (_isVirtualItemPropertiesExpanded)
             {
-                if (item is UpgradeItem)
-                {
-                    EditorGUI.LabelField(new Rect(0, yOffset, width, 20), "ID", item.ID);
-                }
-                else
-                {
-                    DrawVirtualItemID(new Rect(0, yOffset, width, 20), item);
-                }
+                //EditorGUI.LabelField(new Rect(0, yOffset, width, 20), "Internal ID", item.InternalID);
+                //yOffset += 20;
+                DrawIDField(new Rect(0, yOffset, width, 20), item, !(item is UpgradeItem), true);
                 yOffset += 20;
                 item.Name = EditorGUI.TextField(new Rect(0, yOffset, width, 20), "Name", item.Name);
                 yOffset += 20;
@@ -175,11 +177,6 @@ namespace Beetle23
                 yOffset += 20;
             }
             return yOffset;
-        }
-
-        private void DrawVirtualItemID(Rect position, VirtualItem item)
-        {
-            DrawIDTextField(position, item);
         }
 
         private void OnInsertUpgradeItem(object sender, ItemInsertedEventArgs args)

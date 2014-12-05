@@ -43,33 +43,47 @@ namespace Beetle23
             GUI.EndGroup();
         }
 
-        protected void DrawIDTextField(Rect position, IItem item)
+        protected void DrawIDField(Rect position, IItem item, bool isEditable, bool isUnique)
         {
-            GUI.SetNextControlName(IDInputControlName);
-            if (EditorGUI.TextField(position, "ID",
-                _currentItemID).KeyPressed<string>(IDInputControlName, KeyCode.Return, out _currentItemID) ||
-                (GUI.GetNameOfFocusedControl() != IDInputControlName &&
-                 _currentItemID != item.ID))
+            if (isEditable)
             {
-                IItem itemWithID = GetItemFromConfig(_currentItemID);
-                if (itemWithID != null && itemWithID != item)
+                if (isUnique)
                 {
-                    GUIUtility.keyboardControl = 0;
-                    EditorUtility.DisplayDialog("Duplicate ID", "A " + item.GetType().ToString() + " with ID[" +
-                        _currentItemID + "] already exists!!!", "OK");
-                    _currentItemID = item.ID;
+                    GUI.SetNextControlName(IDInputControlName);
+                    if (EditorGUI.TextField(position, "Unique ID",
+                        _currentItemID).KeyPressed<string>(IDInputControlName, KeyCode.Return, out _currentItemID) ||
+                        (GUI.GetNameOfFocusedControl() != IDInputControlName &&
+                         _currentItemID != item.ID))
+                    {
+                        IItem itemWithID = GetItemWithConflictingID(item, _currentItemID);
+                        if (itemWithID != null && itemWithID != item)
+                        {
+                            GUIUtility.keyboardControl = 0;
+                            EditorUtility.DisplayDialog("Duplicate ID", "A " + item.GetType().ToString() + " with ID[" +
+                                _currentItemID + "] already exists!!!", "OK");
+                            _currentItemID = item.ID;
+                        }
+                        else
+                        {
+                            item.ID = _currentItemID;
+                            GameKitEditorWindow.GetInstance().Repaint();
+                        }
+                    }
                 }
                 else
                 {
-                    item.ID = _currentItemID;
-                    GameKitEditorWindow.GetInstance().Repaint();
+                    item.ID = EditorGUI.TextField(position, "Unique ID", item.ID);
                 }
+            }
+            else
+            {
+                EditorGUI.LabelField(position, "Unique ID", item.ID);
             }
         }
 
         protected abstract void DoOnExplorerSelectionChange(IItem item);
         protected abstract float DoDrawItem(Rect rect, IItem item);
-        protected abstract IItem GetItemFromConfig(string id);
+        protected abstract IItem GetItemWithConflictingID(IItem item, string id);
 
         protected ItemTreeExplorer _treeExplorer;
         protected IItem _currentDisplayItem;
