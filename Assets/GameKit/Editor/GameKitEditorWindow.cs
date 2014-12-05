@@ -261,6 +261,7 @@ namespace Beetle23
             if (EditorGUI.EndChangeCheck())
             {
                 EditorUtility.SetDirty(_config);
+                _serializedConfig.Update();
             }
         }
 

@@ -24,65 +24,23 @@ MonoBehaviour:
     Icon: {fileID: 0}
     Upgrades: []
     Extend: {fileID: 0}
-  SingleUseItems:
+  SingleUseItems: []
+  LifeTimeItems:
   - _id: coin-magnet
     _name: 
     Description: 
     Icon: {fileID: 0}
-    Upgrades:
-    - _id: coin-magnet-upgrade001
-      _name: 
-      Description: 
-      Icon: {fileID: 0}
-      Upgrades: []
-      Extend: {fileID: 0}
-      PurchaseInfo: []
-    - _id: coin-magnet-upgrade002
-      _name: 
-      Description: 
-      Icon: {fileID: 0}
-      Upgrades: []
-      Extend: {fileID: 0}
-      PurchaseInfo: []
-    - _id: coin-magnet-upgrade003
-      _name: 
-      Description: 
-      Icon: {fileID: 0}
-      Upgrades: []
-      Extend: {fileID: 0}
-      PurchaseInfo: []
-    - _id: coin-magnet-upgrade004
-      _name: 
-      Description: 
-      Icon: {fileID: 0}
-      Upgrades: []
-      Extend: {fileID: 0}
-      PurchaseInfo: []
-    - _id: coin-magnet-upgrade005
-      _name: 
-      Description: 
-      Icon: {fileID: 0}
-      Upgrades: []
-      Extend: {fileID: 0}
-      PurchaseInfo: []
+    Upgrades: []
     Extend: {fileID: 0}
     PurchaseInfo: []
-  LifeTimeItems:
+    IsEquippable: 0
   - _id: permant-life
     _name: 
     Description: 
     Icon: {fileID: 0}
     Upgrades: []
     Extend: {fileID: 0}
-    PurchaseInfo:
-    - Type: 0
-      Price: 0
-      MarketID: 
-      VirtualCurrencyID: 
-    - Type: 0
-      Price: 0
-      MarketID: 
-      VirtualCurrencyID: 
+    PurchaseInfo: []
     IsEquippable: 0
   ItemPacks:
   - _id: 682bbb6e
@@ -154,22 +112,6 @@ MonoBehaviour:
       Extend: {fileID: 0}
     Scores:
     - _id: best-distance
-      _name: 
-      DefaultValue: 0
-      IsHigherBetter: 1
-      EnableClamp: 0
-      Min: 0
-      Max: 999999
-      RelatedVirtualItemID: 
-    - _id: max-combo
-      _name: 
-      DefaultValue: 0
-      IsHigherBetter: 1
-      EnableClamp: 0
-      Min: 0
-      Max: 999999
-      RelatedVirtualItemID: 
-    - _id: 2371308f
       _name: 
       DefaultValue: 0
       IsHigherBetter: 1

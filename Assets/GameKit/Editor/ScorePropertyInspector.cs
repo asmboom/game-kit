@@ -90,17 +90,27 @@ namespace Beetle23
                 score.IsHigherBetter = EditorGUI.Toggle(new Rect(0, yOffset, width, 20),
                     "Is Higher Better", score.IsHigherBetter);
                 yOffset += 20;
-                if (_relatedVirtualItemIDProperty != null)
+                bool isVirtualItemScore = !string.IsNullOrEmpty(score.RelatedVirtualItemID);
+                isVirtualItemScore = EditorGUI.Toggle(new Rect(0, yOffset, width, 20), "Is Virtual Item Score", isVirtualItemScore);
+                yOffset += 20;
+                if (isVirtualItemScore)
                 {
-                    EditorGUI.PropertyField(new Rect(0, yOffset, width, 20), _relatedVirtualItemIDProperty,
-                        new GUIContent("Related Virtual Item"));
-                    score.RelatedVirtualItemID = _relatedVirtualItemIDProperty.stringValue;
+                    if (_relatedVirtualItemIDProperty != null)
+                    {
+                        EditorGUI.PropertyField(new Rect(0, yOffset, width, 20), _relatedVirtualItemIDProperty,
+                            new GUIContent("Related Virtual Item"));
+                        score.RelatedVirtualItemID = _relatedVirtualItemIDProperty.stringValue;
+                    }
+                    else
+                    {
+                        EditorGUI.LabelField(new Rect(0, yOffset, width, 20), "ERROR");
+                    }
+                    yOffset += 20;
                 }
                 else
                 {
-                    EditorGUI.LabelField(new Rect(0, yOffset, width, 20), "ERROR:Not applied yet");
+                    score.RelatedVirtualItemID = string.Empty;
                 }
-                //yOffset += 20;
                 //EditorGUI.LabelField(new Rect(0, yOffset, width, 20), "Related Virtual Item ID", score.RelatedVirtualItemID);
             }
 

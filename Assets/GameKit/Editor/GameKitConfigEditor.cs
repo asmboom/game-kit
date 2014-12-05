@@ -14,9 +14,10 @@ namespace Beetle23
             GameKitConfig config = target as GameKitConfig;
             if (config != null)
             {
-                DrawDefaultInspector();
+                //DrawDefaultInspector();
+                GUILayout.Label("Please Edit in GameKit Window.");
 
-                if (GUILayout.Button("Update & Check Errors"))
+                if (GUILayout.Button("Check References"))
                 {
                     config.UpdateMapsAndTree();
                     CheckIfAnyInvalidRef(config);
