@@ -39,13 +39,13 @@ namespace Beetle23
         {
             get
             {
-                return _idToVirtualItems.Values;
+                return _idToVirtualItem.Values;
             }
         }
 
         public int VirtualItemsCount
         {
-            get { return _idToVirtualItems.Count; }
+            get { return _idToVirtualItem.Count; }
         }
 
         public IEnumerable<World> Worlds
@@ -58,14 +58,14 @@ namespace Beetle23
 
         public bool TryGetVirtualItemByID(string id, out VirtualItem item)
         {
-            return _idToVirtualItems.TryGetValue(id, out item);
+            return _idToVirtualItem.TryGetValue(id, out item);
         }
 
         public VirtualItem GetVirtualItemByID(string id)
         {
-            if (_idToVirtualItems.ContainsKey(id))
+            if (_idToVirtualItem.ContainsKey(id))
             {
-                return _idToVirtualItems[id];
+                return _idToVirtualItem[id];
             }
             else
             {
@@ -212,7 +212,7 @@ namespace Beetle23
 
         private void UpdateIdToItemMap()
         {
-            _idToVirtualItems = new Dictionary<string, VirtualItem>();
+            _idToVirtualItem = new Dictionary<string, VirtualItem>();
             for (int i = 0; i < VirtualCurrencies.Count; i++)
             {
                 TryAddToIdItemMap(VirtualCurrencies[i].ID, VirtualCurrencies[i]);
@@ -279,9 +279,9 @@ namespace Beetle23
         {
             if (!string.IsNullOrEmpty(id))
             {
-                if (!_idToVirtualItems.ContainsKey(id))
+                if (!_idToVirtualItem.ContainsKey(id))
                 {
-                    _idToVirtualItems.Add(id, item);
+                    _idToVirtualItem.Add(id, item);
                 }
                 else
                 {
@@ -290,7 +290,7 @@ namespace Beetle23
             }
         }
 
-        private Dictionary<string, VirtualItem> _idToVirtualItems;
+        private Dictionary<string, VirtualItem> _idToVirtualItem;
         private Dictionary<string, VirtualCategory> _idToCategory;
         private Dictionary<string, World> _idToWorld;
     }

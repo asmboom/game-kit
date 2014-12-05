@@ -83,6 +83,13 @@ namespace Beetle23
                     _itemIDs.Add(item.ID);
                 }
             }
+            if ((PopupAttribute.TypeInclude & VirtualItemType.VirtualItemPack) != 0)
+            {
+                foreach (var item in GameKit.Config.ItemPacks)
+                {
+                    _itemIDs.Add(item.ID);
+                }
+            }
 
             return _itemIDs.ToArray();
         }

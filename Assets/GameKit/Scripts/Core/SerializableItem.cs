@@ -29,18 +29,9 @@ namespace Beetle23
             }
         }
 
-        public string InternalID
-        {
-            get
-            {
-                return _internalId;
-            }
-        }
-
         public SerializableItem()
         {
-            _internalId = GetUniqueCode();
-            ID = System.Guid.NewGuid().ToString().Substring(0, 8);
+            ID = GetUniqueCode();
         }
 
         // the below code is referenced from https://gist.github.com/tracend/8203090
@@ -69,9 +60,6 @@ namespace Beetle23
             }
             return code;
         }
-
-        [SerializeField]
-        private string _internalId;
 
         [SerializeField]
         private string _id;
