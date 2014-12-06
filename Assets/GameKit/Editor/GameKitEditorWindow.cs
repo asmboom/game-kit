@@ -245,8 +245,8 @@ namespace Beetle23
         {
             EditorGUI.BeginChangeCheck();
 
-            float y = 0;
-            _currentSection = GUI.SelectionGrid(new Rect(10, 0, position.width - 20, 20), _currentSection, _sections, 8);
+            float y = 5;
+            _currentSection = GUI.SelectionGrid(new Rect(10, y, position.width - 20, 20), _currentSection, _sections, 8);
             y += 25;
 
             GUI.Box(new Rect(10, y, position.width - 20, 10), string.Empty);
@@ -254,8 +254,8 @@ namespace Beetle23
 
             if (_currentSection >= 0 && _currentSection <= (int)TabType.Scores)
             {
-                _treeExplorers[(TabType)_currentSection].Draw(new Rect(10, y, 250, position.height - 10));
-                _propertyInspectors[(TabType)_currentSection].Draw(new Rect(270, y, position.width - 280, position.height - 10));
+                _treeExplorers[(TabType)_currentSection].Draw(new Rect(10, y, 250, position.height - y - 5));
+                _propertyInspectors[(TabType)_currentSection].Draw(new Rect(270, y, position.width - 280, position.height - y -5));
             }
 
             if (EditorGUI.EndChangeCheck())

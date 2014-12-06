@@ -19,10 +19,10 @@ namespace Beetle23
             ItemLeftLabelStyle.alignment = TextAnchor.MiddleLeft;
 
             ItemSelectedCenterStyle = new GUIStyle(GUI.skin.GetStyle("Box"));
-            ItemSelectedCenterStyle.normal.textColor = Color.cyan;
+            ItemSelectedCenterStyle.normal.textColor = new Color(0, 0.5f, 0);
 
             ItemSelectedLeftStyle = new GUIStyle(GUI.skin.GetStyle("Box"));
-            ItemSelectedLeftStyle.normal.textColor = Color.cyan;
+            ItemSelectedLeftStyle.normal.textColor = ItemSelectedCenterStyle.normal.textColor;
             ItemSelectedLeftStyle.alignment = TextAnchor.MiddleLeft;
 
             FoldoutStyle = new GUIStyle(EditorStyles.foldout);
