@@ -8,7 +8,7 @@ namespace Beetle23
     public class WorldPropertyInspector : ItemPropertyInspector
     {
         public WorldPropertyInspector(WorldTreeExplorer treeExplorer)
-            :base(treeExplorer)
+            : base(treeExplorer)
         {
             _subWorldListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand |
                 ReorderableListFlags.ShowIndices);
@@ -51,6 +51,10 @@ namespace Beetle23
                     }
                     return theItem;
                 });
+
+            string path = GameKitEditorWindow.GetInstance().FindWorldPropertyPath(world);
+            _currentWorldProperty = GameKitEditorWindow.SerializedConfig.FindProperty(path);
+            _currentGateIDProperty = _currentWorldProperty.FindPropertyRelative("GateID");
         }
 
         protected override float DoDrawItem(Rect rect, IItem item)
@@ -75,7 +79,7 @@ namespace Beetle23
             }
 
             yOffset += 20;
-            EditorGUI.LabelField(new Rect(0, yOffset, 250, 20), "Parent World", 
+            EditorGUI.LabelField(new Rect(0, yOffset, 250, 20), "Parent World",
                 world.Parent == null ? "NULL" : world.Parent.ID);
             if (world.Parent != null)
             {
@@ -97,6 +101,14 @@ namespace Beetle23
             }
 
             yOffset += 20;
+            if (_currentGateIDProperty != null)
+            {
+                EditorGUI.PropertyField(new Rect(0, yOffset, width, 20), _currentGateIDProperty, new GUIContent("Gate"));
+                world.GateID = _currentGateIDProperty.stringValue;
+                yOffset += 20;
+            }
+
+            yOffset += 20;
             _isScoreInfoExpanded = EditorGUI.Foldout(new Rect(0, yOffset, width, 20), _isScoreInfoExpanded, "Scores");
             yOffset += 20;
             if (_isScoreInfoExpanded)
@@ -111,16 +123,6 @@ namespace Beetle23
             yOffset += 20;
             if (_isMissionInfoExpanded)
             {
-            }
-
-            yOffset += 20;
-            _isGateInfoExpanded = EditorGUI.Foldout(new Rect(0, yOffset, width, 20), _isGateInfoExpanded, "Gate");
-            yOffset += 20;
-            if (_isGateInfoExpanded)
-            {
-                world.Gate.Type = (GateType)EditorGUI.EnumPopup(
-                    new Rect(0, yOffset, width, 20), "Group Type", world.Gate.Type);
-                yOffset += 20;
             }
 
             return yOffset;
@@ -202,7 +204,6 @@ namespace Beetle23
         private bool _isSubWorldExpanded = true;
         private bool _isScoreInfoExpanded = true;
         private bool _isMissionInfoExpanded = true;
-        private bool _isGateInfoExpanded = true;
 
         private ReorderableListControl _subWorldListControl;
         private GenericClassListAdaptor<World> _subWorldListAdaptor;
@@ -211,6 +212,8 @@ namespace Beetle23
 
         private Vector2 _scrollPosition;
         private float _currentYOffset;
+        private SerializedProperty _currentWorldProperty;
+        private SerializedProperty _currentGateIDProperty;
 
         private const string IDInputControlName = "world_id_field";
     }

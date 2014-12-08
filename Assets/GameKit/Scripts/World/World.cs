@@ -14,7 +14,8 @@ namespace Beetle23
         public string Description;
         
     	[SerializeField]
-    	public Gate Gate;
+        [GatePopup(true, true)]
+    	public string GateID;
 
         [SerializeField]
         public List<World> SubWorlds;
@@ -30,13 +31,20 @@ namespace Beetle23
 
         public World()
         {
-            Gate = new Gate();
             SubWorlds = new List<World>();
             Scores = new List<Score>();
             Missions = new List<Mission>();
         }
 
         public World Parent { get; internal set; }
+
+        public Gate Gate
+        {
+            get
+            {
+                return string.IsNullOrEmpty(GateID) ? null : GameKit.Config.GetGateByID(GateID);
+            }
+        }
 
     	public bool IsCompleted
     	{

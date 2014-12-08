@@ -105,6 +105,11 @@ namespace Beetle23
             return _idToCategory.ContainsKey(id) ? _idToCategory[id] : null;
         }
 
+        public Gate GetGateByID(string id)
+        {
+            return _idToGate.ContainsKey(id) ? _idToGate[id] : null;
+        }
+
         public World FindWorldThatScoreBelongsTo(Score score)
         {
             foreach (var world in Worlds)

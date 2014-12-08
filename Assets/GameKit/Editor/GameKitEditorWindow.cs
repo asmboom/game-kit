@@ -96,6 +96,20 @@ namespace Beetle23
             return string.Empty;
         }
 
+        public string FindGatePropertyPath(Gate gate)
+        {
+            for (int i = 0; i < _config.Gates.Count; i++)
+            {
+                if (_config.Gates[i] == gate)
+                {
+                    return string.Format("Gates.Array.data[{0}]", i);
+                }
+            }
+
+            Debug.LogError("FindGatePropertyPath::Code shoul never run here.");
+            return string.Empty;
+        }
+
         public string FindVirtualItemPropertyPath(VirtualItem item)
         {
             if (item is VirtualCurrency)

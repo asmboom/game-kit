@@ -21,6 +21,11 @@ namespace Beetle23
         [SerializeField]
         public List<Gate> SubGates;
 
+        public bool IsGroup
+        {
+            get { return Type == GateType.GateListAnd || Type == GateType.GateListOr; }
+        }
+
         public IItem RelatedItem
         {
             get
