@@ -2,16 +2,14 @@
 
 namespace Beetle23
 {
-    public class GateGroupDelegate : GateDelegate
+    public class GateListDelegate : GateDelegate
     {
-        public GateGroupDelegate(Gate gate)
+        public GateListDelegate(Gate gate)
             : base(gate)
         {
-            _gateGroup = gate as GateGroup;
-
-            if (!_gateGroup.IsOpened)
+            if (!_context.IsOpened)
             {
-                foreach (var aGate in _gateGroup.Gates)
+                foreach (var aGate in _context.SubGates)
                 {
                     aGate.OnOpened += OnGateOpened;
                 }
@@ -22,9 +20,9 @@ namespace Beetle23
         {
             get
             {
-                if (_gateGroup.GroupType == GateGroup.GateGroupType.And)
+                if (_context.Type == GateType.GateListAnd)
                 {
-                    foreach (Gate gate in _gateGroup.Gates)
+                    foreach (Gate gate in _context.SubGates)
                     {
                         if (!gate.IsOpened)
                         {
@@ -35,7 +33,7 @@ namespace Beetle23
                 }
                 else
                 {
-                    foreach (Gate gate in _gateGroup.Gates)
+                    foreach (Gate gate in _context.SubGates)
                     {
                         if (gate.IsOpened)
                         {
@@ -49,7 +47,7 @@ namespace Beetle23
 
         public override void RegisterEvents()
         {
-            foreach (var gate in _gateGroup.Gates)
+            foreach (var gate in _context.SubGates)
             {
                 gate.OnOpened += OnGateOpened;
             }
@@ -57,7 +55,7 @@ namespace Beetle23
 
         public override void UnregisterEvents()
         {
-            foreach (var gate in _gateGroup.Gates)
+            foreach (var gate in _context.SubGates)
             {
                 gate.OnOpened -= OnGateOpened;
             }
@@ -70,7 +68,5 @@ namespace Beetle23
                 _context.ForceOpen(true);
             }
         }
-
-        private GateGroup _gateGroup;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
 namespace Beetle23
 {
@@ -17,6 +18,8 @@ namespace Beetle23
         public string RelatedItemID;
         [SerializeField]
         public float RelatedNumber;
+        [SerializeField]
+        public List<Gate> SubGates;
 
         public IItem RelatedItem
         {

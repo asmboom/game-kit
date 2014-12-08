@@ -6,6 +6,7 @@
         VirtualItemGate,
         WorldCompletionGate,
         PurchasableGate,
-        GateGroup
+        GateListAnd,
+        GateListOr,
     }
 }

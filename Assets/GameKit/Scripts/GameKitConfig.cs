@@ -140,6 +140,7 @@ namespace Beetle23
             UpdateIdToItemMap();
             UpdateIdToCategoryMap();
             UpdateIdToWorldMap();
+            UpdateIdToGate();
             UpdateWorldTree();
         }
 
@@ -293,8 +294,29 @@ namespace Beetle23
             }
         }
 
+        private void UpdateIdToGate()
+        {
+            _idToGate = new Dictionary<string, Gate>();
+            for (int i = 0; i < Gates.Count; i++)
+            {
+                Gate gate = Gates[i];
+                if (!string.IsNullOrEmpty(gate.ID))
+                {
+                    if (!_idToGate.ContainsKey(gate.ID))
+                    {
+                        _idToGate.Add(gate.ID, gate);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Found duplicated id " + gate.ID + " for gate."); ;
+                    }
+                }
+            }
+        }
+
         private Dictionary<string, VirtualItem> _idToVirtualItem;
         private Dictionary<string, VirtualCategory> _idToCategory;
         private Dictionary<string, World> _idToWorld;
+        private Dictionary<string, Gate> _idToGate;
     }
 }

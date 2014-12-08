@@ -14,7 +14,7 @@ namespace Beetle23
         public string Description;
         
     	[SerializeField]
-    	public GateGroup Gate;
+    	public Gate Gate;
 
         [SerializeField]
         public List<World> SubWorlds;
@@ -30,7 +30,7 @@ namespace Beetle23
 
         public World()
         {
-            Gate = new GateGroup();
+            Gate = new Gate();
             SubWorlds = new List<World>();
             Scores = new List<Score>();
             Missions = new List<Mission>();

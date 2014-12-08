@@ -118,8 +118,8 @@ namespace Beetle23
             yOffset += 20;
             if (_isGateInfoExpanded)
             {
-                world.Gate.GroupType = (GateGroup.GateGroupType)EditorGUI.EnumPopup(
-                    new Rect(0, yOffset, width, 20), "Group Type", world.Gate.GroupType);
+                world.Gate.Type = (GateType)EditorGUI.EnumPopup(
+                    new Rect(0, yOffset, width, 20), "Group Type", world.Gate.Type);
                 yOffset += 20;
             }
 
