@@ -17,7 +17,8 @@ namespace Beetle23
             VirtualItems = 0,
             Worlds = 1,
             Scores = 2,
-            Missions = 3
+            Missions = 3,
+            Gates = 4,
         }
 
         public static GameKitEditorWindow GetInstance()
@@ -171,7 +172,7 @@ namespace Beetle23
 
         private void OnEnable()
         {
-            _sections = new string[] { "Virtual Items", "Worlds", "Scores", "Missions" };
+            _sections = new string[] { "Virtual Items", "Worlds", "Scores", "Missions", "Gates" };
 
             GetConfigAndCreateIfNonExist();
 
@@ -189,6 +190,8 @@ namespace Beetle23
                 _treeExplorers.Add(TabType.VirtualItems, new VirtualItemsTreeExplorer(_config));
                 _treeExplorers.Add(TabType.Worlds, new WorldTreeExplorer(_config));
                 _treeExplorers.Add(TabType.Scores, new ScoreTreeExplorer(_config));
+                _treeExplorers.Add(TabType.Missions, new MissionTreeExplorer(_config));
+                _treeExplorers.Add(TabType.Gates, new GateTreeExplorer(_config));
             }
             if (_propertyInspectors == null)
             {
@@ -199,9 +202,13 @@ namespace Beetle23
                     new WorldPropertyInspector(_treeExplorers[TabType.Worlds] as WorldTreeExplorer));
                 _propertyInspectors.Add(TabType.Scores, 
                     new ScorePropertyInspector(_treeExplorers[TabType.Scores] as ScoreTreeExplorer));
+                _propertyInspectors.Add(TabType.Missions, 
+                    new MissionPropertyInspector(_treeExplorers[TabType.Missions] as MissionTreeExplorer));
+                _propertyInspectors.Add(TabType.Gates,
+                    new GatePropertyInspector(_treeExplorers[TabType.Gates] as GateTreeExplorer));
             }
 
-            for (TabType type = TabType.VirtualItems; type <= TabType.Scores; type++)
+            for (TabType type = TabType.VirtualItems; type <= TabType.Gates; type++)
             {
                 _treeExplorers[type].OnSelectionChange += _propertyInspectors[type].OnExplorerSelectionChange;
             }
@@ -213,7 +220,7 @@ namespace Beetle23
         {
             if (_treeExplorers != null)
             {
-                for (TabType type = TabType.VirtualItems; type <= TabType.Scores; type++)
+                for (TabType type = TabType.VirtualItems; type <= TabType.Gates; type++)
                 {
                     _treeExplorers[type].OnSelectionChange -= _propertyInspectors[type].OnExplorerSelectionChange;
                 }
@@ -252,10 +259,10 @@ namespace Beetle23
             GUI.Box(new Rect(10, y, position.width - 20, 10), string.Empty);
             y += 15;
 
-            if (_currentSection >= 0 && _currentSection <= (int)TabType.Scores)
+            if (_currentSection >= 0 && _currentSection <= (int)TabType.Gates)
             {
                 _treeExplorers[(TabType)_currentSection].Draw(new Rect(10, y, 250, position.height - y - 5));
-                _propertyInspectors[(TabType)_currentSection].Draw(new Rect(270, y, position.width - 280, position.height - y -5));
+                _propertyInspectors[(TabType)_currentSection].Draw(new Rect(270, y, position.width - 280, position.height - y - 5));
             }
 
             if (EditorGUI.EndChangeCheck())

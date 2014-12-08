@@ -6,6 +6,6 @@
         VirtualItemGate,
         WorldCompletionGate,
         PurchasableGate,
-        GateGroup,
+        GateGroup
     }
 }

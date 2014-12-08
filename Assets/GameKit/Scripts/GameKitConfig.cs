@@ -35,6 +35,9 @@ namespace Beetle23
         [SerializeField]
         public World RootWorld;
 
+        [SerializeField]
+        public List<Gate> Gates;
+
         public IEnumerable<VirtualItem> VirtualItems
         {
             get
