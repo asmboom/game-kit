@@ -213,7 +213,7 @@ namespace Beetle23
         private bool _isSingleUseItemExpanded = true;
         private bool _isLifeTimeItemExpanded = true;
         private bool _isPackExpanded = true;
-        private bool _isUpgradeItemExpanded = true;
+        private bool _isUpgradeItemExpanded = false;
         private bool _isCategoryExpanded = true;
 
         private ReorderableListControl _virtualCurrencyListControl;

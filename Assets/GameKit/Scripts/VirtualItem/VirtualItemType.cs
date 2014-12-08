@@ -1,8 +1,13 @@
-﻿public enum VirtualItemType
+﻿namespace Beetle23
 {
-    VirtualCurrency = 0,
-    SingleUseItem,
-    LifeTimeItem,
-    UpgradeItem,
-    Pack
+    [System.Flags]
+    public enum VirtualItemType
+    {
+        None = 1 << 0,
+
+        VirtualCurrency = 1 << 1,
+        LifeTimeItem = 2 << 2,
+        SingleUseItem = 2 << 3,
+        VirtualItemPack = 2 << 4,
+    }
 }

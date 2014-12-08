@@ -63,26 +63,12 @@ MonoBehaviour:
     _id: root
     _name: 
     Description: 
-    Gate:
-      _id: 8806700c
-      _name: 
-      Type: 4
-      RelatedItemID: 
-      RelatedNumber: 0
-      Gates: []
-      GroupType: 0
+    GateID: 
     SubWorlds:
     - _id: chapter-01
       _name: 
       Description: 
-      Gate:
-        _id: deafdf21
-        _name: 
-        Type: 4
-        RelatedItemID: 
-        RelatedNumber: 0
-        Gates: []
-        GroupType: 0
+      GateID: 
       SubWorlds: []
       Scores: []
       Missions: []
@@ -90,14 +76,7 @@ MonoBehaviour:
     - _id: chapter-02
       _name: 
       Description: 
-      Gate:
-        _id: 590d278c
-        _name: 
-        Type: 4
-        RelatedItemID: 
-        RelatedNumber: 0
-        Gates: []
-        GroupType: 0
+      GateID: 
       SubWorlds: []
       Scores: []
       Missions: []
@@ -105,14 +84,7 @@ MonoBehaviour:
     - _id: chapter-03
       _name: 
       Description: 
-      Gate:
-        _id: 91d28413
-        _name: 
-        Type: 4
-        RelatedItemID: 
-        RelatedNumber: 0
-        Gates: []
-        GroupType: 0
+      GateID: 
       SubWorlds: []
       Scores: []
       Missions: []
@@ -128,3 +100,18 @@ MonoBehaviour:
       RelatedVirtualItemID: 
     Missions: []
     Extend: {fileID: 0}
+  Gates:
+  - _id: '@3KxDpYv7'
+    _name: 
+    Type: 0
+    RelatedItemID: 
+    RelatedNumber: 0
+    SubGates: []
+    Test: {fileID: 0}
+  - _id: '@3KxFhhjehbha'
+    _name: 
+    Type: 0
+    RelatedItemID: 
+    RelatedNumber: 0
+    SubGates: []
+    Test: {fileID: 0}
