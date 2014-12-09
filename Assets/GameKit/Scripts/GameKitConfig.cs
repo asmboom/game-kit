@@ -89,6 +89,11 @@ namespace Beetle23
             return null;
         }
 
+        public Score GetScoreByID(string id)
+        {
+            return _idToScore.ContainsKey(id) ? _idToScore[id] : null;
+        }
+
         public VirtualCategory GetItemCategory(string id)
         {
             return _idToCategory.ContainsKey(id) ? _idToCategory[id] : null;
@@ -133,7 +138,7 @@ namespace Beetle23
         {
             UpdateIdToItemMap();
             UpdateIdToCategoryMap();
-            UpdateIdToWorldMap();
+            UpdateIdToWorldAndScoreMap();
             UpdateIdToGate();
             UpdateWorldTree();
         }
@@ -229,12 +234,17 @@ namespace Beetle23
             }
         }
 
-        private void UpdateIdToWorldMap()
+        private void UpdateIdToWorldAndScoreMap()
         {
             _idToWorld = new Dictionary<string, World>();
+            _idToScore = new Dictionary<string, Score>();
             LoopThroughWorld(RootWorld, (world) =>
             {
                 _idToWorld.Add(world.ID, world);
+                foreach (var score in world.Scores)
+                {
+                    _idToScore.Add(score.ID, score);
+                }
             });
         }
 
@@ -311,6 +321,7 @@ namespace Beetle23
         private Dictionary<string, VirtualItem> _idToVirtualItem;
         private Dictionary<string, VirtualCategory> _idToCategory;
         private Dictionary<string, World> _idToWorld;
+        private Dictionary<string, Score> _idToScore;
         private Dictionary<string, Gate> _idToGate;
     }
 }

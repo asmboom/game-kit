@@ -30,8 +30,7 @@ namespace Beetle23
         {
             get
             {
-                return string.IsNullOrEmpty(RelatedItemID) ? null : 
-                    GameKit.Config.GetVirtualItemByID(RelatedItemID);
+                return string.IsNullOrEmpty(RelatedItemID) ? null : GameKit.Config.GetScoreByID(RelatedItemID);
             }
         }
 

@@ -107,11 +107,9 @@ MonoBehaviour:
     RelatedItemID: 
     RelatedNumber: 0
     SubGates: []
-    Test: {fileID: 0}
   - _id: '@3KxFhhjehbha'
     _name: 
     Type: 0
     RelatedItemID: 
     RelatedNumber: 0
     SubGates: []
-    Test: {fileID: 0}

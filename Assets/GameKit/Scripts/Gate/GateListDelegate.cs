@@ -16,6 +16,11 @@ namespace Beetle23
             }
         }
 
+        public override IItem GetRelatedItem(string itemID)
+        {
+            return null;
+        }
+
         public override bool CanOpenNow
         {
             get

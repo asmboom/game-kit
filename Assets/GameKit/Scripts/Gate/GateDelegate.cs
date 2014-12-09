@@ -7,6 +7,7 @@
         { }
 
         public abstract bool CanOpenNow { get; }
+        public abstract IItem GetRelatedItem(string itemId);
         public abstract void RegisterEvents();
         public abstract void UnregisterEvents();
     }

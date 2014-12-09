@@ -23,6 +23,11 @@ namespace Beetle23
             }
         }
 
+        public override IItem GetRelatedItem(string itemID)
+        {
+            return GameKit.Config.GetVirtualItemByID(itemID);
+        }
+
         public override bool CanOpenNow
         {
             get

@@ -127,14 +127,7 @@ namespace Beetle23
 
         protected override IItem GetItemWithConflictingID(IItem item, string id)
         {
-            foreach (var score in _currentWorldOfScore.Scores)
-            {
-                if (score.ID.Equals(id))
-                {
-                    return score;
-                }
-            }
-            return null;
+            return GameKit.Config.GetScoreByID(id);
         }
 
         private bool _isBasicPropertiesExpanded = true;

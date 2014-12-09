@@ -22,6 +22,11 @@ namespace Beetle23
             }
         }
 
+        public override IItem GetRelatedItem(string itemID)
+        {
+            return GameKit.Config.GetWorldByID(itemID);
+        }
+
         public override bool CanOpenNow
         {
             get { return _world != null && _world.IsCompleted; }

@@ -53,7 +53,7 @@ namespace Beetle23
         private VirtualItemType _virtualItemType;
     }
 
-    public class GateItemPopupDrawerDelegate : ItemPopupDrawerDelegate
+    public class GatePopupDrawerDelegate : ItemPopupDrawerDelegate
     {
         public override void Init(object param)
         {
@@ -72,6 +72,51 @@ namespace Beetle23
         }
 
         private bool _allowGroup;
+    }
+
+    public class WorldPopupDrawerDelegate : ItemPopupDrawerDelegate
+    {
+        public override void Init(object param)
+        {
+        }
+
+        public override void InsertIDs(List<string> itemIDs)
+        {
+            InsertWorld(itemIDs, GameKit.Config.RootWorld);
+        }
+
+        private void InsertWorld(List<string> itemIDs, World world)
+        {
+            itemIDs.Add(world.ID);
+            foreach (var subworld in world.SubWorlds)
+            {
+                InsertWorld(itemIDs, subworld);
+            }
+        }
+    }
+
+    public class ScorePopupDrawerDelegate : ItemPopupDrawerDelegate
+    {
+        public override void Init(object param)
+        {
+        }
+
+        public override void InsertIDs(List<string> itemIDs)
+        {
+            InsertScore(itemIDs, GameKit.Config.RootWorld);   
+        }
+
+        private void InsertScore(List<string> itemIDs, World world)
+        {
+            foreach (var score in world.Scores)
+            {
+                itemIDs.Add(score.ID);
+            }
+            foreach (var subworld in world.SubWorlds)
+            {
+                InsertScore(itemIDs, subworld);
+            }
+        }
     }
 
     public class ItemPopupDrawer
@@ -144,7 +189,11 @@ namespace Beetle23
                 case ItemType.VirtualItem:
                     return new VirtualItemPopupDrawerDelegate();
                 case ItemType.Gate:
-                    return new GateItemPopupDrawerDelegate();
+                    return new GatePopupDrawerDelegate();
+                case ItemType.Score:
+                    return new ScorePopupDrawerDelegate();
+                case ItemType.World:
+                    return new WorldPopupDrawerDelegate();
                 default:
                     return null;
             }
