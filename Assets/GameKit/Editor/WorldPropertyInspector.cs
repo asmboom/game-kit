@@ -19,6 +19,11 @@ namespace Beetle23
                 ReorderableListFlags.ShowIndices);
             _scoreListControl.ItemInserted += OnInsertScore;
             _scoreListControl.ItemRemoving += OnRemoveScore;
+
+            _missionListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand |
+                ReorderableListFlags.ShowIndices);
+            _missionListControl.ItemInserted += OnInsertScore;
+            _missionListControl.ItemRemoving += OnRemoveScore;
         }
 
         protected override void DoOnExplorerSelectionChange(IItem item)
@@ -48,6 +53,21 @@ namespace Beetle23
                             GameKitEditorWindow.TabType.Scores) as ScoreTreeExplorer);
                         GameKitEditorWindow.GetInstance().SelectTab(GameKitEditorWindow.TabType.Scores);
                         scoreTreeExplorer.SelectItem(theItem);
+                    }
+                    return theItem;
+                });
+            _missionListAdaptor = new GenericClassListAdaptor<Mission>(world.Missions, 20,
+                () => { return new Mission(); },
+                (position, theItem, index) =>
+                {
+                    var size = GUI.skin.GetStyle("label").CalcSize(new GUIContent(theItem.ID));
+                    GUI.Label(new Rect(position.x, position.y, size.x, position.height), theItem.ID);
+                    if (GUI.Button(new Rect(position.x + size.x + 10, position.y, 50, position.height), "Edit"))
+                    {
+                        MissionTreeExplorer missionTreeExplorer = (GameKitEditorWindow.GetInstance().GetTreeExplorer(
+                            GameKitEditorWindow.TabType.Missions) as MissionTreeExplorer);
+                        GameKitEditorWindow.GetInstance().SelectTab(GameKitEditorWindow.TabType.Missions);
+                        missionTreeExplorer.SelectItem(theItem);
                     }
                     return theItem;
                 });
@@ -123,6 +143,9 @@ namespace Beetle23
             yOffset += 20;
             if (_isMissionInfoExpanded)
             {
+                float height = _missionListControl.CalculateListHeight(_missionListAdaptor);
+                _missionListControl.Draw(new Rect(0, yOffset, width, height), _missionListAdaptor);
+                yOffset += height;
             }
 
             return yOffset;
@@ -209,6 +232,8 @@ namespace Beetle23
         private GenericClassListAdaptor<World> _subWorldListAdaptor;
         private ReorderableListControl _scoreListControl;
         private GenericClassListAdaptor<Score> _scoreListAdaptor;
+        private ReorderableListControl _missionListControl;
+        private GenericClassListAdaptor<Mission> _missionListAdaptor;
 
         private Vector2 _scrollPosition;
         private float _currentYOffset;

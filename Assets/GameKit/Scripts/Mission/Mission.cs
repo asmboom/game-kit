@@ -13,18 +13,23 @@ namespace Beetle23
         [SerializeField]
         public List<Reward> Rewards;
         [SerializeField]
-        public Gate RelatedGate;
+        [GatePopup(true, true)]
+        public string RelatedGateID;
 
         public Mission()
         {
             Rewards = new List<Reward>();
-            RelatedGate = new Gate()
-            {
-                ID = "gate_" + this.ID
-            };
-            if (!IsCompleted)
+            if (RelatedGate != null && !IsCompleted)
             {
                 RelatedGate.OnOpened += Complete;
+            }
+        }
+
+        public Gate RelatedGate
+        {
+            get
+            {
+                return string.IsNullOrEmpty(RelatedGateID) ? null : GameKit.Config.GetGateByID(RelatedGateID);
             }
         }
 
@@ -32,7 +37,7 @@ namespace Beetle23
         {
             get
             {
-                return RelatedGate.IsOpened;
+                return RelatedGate != null && RelatedGate.IsOpened;
             }
         }
 

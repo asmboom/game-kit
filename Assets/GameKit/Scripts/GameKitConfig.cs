@@ -119,6 +119,21 @@ namespace Beetle23
             return null;
         }
 
+        public World FindWorldThatMissionBelongsTo(Mission mission)
+        {
+            foreach (var world in Worlds)
+            {
+                foreach (var oneMission in world.Missions)
+                {
+                    if (oneMission == mission)
+                    {
+                        return world;
+                    }
+                }
+            }
+            return null;
+        }
+
         public VirtualItem FindVirtualItemThatUpgradeBelongsTo(UpgradeItem upgrade)
         {
             foreach (var item in VirtualItems)

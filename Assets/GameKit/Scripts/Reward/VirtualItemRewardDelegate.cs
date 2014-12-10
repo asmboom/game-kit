@@ -2,6 +2,11 @@
 {
     public class VirtualItemRewardDelegate : IRewardDelegate
     {
+        public IItem GetRelatedItem(string itemId)
+        {
+            return GameKit.Config.GetVirtualItemByID(itemId);
+        }
+
         public void Give(Reward reward)
         {
             VirtualItem item = reward.RelatedItem as VirtualItem;

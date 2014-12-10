@@ -3,7 +3,7 @@
 namespace Beetle23
 {
     [System.Serializable]
-    public class Reward : SerializableItem
+    public class Reward
     {
         public RewardType Type;
         public string RelatedItemID;
@@ -14,18 +14,32 @@ namespace Beetle23
             get
             {
                 return string.IsNullOrEmpty(RelatedItemID) ? null : 
-                    GameKit.Config.GetVirtualItemByID(RelatedItemID);
+                    Delegate.GetRelatedItem(RelatedItemID);
             }
         }
 
         public void Give()
         {
-            RewardDelegateFactory.Get(Type).Give(this);
+            Delegate.Give(this);
         }
 
         public void Take()
         {
-            RewardDelegateFactory.Get(Type).Take(this);
+            Delegate.Take(this);
         }
+
+        private IRewardDelegate Delegate
+        {
+            get
+            {
+                if (_delegate == null)
+                {
+                    _delegate = RewardDelegateFactory.Get(Type);
+                }
+                return _delegate;
+            }
+        }
+
+        private IRewardDelegate _delegate;
     }
 }
