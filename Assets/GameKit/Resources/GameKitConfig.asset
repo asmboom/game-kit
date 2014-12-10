@@ -106,7 +106,7 @@ MonoBehaviour:
       Min: 0
       Max: 20
       RelatedVirtualItemID: 
-    - _id: '@3LuoqWrG'
+    - _id: test2
       _name: 
       DefaultValue: 0
       IsHigherBetter: 1
@@ -122,22 +122,30 @@ MonoBehaviour:
     Type: 0
     RelatedItemID: best-distance
     RelatedNumber: 100
-    SubGates: []
+    SubGateIDs: []
   - _id: virtual-item-gate
     _name: 
     Type: 1
     RelatedItemID: vial
     RelatedNumber: 100
-    SubGates: []
+    SubGateIDs: []
   - _id: world-gate
     _name: 
     Type: 2
     RelatedItemID: chapter-01
     RelatedNumber: 0
-    SubGates: []
-  - _id: gate-list-and
+    SubGateIDs: []
+  - _id: '@3Lia5M0ichc'
+    _name: 
+    Type: 0
+    RelatedItemID: best-distance
+    RelatedNumber: 0
+    SubGateIDs:
+    - world-gate
+  - _id: list
     _name: 
     Type: 4
     RelatedItemID: best-distance
     RelatedNumber: 0
-    SubGates: []
+    SubGateIDs:
+    - '@3Lia5M0ichc'
