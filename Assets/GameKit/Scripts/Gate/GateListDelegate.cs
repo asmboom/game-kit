@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Beetle23
 {
@@ -9,7 +10,8 @@ namespace Beetle23
         {
             if (!_context.IsOpened)
             {
-                foreach (var aGate in _context.SubGates)
+                List<Gate> subGates = _context.GetSubGates(false);
+                foreach (var aGate in subGates)
                 {
                     aGate.OnOpened += OnGateOpened;
                 }
@@ -25,9 +27,10 @@ namespace Beetle23
         {
             get
             {
+                List<Gate> subGates = _context.GetSubGates(false);
                 if (_context.Type == GateType.GateListAnd)
                 {
-                    foreach (Gate gate in _context.SubGates)
+                    foreach (Gate gate in subGates)
                     {
                         if (!gate.IsOpened)
                         {
@@ -38,7 +41,7 @@ namespace Beetle23
                 }
                 else
                 {
-                    foreach (Gate gate in _context.SubGates)
+                    foreach (Gate gate in subGates)
                     {
                         if (gate.IsOpened)
                         {
@@ -52,7 +55,8 @@ namespace Beetle23
 
         public override void RegisterEvents()
         {
-            foreach (var gate in _context.SubGates)
+            List<Gate> subGates = _context.GetSubGates(false);
+            foreach (var gate in subGates)
             {
                 gate.OnOpened += OnGateOpened;
             }
@@ -60,7 +64,8 @@ namespace Beetle23
 
         public override void UnregisterEvents()
         {
-            foreach (var gate in _context.SubGates)
+            List<Gate> subGates = _context.GetSubGates(false);
+            foreach (var gate in subGates)
             {
                 gate.OnOpened -= OnGateOpened;
             }

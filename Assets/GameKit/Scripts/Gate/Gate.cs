@@ -19,11 +19,27 @@ namespace Beetle23
         [SerializeField]
         public float RelatedNumber;
         [SerializeField]
-        public List<Gate> SubGates;
+        public List<string> SubGateIDs;
+
+        public Gate()
+        {
+            SubGateIDs = new List<string>();
+            _subGates = new List<Gate>();
+            RefreshSubGateList();
+        }
 
         public bool IsGroup
         {
             get { return Type == GateType.GateListAnd || Type == GateType.GateListOr; }
+        }
+
+        public Gate this[int idx]
+        {
+            get
+            {
+                return idx >= 0 && idx < SubGateIDs.Count && string.IsNullOrEmpty(SubGateIDs[idx]) ? null :
+                    GameKit.Config.GetGateByID(SubGateIDs[idx]);
+            }
         }
 
         public IItem RelatedItem
@@ -52,6 +68,15 @@ namespace Beetle23
                 }
                 return Delegate.CanOpenNow;
             }
+        }
+
+        public List<Gate> GetSubGates(bool refresh)
+        {
+            if (refresh)
+            {
+                RefreshSubGateList();
+            }
+            return _subGates;
         }
 
         public  bool TryOpen()
@@ -95,6 +120,16 @@ namespace Beetle23
             }
         }
 
+        private void RefreshSubGateList()
+        {
+            _subGates.Clear();
+            for (int i = 0; i < SubGateIDs.Count; i++)
+            {
+                _subGates.Add(GameKit.Config.GetGateByID(SubGateIDs[i]));
+            }
+        }
+
         private GateDelegate _delegate;
+        private List<Gate> _subGates;
     }
 }

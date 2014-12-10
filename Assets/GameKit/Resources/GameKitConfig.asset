@@ -98,18 +98,46 @@ MonoBehaviour:
       Min: 0
       Max: 999999
       RelatedVirtualItemID: 
+    - _id: test
+      _name: 
+      DefaultValue: 0
+      IsHigherBetter: 1
+      EnableClamp: 1
+      Min: 0
+      Max: 20
+      RelatedVirtualItemID: 
+    - _id: '@3LuoqWrG'
+      _name: 
+      DefaultValue: 0
+      IsHigherBetter: 1
+      EnableClamp: 1
+      Min: 0
+      Max: 10
+      RelatedVirtualItemID: 
     Missions: []
     Extend: {fileID: 0}
   Gates:
-  - _id: '@3KxDpYv7'
+  - _id: score-gate
     _name: 
     Type: 0
-    RelatedItemID: 
+    RelatedItemID: best-distance
+    RelatedNumber: 100
+    SubGates: []
+  - _id: virtual-item-gate
+    _name: 
+    Type: 1
+    RelatedItemID: vial
+    RelatedNumber: 100
+    SubGates: []
+  - _id: world-gate
+    _name: 
+    Type: 2
+    RelatedItemID: chapter-01
     RelatedNumber: 0
     SubGates: []
-  - _id: '@3KxFhhjehbha'
+  - _id: gate-list-and
     _name: 
-    Type: 0
-    RelatedItemID: 
+    Type: 4
+    RelatedItemID: best-distance
     RelatedNumber: 0
     SubGates: []
