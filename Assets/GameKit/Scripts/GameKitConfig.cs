@@ -134,6 +134,26 @@ namespace Beetle23
             return null;
         }
 
+        public Gate[] FindGateListThatGateBelongsTo(Gate gate)
+        {
+            List<Gate> list = new List<Gate>();
+            foreach (var aGate in Gates)
+            {
+                if (aGate.IsGroup)
+                {
+                    foreach (var subGateID in aGate.SubGateIDs)
+                    {
+                        if (subGateID.Equals(gate.ID))
+                        {
+                            list.Add(aGate);
+                            break;
+                        }
+                    }
+                }
+            }
+            return list.ToArray();
+        }
+
         public void UpdateMapsAndTree()
         {
             UpdateIdToItemMap();

@@ -66,8 +66,24 @@ namespace Beetle23
                 yOffset += 20;
                 if (newType != gate.Type)
                 {
-                    gate.Type = newType;
-                    UpdateItemPopupDrawer(gate.Type);
+                    bool error = false;
+                    if (newType == GateType.GateListOr || newType == GateType.GateListAnd)
+                    {
+                        Gate[] gateLists = GameKit.Config.FindGateListThatGateBelongsTo(gate);
+                        if (gateLists.Length > 0)
+                        {
+                            EditorUtility.DisplayDialog("Error", 
+                                "Not allowed to change to " + newType + 
+                                ", because this gate is already included by a " + gateLists[0].Type + " [" 
+                                    + gateLists[0].ID + "].", "OK");
+                            error = true;
+                        }
+                    }
+                    if (!error)
+                    {
+                        gate.Type = newType;
+                        UpdateItemPopupDrawer(gate.Type);
+                    }
                 }
                 if (_itemPopupDrawer != null)
                 {
