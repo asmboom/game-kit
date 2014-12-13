@@ -13,7 +13,7 @@ namespace Beetle23
         public string Description;
         
         [SerializeField]
-        public Sprite Icon;
+        public Texture2D Icon;
 
         [SerializeField]
         public List<UpgradeItem> Upgrades;

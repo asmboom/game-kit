@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Name: GameKitConfig
   m_EditorClassIdentifier: 
   VirtualCurrencies:
-  - _id: vial
+  - _id: coin
     _name: 
     Description: 
     Icon: {fileID: 0}
     Upgrades: []
     Extend: {fileID: 0}
-  - _id: iso-8
+  - _id: gem
     _name: 
     Description: 
     Icon: {fileID: 0}

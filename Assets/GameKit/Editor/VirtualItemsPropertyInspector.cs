@@ -114,7 +114,7 @@ namespace Beetle23
                     EditorGUI.LabelField(new Rect(0, yOffset, width, 20), "Category", item.Category == null ? "None" : item.Category.ID);
                     yOffset += 20;
                 }
-                item.Icon = EditorGUI.ObjectField(new Rect(0, yOffset, width, 20), "Icon", item.Icon, typeof(Sprite), false) as Sprite;
+                item.Icon = EditorGUI.ObjectField(new Rect(0, yOffset, width, 20), "Icon", item.Icon, typeof(Texture2D), false) as Texture2D;
                 yOffset += 20;
                 item.Extend = EditorGUI.ObjectField(new Rect(0, yOffset, width, 20), "Extend",
                     item.Extend, typeof(ScriptableObject), false) as ScriptableObject;
