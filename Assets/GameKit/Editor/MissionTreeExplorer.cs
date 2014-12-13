@@ -86,7 +86,7 @@ namespace Beetle23
             if (_worldToExpanded.ContainsKey(world))
             {
                 _worldToExpanded[world] = EditorGUILayout.Foldout(_worldToExpanded[world],
-                    world.ID, GameKitEditorDrawUtil.FoldoutStyle);
+                    new GUIContent(world.ID, Resources.Load("WorldIcon") as Texture), GameKitEditorDrawUtil.FoldoutStyle);
                 y += 20;
                 if (_worldToExpanded[world])
                 {

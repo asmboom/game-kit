@@ -99,7 +99,7 @@ namespace Beetle23
                 if (world.SubWorlds.Count > 0)
                 {
                     _worldToExpanded[world] = EditorGUILayout.Foldout(_worldToExpanded[world],
-                        "child", GameKitEditorDrawUtil.FoldoutStyle);
+                        new GUIContent(string.Empty, Resources.Load("WorldIcon") as Texture), GameKitEditorDrawUtil.FoldoutStyle);
 
                     y += 20;
 

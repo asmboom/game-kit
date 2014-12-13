@@ -136,7 +136,7 @@ namespace Beetle23
                 _packListControl.Draw(_packListAdaptor);
             }
             _isUpgradeItemExpanded = EditorGUILayout.Foldout(_isUpgradeItemExpanded,
-                new GUIContent(" Upgrade Items", Resources.Load("PackIcon") as Texture),
+                new GUIContent(" Upgrade Items", Resources.Load("UpgradeIcon") as Texture),
                 GameKitEditorDrawUtil.FoldoutStyle);
             if (_isUpgradeItemExpanded)
             {
