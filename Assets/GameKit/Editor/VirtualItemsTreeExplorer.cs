@@ -101,7 +101,35 @@ namespace Beetle23
             _isCategoryExpanded = false;
         }
 
-        protected override void DoDraw(Rect position)
+        protected override void DoDraw(Rect position, string searchText)
+        {
+            if (string.IsNullOrEmpty(searchText))
+            {
+                DrawNormal(position);
+            }
+            else
+            {
+                DrawSearch(position, searchText);
+            }
+        }
+
+        private void DrawSearch(Rect position, string searchText)
+        {
+            foreach (var item in _config.VirtualItems)
+            {
+                DrawItemIfMathSearch(searchText, item, position.width);
+                foreach (var upgrade in item.Upgrades)
+                {
+                    DrawItemIfMathSearch(searchText, upgrade, position.width);
+                }
+            }
+            foreach (var category in _config.Categories)
+            {
+                DrawItemIfMathSearch(searchText, category, position.width);
+            }
+        }
+
+        private void DrawNormal(Rect position)
         {
             _isVirtualCurrencyExpanded = EditorGUILayout.Foldout(_isVirtualCurrencyExpanded,
                 new GUIContent(" Virtual Currencies", Resources.Load("VirtualCurrencyIcon") as Texture,

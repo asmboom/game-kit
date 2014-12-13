@@ -29,9 +29,19 @@ namespace Beetle23
         {
         }
 
-        protected override void DoDraw(Rect position)
+        protected override void DoDraw(Rect position, string searchText)
         {
-            _gateListControl.Draw(_gateListAdaptor);
+            if (string.IsNullOrEmpty(searchText))
+            {
+                _gateListControl.Draw(_gateListAdaptor);
+            }
+            else
+            {
+                foreach (var gate in _config.Gates)
+                {
+                    DrawItemIfMathSearch(searchText, gate, position.width);
+                }
+            }
         }
 
         private T DrawItem<T>(Rect position, T item, int index) where T : SerializableItem

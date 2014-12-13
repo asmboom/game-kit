@@ -14,6 +14,7 @@ namespace Beetle23
         public ItemTreeExplorer(GameKitConfig config)
         {
             _config = config;
+            _searchText = string.Empty;
         }
 
         public void SelectItem(IItem item)
@@ -36,6 +37,18 @@ namespace Beetle23
             }
 
             GUILayout.BeginHorizontal();
+            GUILayout.Label("Search", GUILayout.Width(position.width * 0.17f));
+            _searchText = GUILayout.TextField(_searchText, 50, GUILayout.Width(position.width * 0.7f));
+            if (GUILayout.Button("x", GUILayout.Height(15), GUILayout.Width(20)))
+            {
+                _searchText = string.Empty;
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.Space(5);
+
+            /*
+            GUILayout.BeginHorizontal();
             if (GUILayout.Button("+Expand All", GUILayout.Width(90)))
             {
                 DoExpandAll();
@@ -45,9 +58,10 @@ namespace Beetle23
                 DoCollapseAll();
             }
             GUILayout.EndHorizontal();
+            */
 
             _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, false, true);
-            DoDraw(new Rect(0, 0, position.width - 15, position.height - 50));
+            DoDraw(new Rect(0, 0, position.width - 15, position.height - 50), _searchText);
             GUILayout.EndScrollView();
 
             GUILayout.EndArea();
@@ -65,12 +79,22 @@ namespace Beetle23
                         GameKitEditorDrawUtil.ItemSelectedLeftStyle : GameKitEditorDrawUtil.ItemLeftLabelStyle;
         }
 
+        protected void DrawItemIfMathSearch(string searchText, IItem item, float width)
+        {
+            if (item.ID.Contains(searchText) && GUILayout.Button(" " + item.ID, GetItemLeftStyle(item),
+                    GUILayout.Height(22), GUILayout.Width(width)))
+            {
+                SelectItem(item);
+            }
+        }
+
         protected abstract void DoOnSelectItem(IItem item);
         protected abstract void DoExpandAll();
         protected abstract void DoCollapseAll();
-        protected abstract void DoDraw(Rect position);
+        protected abstract void DoDraw(Rect position, string search);
 
         protected GameKitConfig _config;
         private Vector2 _scrollPosition;
+        private string _searchText;
     }
 }

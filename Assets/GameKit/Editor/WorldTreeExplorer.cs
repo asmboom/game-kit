@@ -145,9 +145,19 @@ namespace Beetle23
             CollapseWorld(_config.RootWorld, true);
         }
 
-        protected override void DoDraw(Rect position)
+        protected override void DoDraw(Rect position, string searchText)
         {
-            DrawWorld(position, _config.RootWorld);
+            if (string.IsNullOrEmpty(searchText))
+            {
+                DrawWorld(position, _config.RootWorld);
+            }
+            else
+            {
+                foreach (var world in _config.Worlds)
+                {
+                    DrawItemIfMathSearch(searchText, world, position.width);
+                }
+            }
         }
 
         private Dictionary<World, bool> _worldToExpanded;

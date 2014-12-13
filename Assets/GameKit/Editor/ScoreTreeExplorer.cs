@@ -65,9 +65,22 @@ namespace Beetle23
             CollapseWorld(_config.RootWorld, true);
         }
 
-        protected override void DoDraw(Rect position) 
+        protected override void DoDraw(Rect position, string searchText) 
         { 
-            DrawWorldScores(position, _config.RootWorld);
+            if (string.IsNullOrEmpty(searchText))
+            {
+                DrawWorldScores(position, _config.RootWorld);
+            }
+            else
+            {
+                foreach (var world in _config.Worlds)
+                {
+                    foreach (var score in world.Scores)
+                    {
+                        DrawItemIfMathSearch(searchText, score, position.width);
+                    }
+                }
+            }
         }
 
         private float DrawWorldScores(Rect position, World world)

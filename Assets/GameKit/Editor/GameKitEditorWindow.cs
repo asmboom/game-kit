@@ -270,8 +270,10 @@ namespace Beetle23
             _currentSection = GUI.SelectionGrid(new Rect(10, y, position.width - 20, 20), _currentSection, _sections, 8);
             y += 25;
 
-            GUI.Box(new Rect(10, y, position.width - 20, 10), string.Empty);
-            y += 15;
+            float separatorHeight = 10;
+            GUI.BeginGroup(new Rect(10, y, position.width - 20, separatorHeight), string.Empty, GUI.skin.GetStyle("Box"));
+            y += separatorHeight + 5;
+            GUI.EndGroup();
 
             float treeRatio = 0.35f;
             if (_currentSection >= 0 && _currentSection <= (int)TabType.Gates)
