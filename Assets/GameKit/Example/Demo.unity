@@ -597,7 +597,7 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: -47, y: 0}
+  m_AnchoredPosition: {x: -60, y: 0}
   m_SizeDelta: {x: 62, y: 68}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &670702833
@@ -1209,7 +1209,7 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: 100, y: 0}
+  m_AnchoredPosition: {x: 70, y: 0}
   m_SizeDelta: {x: 68, y: 49}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &1224058957
@@ -1616,7 +1616,7 @@ GameObject:
   - 222: {fileID: 2063798392}
   - 114: {fileID: 2063798391}
   m_Layer: 5
-  m_Name: Heart
+  m_Name: Energy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1638,7 +1638,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: .5}
   m_AnchorMax: {x: 0, y: .5}
   m_AnchoredPosition: {x: 40, y: 0}
-  m_SizeDelta: {x: 61, y: 57}
+  m_SizeDelta: {x: 41, y: 61}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &2063798391
 MonoBehaviour:
@@ -1653,7 +1653,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Sprite: {fileID: 21300000, guid: a7297878f46849e4b8268ffedc390762, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1ea6d93eb47aa94459058d62ec31740f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

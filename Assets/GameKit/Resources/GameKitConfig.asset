@@ -15,23 +15,87 @@ MonoBehaviour:
   - _id: coin
     _name: 
     Description: 
-    Icon: {fileID: 0}
+    Icon: {fileID: 2800000, guid: 1ab94778d0f3ff54abaa137b5cbd318b, type: 3}
     Upgrades: []
     Extend: {fileID: 0}
   - _id: gem
     _name: 
     Description: 
+    Icon: {fileID: 2800000, guid: dcb7d8ae833ea234889a3480f79cbf8b, type: 3}
+    Upgrades: []
+    Extend: {fileID: 0}
+  SingleUseItems:
+  - _id: energy
+    _name: 
+    Description: 
     Icon: {fileID: 0}
     Upgrades: []
     Extend: {fileID: 0}
-  SingleUseItems: []
+    PurchaseInfo: []
   LifeTimeItems:
   - _id: coin-magnet
     _name: 
     Description: 
-    Icon: {fileID: 0}
+    Icon: {fileID: 2800000, guid: eeb95c17dd31cd24980bbbf489457a46, type: 3}
     Upgrades:
     - _id: coin-magnet-upgrade001
+      _name: 
+      Description: Increase duration to 6 seconds
+      Icon: {fileID: 0}
+      Upgrades: []
+      Extend: {fileID: 0}
+      PurchaseInfo: []
+    - _id: coin-magnet-upgrade002
+      _name: 
+      Description: Increase duration to 9 seconds
+      Icon: {fileID: 0}
+      Upgrades: []
+      Extend: {fileID: 0}
+      PurchaseInfo: []
+    - _id: coin-magnet-upgrade003
+      _name: 
+      Description: Increase duration to 12 seconds
+      Icon: {fileID: 0}
+      Upgrades: []
+      Extend: {fileID: 0}
+      PurchaseInfo: []
+    - _id: coin-magnet-upgrade004
+      _name: 
+      Description: Increase duration to 15 seconds
+      Icon: {fileID: 0}
+      Upgrades: []
+      Extend: {fileID: 0}
+      PurchaseInfo: []
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: shield
+    _name: 
+    Description: 
+    Icon: {fileID: 2800000, guid: fcceb30cc6f274241be3e2c6ba5e4e09, type: 3}
+    Upgrades:
+    - _id: shield-upgrade001
+      _name: 
+      Description: 
+      Icon: {fileID: 0}
+      Upgrades: []
+      Extend: {fileID: 0}
+      PurchaseInfo: []
+    - _id: shield-upgrade002
+      _name: 
+      Description: 
+      Icon: {fileID: 0}
+      Upgrades: []
+      Extend: {fileID: 0}
+      PurchaseInfo: []
+    - _id: shield-upgrade003
+      _name: 
+      Description: 
+      Icon: {fileID: 0}
+      Upgrades: []
+      Extend: {fileID: 0}
+      PurchaseInfo: []
+    - _id: shield-upgrade004
       _name: 
       Description: 
       Icon: {fileID: 0}
@@ -41,7 +105,79 @@ MonoBehaviour:
     Extend: {fileID: 0}
     PurchaseInfo: []
     IsEquippable: 0
-  - _id: permant-life
+  - _id: score-multiplier
+    _name: 
+    Description: 
+    Icon: {fileID: 2800000, guid: adbce9686d74ebf4b9098686c01b62dc, type: 3}
+    Upgrades:
+    - _id: score-multiplier-upgrade001
+      _name: 
+      Description: 
+      Icon: {fileID: 0}
+      Upgrades: []
+      Extend: {fileID: 0}
+      PurchaseInfo: []
+    - _id: score-multiplier-upgrade002
+      _name: 
+      Description: 
+      Icon: {fileID: 0}
+      Upgrades: []
+      Extend: {fileID: 0}
+      PurchaseInfo: []
+    - _id: score-multiplier-upgrade003
+      _name: 
+      Description: 
+      Icon: {fileID: 0}
+      Upgrades: []
+      Extend: {fileID: 0}
+      PurchaseInfo: []
+    - _id: score-multiplier-upgrade004
+      _name: 
+      Description: 
+      Icon: {fileID: 0}
+      Upgrades: []
+      Extend: {fileID: 0}
+      PurchaseInfo: []
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: health
+    _name: 
+    Description: 
+    Icon: {fileID: 2800000, guid: a7297878f46849e4b8268ffedc390762, type: 3}
+    Upgrades:
+    - _id: health-upgrade001
+      _name: 
+      Description: 
+      Icon: {fileID: 0}
+      Upgrades: []
+      Extend: {fileID: 0}
+      PurchaseInfo: []
+    - _id: health-upgrade002
+      _name: 
+      Description: 
+      Icon: {fileID: 0}
+      Upgrades: []
+      Extend: {fileID: 0}
+      PurchaseInfo: []
+    - _id: health-upgrade003
+      _name: 
+      Description: 
+      Icon: {fileID: 0}
+      Upgrades: []
+      Extend: {fileID: 0}
+      PurchaseInfo: []
+    - _id: health-upgrade004
+      _name: 
+      Description: 
+      Icon: {fileID: 0}
+      Upgrades: []
+      Extend: {fileID: 0}
+      PurchaseInfo: []
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: infinite-energy
     _name: 
     Description: 
     Icon: {fileID: 0}
@@ -49,16 +185,15 @@ MonoBehaviour:
     Extend: {fileID: 0}
     PurchaseInfo: []
     IsEquippable: 0
-  ItemPacks:
-  - _id: iso-8-pack01
+  ItemPacks: []
+  Categories:
+  - _id: powerups
     _name: 
-    Description: 
-    Icon: {fileID: 0}
-    Upgrades: []
-    Extend: {fileID: 0}
-    PurchaseInfo: []
-    PackElements: []
-  Categories: []
+    ItemIDs:
+    - coin-magnet
+    - shield
+    - score-multiplier
+    - health
   RootWorld:
     _id: root
     _name: 
@@ -135,13 +270,6 @@ MonoBehaviour:
     RelatedItemID: chapter-01
     RelatedNumber: 0
     SubGateIDs: []
-  - _id: '@3Lia5M0ichc'
-    _name: 
-    Type: 0
-    RelatedItemID: best-distance
-    RelatedNumber: 0
-    SubGateIDs:
-    - world-gate
   - _id: list
     _name: 
     Type: 4

@@ -6,6 +6,7 @@ using Beetle23;
 
 public class EconomyKitDemo : MonoBehaviour
 {
+    /*
     private void Awake()
     {
         GameKit.Init(new EconomyKitDemoFactory());
@@ -236,4 +237,5 @@ public class EconomyKitDemo : MonoBehaviour
     private Vector2 _pageScrollPosition;
     private Vector3 _touchPosition;
     private bool _isDragging;
+    */
 }
