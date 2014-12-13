@@ -57,7 +57,29 @@ namespace Beetle23
             }
         }
 
-        protected override void DoOnSelectItem(IItem item) { }
+        protected override void DoOnSelectItem(IItem item) 
+        {
+            if (item is VirtualCurrency)
+            {
+                _isVirtualCurrencyExpanded = true;
+            }
+            else if (item is SingleUseItem)
+            {
+                _isSingleUseItemExpanded = true;
+            }
+            else if (item is LifeTimeItem)
+            {
+                _isLifeTimeItemExpanded = true;
+            }
+            else if (item is UpgradeItem)
+            {
+                _isUpgradeItemExpanded = true;
+            }
+            else if (item is VirtualCategory)
+            {
+                _isVirtualCurrencyExpanded = true;
+            }
+        }
 
         protected override void DoExpandAll()
         {
