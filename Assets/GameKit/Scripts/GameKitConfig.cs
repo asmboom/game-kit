@@ -27,6 +27,9 @@ namespace Beetle23
         [SerializeField]
         public List<Gate> Gates;
 
+        [SerializeField]
+        public List<Challenge> Challenges;
+
         public IEnumerable<VirtualItem> VirtualItems
         {
             get

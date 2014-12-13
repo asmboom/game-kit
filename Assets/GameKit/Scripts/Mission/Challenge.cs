@@ -7,17 +7,18 @@ namespace Beetle23
     [System.Serializable]
     public class Challenge : Mission
     {
-        public List<Mission> Missions;
+        [SerializeField]
+        public List<Mission> SubMissions;
 
         public Challenge()
         {
-            Missions = new List<Mission>();
+            SubMissions = new List<Mission>();
 
             if (!IsCompleted)
             {
-                for (int i = 0; i < Missions.Count; i++)
+                for (int i = 0; i < SubMissions.Count; i++)
                 {
-                    Missions[i].OnCompleted += OnSubmissionCompleted;
+                    SubMissions[i].OnCompleted += OnSubmissionCompleted;
                 }
             }
         }
@@ -26,9 +27,9 @@ namespace Beetle23
         {
             get
             {
-                for (int i = 0; i < Missions.Count; i++)
+                for (int i = 0; i < SubMissions.Count; i++)
                 {
-                    if (!Missions[i].IsCompleted)
+                    if (!SubMissions[i].IsCompleted)
                     {
                         return false;
                     }
@@ -39,17 +40,17 @@ namespace Beetle23
 
         protected override void UnregisterEvents()
         {
-            for (int i = 0; i < Missions.Count; i++)
+            for (int i = 0; i < SubMissions.Count; i++)
             {
-                Missions[i].OnCompleted -= OnSubmissionCompleted;
+                SubMissions[i].OnCompleted -= OnSubmissionCompleted;
             }
         }
 
         protected override void RegisterEvents()
         {
-            for (int i = 0; i < Missions.Count; i++)
+            for (int i = 0; i < SubMissions.Count; i++)
             {
-                Missions[i].OnCompleted += OnSubmissionCompleted;
+                SubMissions[i].OnCompleted += OnSubmissionCompleted;
             }
         }
 

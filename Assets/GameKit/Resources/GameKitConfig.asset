@@ -249,7 +249,13 @@ MonoBehaviour:
       Min: 0
       Max: 10
       RelatedVirtualItemID: 
-    Missions: []
+    Missions:
+    - _id: '@3O9Zjd@kC'
+      _name: 
+      Description: 
+      BadgeIcon: {fileID: 0}
+      Rewards: []
+      RelatedGateID: score-gate
     Extend: {fileID: 0}
   Gates:
   - _id: score-gate
@@ -261,7 +267,7 @@ MonoBehaviour:
   - _id: virtual-item-gate
     _name: 
     Type: 1
-    RelatedItemID: vial
+    RelatedItemID: coin
     RelatedNumber: 100
     SubGateIDs: []
   - _id: world-gate
@@ -276,4 +282,5 @@ MonoBehaviour:
     RelatedItemID: best-distance
     RelatedNumber: 0
     SubGateIDs:
-    - '@3Lia5M0ichc'
+    - score-gate
+  Challenges: []

@@ -48,6 +48,13 @@ namespace Beetle23
             _categoryListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand);
             _categoryListControl.ItemInserted += OnItemInsert<VirtualCategory>;
             _categoryListControl.ItemRemoving += OnItemRemoving<VirtualCategory>;
+
+            _upgradesListAdaptors = new Dictionary<VirtualItem, UpgradeItemListAdaptor>();
+            _upgradesListControls = new Dictionary<VirtualItem, ReorderableListControl>();
+            foreach (var item in _config.VirtualItems)
+            {
+                AddUpgradeListForItem(item);
+            }
         }
 
         protected override void DoOnSelectItem(IItem item) { }
@@ -106,23 +113,31 @@ namespace Beetle23
             {
                 _packListControl.Draw(_packListAdaptor);
             }
-            _isUpgradeItemExpanded = EditorGUILayout.Foldout(_isUpgradeItemExpanded, 
+            _isUpgradeItemExpanded = EditorGUILayout.Foldout(_isUpgradeItemExpanded,
                 new GUIContent(" Upgrade Items", Resources.Load("PackIcon") as Texture),
                 GameKitEditorDrawUtil.FoldoutStyle);
             if (_isUpgradeItemExpanded)
             {
                 foreach (var item in _config.VirtualItems)
                 {
-                    foreach (var upgrade in item.Upgrades)
+                    if (item.HasUpgrades)
                     {
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Space(20);
-                        if (GUILayout.Button(" " + upgrade.ID, GetItemLeftStyle(upgrade), GUILayout.Height(22), 
-                            GUILayout.Width(position.width - 30)))
+                        if (_upgradesListAdaptors.ContainsKey(item))
                         {
-                            SelectItem(upgrade);
+                            GUILayout.Label(item.ID, GameKitEditorDrawUtil.ItemCenterLabelStyle);
+                            _upgradesListControls[item].Draw(_upgradesListAdaptors[item]);
                         }
-                        GUILayout.EndHorizontal();
+                        else
+                        {
+                            AddUpgradeListForItem(item);
+                        }
+                    }
+                    else
+                    {
+                        if (_upgradesListAdaptors.ContainsKey(item))
+                        {
+                            RemoveUpgradeListForItem(item);
+                        }
                     }
                 }
                 EditorGUILayout.Space();
@@ -159,32 +174,6 @@ namespace Beetle23
             if (listAdaptor != null)
             {
                 SelectItem(listAdaptor[args.itemIndex]);
-                if (listAdaptor[args.itemIndex] is VirtualItem)
-                {
-                    //ShowInputDialogForId<T>(CurrentSelectedItem.ID);
-                }
-                GameKitEditorWindow.GetInstance().Repaint();
-            }
-        }
-
-        private void ShowInputDialogForId<T>(string defaultId) where T : SerializableItem
-        {
-            SingleInputDialog.Show("Enter id for the new item", defaultId, "OK", OnGetNewId<T>);
-        }
-
-        private void OnGetNewId<T>(string id) where T : SerializableItem
-        {
-            GameKit.Config.UpdateMapsAndTree();
-            SerializableItem itemWithID = GameKit.Config.GetVirtualItemByID(id);
-            if (itemWithID != null && itemWithID != CurrentSelectedItem)
-            {
-                Debug.LogWarning("Id [" + id + "] is already used by [" +
-                    itemWithID.Name + "], please change one.");
-                ShowInputDialogForId<T>(id);
-            }
-            else
-            {
-                CurrentSelectedItem.ID = id;
                 GameKitEditorWindow.GetInstance().Repaint();
             }
         }
@@ -209,6 +198,31 @@ namespace Beetle23
             }
         }
 
+        private void AddUpgradeListForItem(VirtualItem item)
+        {
+            if (item.HasUpgrades)
+            {
+                ReorderableListControl listControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand);
+                listControl.ItemInserted += OnItemInsert<UpgradeItem>;
+                listControl.ItemRemoving += OnItemRemoving<UpgradeItem>;
+                UpgradeItemListAdaptor listAdaptor = new UpgradeItemListAdaptor(item.Upgrades, 20,
+                                () => { return new UpgradeItem(); },
+                                DrawItem<UpgradeItem>);
+
+                _upgradesListAdaptors.Add(item, listAdaptor);
+                _upgradesListControls.Add(item, listControl);
+            }
+        }
+
+        private void RemoveUpgradeListForItem(VirtualItem item)
+        {
+            if (_upgradesListAdaptors.ContainsKey(item))
+            {
+                _upgradesListAdaptors.Remove(item);
+                _upgradesListControls.Remove(item);
+            }
+        }
+
         private bool _isVirtualCurrencyExpanded = true;
         private bool _isSingleUseItemExpanded = true;
         private bool _isLifeTimeItemExpanded = true;
@@ -226,6 +240,9 @@ namespace Beetle23
         private GenericClassListAdaptor<VirtualItemPack> _packListAdaptor;
         private ReorderableListControl _categoryListControl;
         private GenericClassListAdaptor<VirtualCategory> _categoryListAdaptor;
+
+        private Dictionary<VirtualItem, ReorderableListControl> _upgradesListControls;
+        private Dictionary<VirtualItem, UpgradeItemListAdaptor> _upgradesListAdaptors;
 
         private Vector2 _scrollPosition;
     }

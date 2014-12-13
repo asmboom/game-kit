@@ -5,17 +5,36 @@ using System.Collections.Generic;
 
 namespace Beetle23
 {
+    public class UpgradeItemListAdaptor : GenericClassListAdaptor<UpgradeItem>
+    {
+        public UpgradeItemListAdaptor(List<UpgradeItem> list, float itemHeight,
+            GenericListAdaptorDelegate.ItemCreator<UpgradeItem> itemCreator,
+            GenericListAdaptorDelegate.ClassItemDrawer<UpgradeItem> itemDrawer)
+            : base(list, itemHeight, itemCreator, itemDrawer, null)
+        {
+        }
+
+        public override bool CanDrag(int index)
+        {
+            return false;
+        }
+
+        public override bool CanRemove(int index)
+        {
+            return index == Count - 1;
+        }
+    }
+
     public class VirtualItemsPropertyInspector : ItemPropertyInspector
     {
         public VirtualItemsPropertyInspector(VirtualItemsTreeExplorer treeExplorer)
-            :base(treeExplorer)
+            : base(treeExplorer)
         {
             _purchaseListView = new PurchaseInfoListView(_currentDisplayItem as PurchasableItem);
             _packListView = new PackInfoListView(_currentDisplayItem as VirtualItemPack);
             _categoryPropertyView = new CategoryPropertyView(this, _currentDisplayItem as VirtualCategory);
 
-            _upgradeListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand |
-                ReorderableListFlags.ShowIndices);
+            _upgradeListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand);
             _upgradeListControl.ItemInserted += OnInsertUpgradeItem;
             _upgradeListControl.ItemRemoving += OnRemoveUpgradeItem;
         }
@@ -167,8 +186,8 @@ namespace Beetle23
             {
                 yOffset += 20;
                 VirtualItem relatedItem = (item as UpgradeItem).RelatedItem;
-                EditorGUI.LabelField(new Rect(0, yOffset, 250, 20), "Related Item", 
-                    relatedItem == null ? "NULL" : relatedItem .ID);
+                EditorGUI.LabelField(new Rect(0, yOffset, 250, 20), "Related Item",
+                    relatedItem == null ? "NULL" : relatedItem.ID);
                 if (GUI.Button(new Rect(255, yOffset, 50, 20), "Edit"))
                 {
                     _treeExplorer.SelectItem(relatedItem);
@@ -179,9 +198,9 @@ namespace Beetle23
         }
 
         private void OnInsertUpgradeItem(object sender, ItemInsertedEventArgs args)
-        { 
+        {
             int upgradeIndex = args.itemIndex + 1;
-            string suffix = upgradeIndex < 10 ? "00" + upgradeIndex : 
+            string suffix = upgradeIndex < 10 ? "00" + upgradeIndex :
                 upgradeIndex < 100 ? "0" + upgradeIndex : upgradeIndex.ToString();
             GenericClassListAdaptor<UpgradeItem> listAdaptor = args.adaptor as GenericClassListAdaptor<UpgradeItem>;
             listAdaptor[args.itemIndex].ID = string.Format("{0}-upgrade{1}", _currentDisplayItem.ID, suffix);
@@ -215,26 +234,5 @@ namespace Beetle23
         private CategoryPropertyView _categoryPropertyView;
         private ReorderableListControl _upgradeListControl;
         private UpgradeItemListAdaptor _upgradeListAdaptor;
-
-        private class UpgradeItemListAdaptor : GenericClassListAdaptor<UpgradeItem>
-        {
-            public UpgradeItemListAdaptor(List<UpgradeItem> list, float itemHeight,
-                GenericListAdaptorDelegate.ItemCreator<UpgradeItem> itemCreator,
-                GenericListAdaptorDelegate.ClassItemDrawer<UpgradeItem> itemDrawer)
-                : base(list, itemHeight, itemCreator, itemDrawer, null)
-            {
-            }
-
-            public override bool CanDrag(int index)
-            {
-                return false;
-            }
-
-            public override bool CanRemove(int index)
-            {
-                return index == Count - 1;
-            }
-        }
-
     }
 }

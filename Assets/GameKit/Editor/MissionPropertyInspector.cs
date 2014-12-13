@@ -53,6 +53,11 @@ namespace Beetle23
                 yOffset += 20;
                 mission.Name = EditorGUI.TextField(new Rect(0, yOffset, width, 20), "Name", mission.Name);
                 yOffset += 20;
+                mission.Description = EditorGUI.TextField(new Rect(0, yOffset, width, 20), "Desription", mission.Description);
+                yOffset += 20;
+                mission.BadgeIcon = EditorGUI.ObjectField(new Rect(0, yOffset, width, 50), "Badge Icon", 
+                    mission.BadgeIcon, typeof(Texture2D), false) as Texture2D;
+                yOffset += 55;
             }
             yOffset += 20;
 

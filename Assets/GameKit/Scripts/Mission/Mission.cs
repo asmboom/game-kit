@@ -11,6 +11,10 @@ namespace Beetle23
         public Action OnCompleted = delegate { };
 
         [SerializeField]
+        public string Description;
+        [SerializeField]
+        public Texture2D BadgeIcon;
+        [SerializeField]
         public List<Reward> Rewards;
         [SerializeField]
         [GatePopup(true, true)]

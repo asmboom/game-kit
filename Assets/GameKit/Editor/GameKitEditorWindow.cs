@@ -273,10 +273,11 @@ namespace Beetle23
             GUI.Box(new Rect(10, y, position.width - 20, 10), string.Empty);
             y += 15;
 
+            float treeRatio = 0.35f;
             if (_currentSection >= 0 && _currentSection <= (int)TabType.Gates)
             {
-                _treeExplorers[(TabType)_currentSection].Draw(new Rect(10, y, 250, position.height - y - 5));
-                _propertyInspectors[(TabType)_currentSection].Draw(new Rect(270, y, position.width - 280, position.height - y - 5));
+                _treeExplorers[(TabType)_currentSection].Draw(new Rect(10, y, position.width * treeRatio, position.height - y - 5));
+                _propertyInspectors[(TabType)_currentSection].Draw(new Rect(position.width * treeRatio + 20, y, position.width * (1 - treeRatio) - 30, position.height - y - 5));
             }
 
             if (EditorGUI.EndChangeCheck())
