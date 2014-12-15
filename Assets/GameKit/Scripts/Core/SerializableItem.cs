@@ -25,7 +25,7 @@ namespace Beetle23
             }
             set
             {
-                _id = value;
+                _id = value.Trim();
             }
         }
 

@@ -78,7 +78,8 @@ namespace Beetle23
                     GUI.SetNextControlName(IDInputControlName);
                     if (EditorGUI.TextField(position, IDLabelName,
                         _currentItemID).KeyPressed<string>(IDInputControlName, KeyCode.Return, out _currentItemID) ||
-                        (GUI.GetNameOfFocusedControl() != IDInputControlName &&
+                        (Event.current.type != EventType.Layout && 
+                         GUI.GetNameOfFocusedControl() != IDInputControlName && 
                          _currentItemID != item.ID))
                     {
                         OnGetNewIDFromTextField(item);
@@ -97,6 +98,14 @@ namespace Beetle23
 
         private void OnGetNewIDFromTextField(IItem item)
         {
+            _currentItemID = _currentItemID.Trim();
+            if (string.IsNullOrEmpty(_currentItemID))
+            {
+                EditorUtility.DisplayDialog("Invlid ID", "ID couldn't be empty.", "OK");
+                _currentItemID = item.ID;
+                GUI.FocusControl(IDInputControlName);
+                return;
+            }
             IItem itemWithID = GetItemWithConflictingID(item, _currentItemID);
             if (itemWithID != null && itemWithID != item)
             {
@@ -108,8 +117,8 @@ namespace Beetle23
             else
             {
                 item.ID = _currentItemID;
-                GameKitEditorWindow.GetInstance().Repaint();
             }
+            GameKitEditorWindow.GetInstance().Repaint();
         }
 
         protected abstract void DoOnExplorerSelectionChange(IItem item);

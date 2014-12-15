@@ -194,6 +194,14 @@ MonoBehaviour:
     Extend: {fileID: 0}
     PurchaseInfo: []
     PackElements: []
+  - _id: '@3QyajaihlE'
+    _name: 
+    Description: 
+    Icon: {fileID: 0}
+    Upgrades: []
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    PackElements: []
   Categories:
   - _id: powerups
     _name: 
