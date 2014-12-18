@@ -10,6 +10,9 @@ namespace Beetle23
         public Action<int, int> OnBalanceChanged = delegate { };
 
         [SerializeField]
+        public string Name;
+
+        [SerializeField]
         public string Description;
         
         [SerializeField]

@@ -2,6 +2,7 @@
 {
     public enum GateType
     {
+        None,
         ScoreGate,
         VirtualItemGate,
         WorldCompletionGate,

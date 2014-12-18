@@ -22,13 +22,47 @@ namespace Beetle23
 
             _missionListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand |
                 ReorderableListFlags.ShowIndices);
-            _missionListControl.ItemInserted += OnInsertScore;
-            _missionListControl.ItemRemoving += OnRemoveScore;
+            _missionListControl.ItemInserted += OnInsertMission;
+            _missionListControl.ItemRemoving += OnRemoveMission;
+
+            Gate currentGate = treeExplorer.CurrentSelectedItem != null ? 
+                (treeExplorer.CurrentSelectedItem as World).Gate : null;
+            _gateView = new GatePropertyView(currentGate, true);
+        }
+
+        public override IItem[] GetAffectedItems(string itemID)
+        {
+            List<IItem> items = new List<IItem>();
+            foreach (var world in GameKit.Config.Worlds)
+            {
+                if (world.Gate.IsGroup)
+                {
+                    foreach (var subgate in world.Gate.SubGates)
+                    {
+                        if (subgate.Type == GateType.WorldCompletionGate && 
+                            subgate.RelatedItemID.Equals(itemID))
+                        {
+                            items.Add(subgate);
+                        }
+                    }
+                }
+                else if (world.Gate.Type == GateType.WorldCompletionGate &&
+                         world.Gate.RelatedItemID.Equals(itemID))
+                {
+                    items.Add(world.Gate);
+                }
+            }
+            return items.ToArray();
         }
 
         protected override void DoOnExplorerSelectionChange(IItem item)
         {
             World world = item as World;
+
+            if (world == null) return;
+
+            _gateView.UpdateDisplayItem(world.Gate);
+
             _subWorldListAdaptor = new GenericClassListAdaptor<World>(world.SubWorlds, 20,
                 () => { return new World(); },
                 (position, theItem, index) =>
@@ -71,10 +105,6 @@ namespace Beetle23
                     }
                     return theItem;
                 });
-
-            string path = GameKitEditorWindow.GetInstance().FindWorldPropertyPath(world);
-            _currentWorldProperty = GameKitEditorWindow.SerializedConfig.FindProperty(path);
-            _currentGateIDProperty = _currentWorldProperty.FindPropertyRelative("GateID");
         }
 
         protected override float DoDrawItem(Rect rect, IItem item)
@@ -120,12 +150,14 @@ namespace Beetle23
                 yOffset += height;
             }
 
+            UpdateGateID(world.Gate);
             yOffset += 20;
-            if (_currentGateIDProperty != null)
+            _isGateInfoExpanded = EditorGUI.Foldout(new Rect(0, yOffset, width, 20), _isGateInfoExpanded, "Gate");
+            yOffset += 20;
+            if (_isGateInfoExpanded)
             {
-                EditorGUI.PropertyField(new Rect(0, yOffset, width, 20), _currentGateIDProperty, new GUIContent("Gate"));
-                world.GateID = _currentGateIDProperty.stringValue;
-                yOffset += 20;
+                float height = _gateView.CalculateHeight(world.Gate);
+                yOffset += _gateView.Draw(new Rect(0, yOffset, width, height), world.Gate);
             }
 
             yOffset += 20;
@@ -173,20 +205,30 @@ namespace Beetle23
             World world = listAdaptor[args.itemIndex];
             if (listAdaptor != null)
             {
-                if (EditorUtility.DisplayDialog("Confirm to delete",
-                        "Confirm to delete world [" + world.ID + "]?", "OK", "Cancel"))
+                IItem[] items = GetAffectedItems(world.ID);
+                if (items.Length > 0)
                 {
-                    args.Cancel = false;
-                    (_treeExplorer as WorldTreeExplorer).RemoveWorld(world);
-                    ScoreTreeExplorer scoreTreeExplorer = (GameKitEditorWindow.GetInstance().GetTreeExplorer(
-                        GameKitEditorWindow.TabType.Scores) as ScoreTreeExplorer);
-                    scoreTreeExplorer.RemoveWorld(world);
-                    GameKit.Config.UpdateMapsAndTree();
-                    GameKitEditorWindow.GetInstance().Repaint();
+                    EditorUtility.DisplayDialog("Warning", "Not allowed to delete becase the item is still used by following items: " + 
+                        GetAffectedItemsWarningString(items), "OK");
+                    args.Cancel = true;
                 }
                 else
                 {
-                    args.Cancel = true;
+                    if (EditorUtility.DisplayDialog("Confirm to delete",
+                            "Confirm to delete world [" + world.ID + "]?", "OK", "Cancel"))
+                    {
+                        args.Cancel = false;
+                        (_treeExplorer as WorldTreeExplorer).RemoveWorld(world);
+                        ScoreTreeExplorer scoreTreeExplorer = (GameKitEditorWindow.GetInstance().GetTreeExplorer(
+                            GameKitEditorWindow.TabType.Scores) as ScoreTreeExplorer);
+                        scoreTreeExplorer.RemoveWorld(world);
+                        GameKit.Config.UpdateMapsAndTree();
+                        GameKitEditorWindow.GetInstance().Repaint();
+                    }
+                    else
+                    {
+                        args.Cancel = true;
+                    }
                 }
             }
         }
@@ -202,18 +244,62 @@ namespace Beetle23
             Score score = listAdaptor[args.itemIndex];
             if (listAdaptor != null)
             {
+                ScorePropertyInspector scoreInspector = GameKitEditorWindow.GetInstance().GetPropertyInsepctor(
+                    GameKitEditorWindow.TabType.Scores) as ScorePropertyInspector;
+                IItem[] items = scoreInspector.GetAffectedItems(score.ID);
+                if (items.Length > 0)
+                {
+                    EditorUtility.DisplayDialog("Warning", "Not allowed to delete becase the item is still used by following items: " + 
+                        scoreInspector.GetAffectedItemsWarningString(items), "OK");
+                    args.Cancel = true;
+                }
+                else
+                {
+                    if (EditorUtility.DisplayDialog("Confirm to delete",
+                            "Confirm to delete score [" + score.ID + "]?", "OK", "Cancel"))
+                    {
+                        args.Cancel = false;
+                        GameKit.Config.UpdateMapsAndTree();
+                        GameKitEditorWindow.GetInstance().Repaint();
+
+                        ScoreTreeExplorer scoreTreeExplorer = GameKitEditorWindow.GetInstance().GetTreeExplorer(
+                            GameKitEditorWindow.TabType.Scores) as ScoreTreeExplorer;
+                        if (scoreTreeExplorer.CurrentSelectedItem == score)
+                        {
+                            scoreTreeExplorer.SelectItem(null);
+                        }
+                    }
+                    else
+                    {
+                        args.Cancel = true;
+                    }
+                }
+            }
+        }
+
+        private void OnInsertMission(object sender, ItemInsertedEventArgs args)
+        {
+            GameKit.Config.UpdateMapsAndTree();
+        }
+
+        private void OnRemoveMission(object sender, ItemRemovingEventArgs args)
+        {
+            GenericClassListAdaptor<Mission> listAdaptor = args.adaptor as GenericClassListAdaptor<Mission>;
+            Mission mission = listAdaptor[args.itemIndex];
+            if (listAdaptor != null)
+            {
                 if (EditorUtility.DisplayDialog("Confirm to delete",
-                        "Confirm to delete score [" + score.ID + "]?", "OK", "Cancel"))
+                        "Confirm to delete mission [" + mission.ID + "]?", "OK", "Cancel"))
                 {
                     args.Cancel = false;
                     GameKit.Config.UpdateMapsAndTree();
                     GameKitEditorWindow.GetInstance().Repaint();
 
-                    ScoreTreeExplorer scoreTreeExplorer = GameKitEditorWindow.GetInstance().GetTreeExplorer(
-                        GameKitEditorWindow.TabType.Scores) as ScoreTreeExplorer;
-                    if (scoreTreeExplorer.CurrentSelectedItem == score)
+                    MissionTreeExplorer missionTreeExplorer = GameKitEditorWindow.GetInstance().GetTreeExplorer(
+                        GameKitEditorWindow.TabType.Missions) as MissionTreeExplorer;
+                    if (missionTreeExplorer.CurrentSelectedItem == mission)
                     {
-                        scoreTreeExplorer.SelectItem(null);
+                        missionTreeExplorer.SelectItem(null);
                     }
                 }
                 else
@@ -226,6 +312,7 @@ namespace Beetle23
         private bool _isBasicPropertiesExpanded = true;
         private bool _isSubWorldExpanded = true;
         private bool _isScoreInfoExpanded = true;
+        private bool _isGateInfoExpanded = true;
         private bool _isMissionInfoExpanded = true;
 
         private ReorderableListControl _subWorldListControl;
@@ -237,8 +324,7 @@ namespace Beetle23
 
         private Vector2 _scrollPosition;
         private float _currentYOffset;
-        private SerializedProperty _currentWorldProperty;
-        private SerializedProperty _currentGateIDProperty;
+        private GatePropertyView _gateView;
 
         private const string IDInputControlName = "world_id_field";
     }

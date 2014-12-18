@@ -12,6 +12,31 @@ namespace Beetle23
         {
         }
 
+        public override IItem[] GetAffectedItems(string itemID)
+        {
+            List<IItem> items = new List<IItem>();
+            foreach (var world in GameKit.Config.Worlds)
+            {
+                if (world.Gate.IsGroup)
+                {
+                    foreach (var subgate in world.Gate.SubGates)
+                    {
+                        if (subgate.Type == GateType.ScoreGate && 
+                            subgate.RelatedItemID.Equals(itemID))
+                        {
+                            items.Add(subgate);
+                        }
+                    }
+                }
+                else if (world.Gate.Type == GateType.ScoreGate &&
+                         world.Gate.RelatedItemID.Equals(itemID))
+                {
+                    items.Add(world.Gate);
+                }
+            }
+            return items.ToArray();
+        }
+
         protected override void DoOnExplorerSelectionChange(IItem item)
         {
             if (item == null)

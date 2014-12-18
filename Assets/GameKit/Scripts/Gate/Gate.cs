@@ -10,8 +10,6 @@ namespace Beetle23
     {
         public Action OnOpened = delegate { };
 
-        public static bool AutoSave { get; set; }
-
         [SerializeField]
         public GateType Type;
         [SerializeField]
@@ -19,13 +17,11 @@ namespace Beetle23
         [SerializeField]
         public float RelatedNumber;
         [SerializeField]
-        public List<string> SubGateIDs;
+        public List<Gate> SubGates;
 
         public Gate()
         {
-            SubGateIDs = new List<string>();
-            _subGates = new List<Gate>();
-            RefreshSubGateList();
+            SubGates = new List<Gate>();
         }
 
         public bool IsGroup
@@ -37,8 +33,7 @@ namespace Beetle23
         {
             get
             {
-                return idx >= 0 && idx < SubGateIDs.Count && string.IsNullOrEmpty(SubGateIDs[idx]) ? null :
-                    GameKit.Config.GetGateByID(SubGateIDs[idx]);
+                return idx >= 0 && idx < SubGates.Count ? SubGates[idx] : null;
             }
         }
 
@@ -54,57 +49,7 @@ namespace Beetle23
         {
             get
             {
-                return GateStorage.IsOpen(ID);
-            }
-        }
-
-        public bool CanOpenNow
-        {
-            get
-            {
-                if (IsOpened)
-                {
-                    return false;
-                }
-                return Delegate.CanOpenNow;
-            }
-        }
-
-        public List<Gate> GetSubGates(bool refresh)
-        {
-            if (refresh)
-            {
-                RefreshSubGateList();
-            }
-            return _subGates;
-        }
-
-        public  bool TryOpen()
-        {
-            if (CanOpenNow)
-            {
-                ForceOpen(true);
-                return true;
-            }
-
-            return false;
-        }
-
-        public void ForceOpen(bool open)
-        {
-            if (IsOpened == open)
-            {
-                return;
-            }
-            GateStorage.SetOpen(ID, open);
-            if (open)
-            {
-                OnOpened();
-                Delegate.UnregisterEvents();
-            }
-            else
-            {
-                Delegate.RegisterEvents();
+                return Delegate.IsOpened;
             }
         }
 
@@ -120,16 +65,6 @@ namespace Beetle23
             }
         }
 
-        private void RefreshSubGateList()
-        {
-            _subGates.Clear();
-            for (int i = 0; i < SubGateIDs.Count; i++)
-            {
-                _subGates.Add(GameKit.Config.GetGateByID(SubGateIDs[i]));
-            }
-        }
-
         private GateDelegate _delegate;
-        private List<Gate> _subGates;
     }
 }

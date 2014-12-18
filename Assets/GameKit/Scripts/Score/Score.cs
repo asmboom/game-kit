@@ -11,6 +11,9 @@ namespace Beetle23
         public Action<float, float> OnRuntimeScoreChange = delegate { };
 
         [SerializeField]
+        public string Name;
+
+        [SerializeField]
         public float DefaultValue = 0;
 
         [SerializeField]

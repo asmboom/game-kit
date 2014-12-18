@@ -6,7 +6,6 @@
         VirtualItemCategory,
         World,
         Score,
-        Gate,
         Mission
     }
 }

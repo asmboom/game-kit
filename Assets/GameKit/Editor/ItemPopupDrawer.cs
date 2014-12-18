@@ -53,27 +53,6 @@ namespace Beetle23
         private VirtualItemType _virtualItemType;
     }
 
-    public class GatePopupDrawerDelegate : ItemPopupDrawerDelegate
-    {
-        public override void Init(object param)
-        {
-            _allowGroup = (bool)param;
-        }
-
-        public override void InsertIDs(List<string> itemIDs)
-        {
-            foreach (var gate in GameKit.Config.Gates)
-            {
-                if (!gate.IsGroup || _allowGroup)
-                {
-                    itemIDs.Add(gate.ID);
-                }
-            }
-        }
-
-        private bool _allowGroup;
-    }
-
     public class WorldPopupDrawerDelegate : ItemPopupDrawerDelegate
     {
         public override void Init(object param)
@@ -134,7 +113,7 @@ namespace Beetle23
             string[] itemIDs = GetItemIDs();
             if (itemIDs.Length == 0)
             {
-                EditorGUI.LabelField(position, label, None);
+                EditorGUI.LabelField(position, label, new GUIContent(None));
                 return string.Empty;
             }
             if (!string.IsNullOrEmpty(value))
@@ -188,8 +167,6 @@ namespace Beetle23
             {
                 case ItemType.VirtualItem:
                     return new VirtualItemPopupDrawerDelegate();
-                case ItemType.Gate:
-                    return new GatePopupDrawerDelegate();
                 case ItemType.Score:
                     return new ScorePopupDrawerDelegate();
                 case ItemType.World:

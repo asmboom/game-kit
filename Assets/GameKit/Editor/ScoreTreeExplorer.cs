@@ -6,11 +6,10 @@ namespace Beetle23
 {
     public class ScoreTreeExplorer : ItemTreeExplorer
     {
-        public ScoreTreeExplorer(GameKitConfig config)
-            : base(config)
+        public ScoreTreeExplorer()
         {
             _worldToExpanded = new Dictionary<World, bool>();
-            InitWorldToExpanded(config.RootWorld);
+            InitWorldToExpanded(GameKit.Config.RootWorld);
         }
 
         public void AddWorld(World world)
@@ -40,7 +39,7 @@ namespace Beetle23
 
         protected override void DoOnSelectItem(IItem item) 
         {
-            World w = _config.FindWorldThatScoreBelongsTo(item as Score);
+            World w = GameKit.Config.FindWorldThatScoreBelongsTo(item as Score);
             while (w != null)
             {
                 if (_worldToExpanded.ContainsKey(w))
@@ -57,23 +56,23 @@ namespace Beetle23
 
         protected override void DoExpandAll() 
         { 
-            ExpandWorld(_config.RootWorld, true);
+            ExpandWorld(GameKit.Config.RootWorld, true);
         }
 
         protected override void DoCollapseAll() 
         { 
-            CollapseWorld(_config.RootWorld, true);
+            CollapseWorld(GameKit.Config.RootWorld, true);
         }
 
         protected override void DoDraw(Rect position, string searchText) 
         { 
             if (string.IsNullOrEmpty(searchText))
             {
-                DrawWorldScores(position, _config.RootWorld);
+                DrawWorldScores(position, GameKit.Config.RootWorld);
             }
             else
             {
-                foreach (var world in _config.Worlds)
+                foreach (var world in GameKit.Config.Worlds)
                 {
                     foreach (var score in world.Scores)
                     {

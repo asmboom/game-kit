@@ -11,9 +11,8 @@ namespace Beetle23
         public Action<IItem> OnSelectionChange = delegate { };
         public IItem CurrentSelectedItem { get; protected set; }
 
-        public ItemTreeExplorer(GameKitConfig config)
+        public ItemTreeExplorer()
         {
-            _config = config;
             _searchText = string.Empty;
         }
 
@@ -33,7 +32,7 @@ namespace Beetle23
 
             if (GUILayout.Button("Check References", GUILayout.Width(185)))
             {
-                GameKitConfigEditor.CheckIfAnyInvalidRef(_config);
+                GameKitConfigEditor.CheckIfAnyInvalidRef(GameKit.Config);
             }
 
             GUILayout.BeginHorizontal();
@@ -93,7 +92,6 @@ namespace Beetle23
         protected abstract void DoCollapseAll();
         protected abstract void DoDraw(Rect position, string search);
 
-        protected GameKitConfig _config;
         private Vector2 _scrollPosition;
         private string _searchText;
     }

@@ -8,41 +8,37 @@ namespace Beetle23
 {
     public class VirtualItemsTreeExplorer : ItemTreeExplorer
     {
-        public VirtualItemsTreeExplorer(GameKitConfig config)
-            : base(config)
+        public VirtualItemsTreeExplorer()
         {
-            _virtualCurrencyListAdaptor = new GenericClassListAdaptor<VirtualCurrency>(config.VirtualCurrencies, 20,
+            _virtualCurrencyListAdaptor = new GenericClassListAdaptor<VirtualCurrency>(GameKit.Config.VirtualCurrencies, 20,
                                     () => { return new VirtualCurrency(); },
                                     DrawItem<VirtualCurrency>);
-            _virtualCurrencyListAdaptor.OnItemRemoved += VirtualItemsEditUtil.UpdateDisplayedOptions;
             _virtualCurrencyListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand);
             _virtualCurrencyListControl.ItemRemoving += OnItemRemoving<VirtualCurrency>;
             _virtualCurrencyListControl.ItemInserted += OnItemInsert<VirtualCurrency>;
 
-            _singleuseItemListAdaptor = new GenericClassListAdaptor<SingleUseItem>(config.SingleUseItems, 20,
+            _singleuseItemListAdaptor = new GenericClassListAdaptor<SingleUseItem>(GameKit.Config.SingleUseItems, 20,
                                     () => { return new SingleUseItem(); },
                                     DrawItem<SingleUseItem>);
-            _singleuseItemListAdaptor.OnItemRemoved += VirtualItemsEditUtil.UpdateDisplayedOptions;
             _singleuseItemListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand);
             _singleuseItemListControl.ItemRemoving += OnItemRemoving<SingleUseItem>;
             _singleuseItemListControl.ItemInserted += OnItemInsert<SingleUseItem>;
 
-            _lifetimeItemListAdaptor = new GenericClassListAdaptor<LifeTimeItem>(config.LifeTimeItems, 20,
+            _lifetimeItemListAdaptor = new GenericClassListAdaptor<LifeTimeItem>(GameKit.Config.LifeTimeItems, 20,
                                     () => { return new LifeTimeItem(); },
                                     DrawItem<LifeTimeItem>);
-            _lifetimeItemListAdaptor.OnItemRemoved += VirtualItemsEditUtil.UpdateDisplayedOptions;
             _lifetimeItemListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand);
             _lifetimeItemListControl.ItemRemoving += OnItemRemoving<LifeTimeItem>;
             _lifetimeItemListControl.ItemInserted += OnItemInsert<LifeTimeItem>;
 
-            _packListAdaptor = new GenericClassListAdaptor<VirtualItemPack>(config.ItemPacks, 20,
+            _packListAdaptor = new GenericClassListAdaptor<VirtualItemPack>(GameKit.Config.ItemPacks, 20,
                                     () => { return new VirtualItemPack(); },
                                     DrawItem<VirtualItemPack>);
             _packListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand);
             _packListControl.ItemRemoving += OnItemRemoving<VirtualItemPack>;
             _packListControl.ItemInserted += OnItemInsert<VirtualItemPack>;
 
-            _categoryListAdaptor = new GenericClassListAdaptor<VirtualCategory>(config.Categories, 20,
+            _categoryListAdaptor = new GenericClassListAdaptor<VirtualCategory>(GameKit.Config.Categories, 20,
                                     () => { return new VirtualCategory(); },
                                     DrawItem<VirtualCategory>);
             _categoryListControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand);
@@ -51,9 +47,27 @@ namespace Beetle23
 
             _upgradesListAdaptors = new Dictionary<VirtualItem, UpgradeItemListAdaptor>();
             _upgradesListControls = new Dictionary<VirtualItem, ReorderableListControl>();
-            foreach (var item in _config.VirtualItems)
+            foreach (var item in GameKit.Config.VirtualItems)
             {
                 AddUpgradeListForItem(item);
+            }
+        }
+
+        public void OnVirtualItemUpgradesChange(VirtualItem item)
+        {
+            if (item.HasUpgrades)
+            {
+                if (!_upgradesListAdaptors.ContainsKey(item))
+                {
+                    AddUpgradeListForItem(item);
+                }
+            }
+            else
+            {
+                if (_upgradesListAdaptors.ContainsKey(item))
+                {
+                    RemoveUpgradeListForItem(item);
+                }
             }
         }
 
@@ -115,7 +129,7 @@ namespace Beetle23
 
         private void DrawSearch(Rect position, string searchText)
         {
-            foreach (var item in _config.VirtualItems)
+            foreach (var item in GameKit.Config.VirtualItems)
             {
                 DrawItemIfMathSearch(searchText, item, position.width);
                 foreach (var upgrade in item.Upgrades)
@@ -123,7 +137,7 @@ namespace Beetle23
                     DrawItemIfMathSearch(searchText, upgrade, position.width);
                 }
             }
-            foreach (var category in _config.Categories)
+            foreach (var category in GameKit.Config.Categories)
             {
                 DrawItemIfMathSearch(searchText, category, position.width);
             }
@@ -168,26 +182,12 @@ namespace Beetle23
                 GameKitEditorDrawUtil.FoldoutStyle);
             if (_isUpgradeItemExpanded)
             {
-                foreach (var item in _config.VirtualItems)
+                foreach (var item in GameKit.Config.VirtualItems)
                 {
-                    if (item.HasUpgrades)
+                    if (item.HasUpgrades && _upgradesListAdaptors.ContainsKey(item))
                     {
-                        if (_upgradesListAdaptors.ContainsKey(item))
-                        {
-                            GUILayout.Label(item.ID, GameKitEditorDrawUtil.ItemCenterLabelStyle);
-                            _upgradesListControls[item].Draw(_upgradesListAdaptors[item]);
-                        }
-                        else
-                        {
-                            AddUpgradeListForItem(item);
-                        }
-                    }
-                    else
-                    {
-                        if (_upgradesListAdaptors.ContainsKey(item))
-                        {
-                            RemoveUpgradeListForItem(item);
-                        }
+                        GUILayout.Label(item.ID, GameKitEditorDrawUtil.ItemCenterLabelStyle);
+                        _upgradesListControls[item].Draw(_upgradesListAdaptors[item]);
                     }
                 }
                 EditorGUILayout.Space();
@@ -234,16 +234,28 @@ namespace Beetle23
             T item = listAdaptor[args.itemIndex];
             if (listAdaptor != null)
             {
-                if (EditorUtility.DisplayDialog("Confirm to delete",
-                        "Confirm to delete item [" + item.ID + "]?", "OK", "Cancel"))
+                VirtualItemsPropertyInspector virtualItemInspector = GameKitEditorWindow.GetInstance().GetPropertyInsepctor(
+                    GameKitEditorWindow.TabType.VirtualItems) as VirtualItemsPropertyInspector;
+                IItem[] items = virtualItemInspector.GetAffectedItems(item.ID);
+                if (items.Length > 0)
                 {
-                    args.Cancel = false;
-                    SelectItem(null);
-                    GameKitEditorWindow.GetInstance().Repaint();
+                    EditorUtility.DisplayDialog("Warning", "Not allowed to delete becase the item is still used by following items: " + 
+                        virtualItemInspector.GetAffectedItemsWarningString(items), "OK");
+                    args.Cancel = true;
                 }
                 else
                 {
-                    args.Cancel = true;
+                    if (EditorUtility.DisplayDialog("Confirm to delete",
+                            "Confirm to delete item [" + item.ID + "]?", "OK", "Cancel"))
+                    {
+                        args.Cancel = false;
+                        SelectItem(null);
+                        GameKitEditorWindow.GetInstance().Repaint();
+                    }
+                    else
+                    {
+                        args.Cancel = true;
+                    }
                 }
             }
         }

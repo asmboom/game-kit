@@ -13,6 +13,9 @@ namespace Beetle23
                 ReorderableListFlags.ShowIndices);
             _listControl.ItemInserted += OnItemInsert;
             _listControl.ItemRemoving += OnItemRemoving;
+
+            _purchasePopupDrawers = new List<ItemPopupDrawer>();
+            UpdatePurchasePopupDrawers();
         }
 
         public PurchasableItem CurrentPurchasableItem
@@ -30,8 +33,8 @@ namespace Beetle23
             {
                 _listAdaptor = new GenericClassListAdaptor<Purchase>(item.PurchaseInfo, 18,
                     CreatePurchase, DrawOnePurchase);
-                _currentPurchasableItemProperty = GameKitEditorWindow.SerializedConfig.FindProperty(
-                    GameKitEditorWindow.GetInstance().FindVirtualItemPropertyPath(item));
+
+                UpdatePurchasePopupDrawers();
             }
         }
 
@@ -68,9 +71,15 @@ namespace Beetle23
             return new Purchase();
         }
 
-        private void OnItemRemoving(object sender, ItemRemovingEventArgs args) { }
+        private void OnItemRemoving(object sender, ItemRemovingEventArgs args) 
+        {
+            UpdatePurchasePopupDrawers();
+        }
 
-        private void OnItemInsert(object sender, ItemInsertedEventArgs args) { }
+        private void OnItemInsert(object sender, ItemInsertedEventArgs args) 
+        {
+            UpdatePurchasePopupDrawers();
+        }
 
         private Purchase DrawOnePurchase(Rect position, Purchase purchase, int index)
         {
@@ -87,17 +96,11 @@ namespace Beetle23
             }
             else
             {
-                SerializedProperty currencyProperty = _currentPurchasableItemProperty.FindPropertyRelative(
-                    string.Format("PurchaseInfo.Array.data[{0}].VirtualCurrencyID", index));
-                if (currencyProperty != null)
+                ItemPopupDrawer drawer = index < _purchasePopupDrawers.Count ? _purchasePopupDrawers[index] : null;
+                if (drawer != null)
                 {
-                    EditorGUI.PropertyField(new Rect(xOffset, position.y, position.width * PurchaseAssociatedWidth - 1, position.height),
-                        currencyProperty, GUIContent.none);
-                    purchase.VirtualCurrencyID = currencyProperty.stringValue;
-                }
-                else
-                {
-                    GameKitEditorWindow.SerializedConfig.ApplyModifiedProperties();
+                    purchase.VirtualCurrencyID = drawer.Draw(new Rect(xOffset, position.y, 
+                        position.width * PurchaseAssociatedWidth - 1, position.height), purchase.VirtualCurrencyID, GUIContent.none);
                 }
             }
             xOffset += position.width * PurchaseAssociatedWidth;
@@ -128,14 +131,27 @@ namespace Beetle23
             }
         }
 
+        private void UpdatePurchasePopupDrawers()
+        {
+            _purchasePopupDrawers.Clear();
+            if (_currentPurchasableItem != null)
+            {
+                for (int i = 0; i < _currentPurchasableItem.PurchaseInfo.Count; i++)
+                {
+                    _purchasePopupDrawers.Add(new ItemPopupDrawer(ItemType.VirtualItem,
+                        false, VirtualItemType.VirtualCurrency));
+                }
+            }
+        }
+
         private ReorderableListControl _listControl;
         private GenericClassListAdaptor<Purchase> _listAdaptor;
         private PurchasableItem _currentPurchasableItem;
-        private SerializedProperty _currentPurchasableItemProperty;
+        private List<ItemPopupDrawer> _purchasePopupDrawers;
+        private Vector2 _scrollPosition;
 
         private const float PurchaseTypeWidth = 0.4f;
         private const float PurchaseAssociatedWidth = 0.4f;
         private const float PurchasePriceWidth = 0.2f;
-        private Vector2 _scrollPosition;
     }
 }

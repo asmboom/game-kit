@@ -14,7 +14,8 @@ namespace Beetle23
             _listControl.ItemInserted += OnItemInsert;
             _listControl.ItemRemoving += OnItemRemoving;
 
-            UpdateItemIndices(true);
+            _itemPopupDrawers = new List<ItemPopupDrawer>();
+            UpdateItemPopupDrawers();
         }
 
         public void UpdateDisplayItem(VirtualItemPack pack)
@@ -25,7 +26,7 @@ namespace Beetle23
                 _listAdaptor = new GenericClassListAdaptor<PackElement>(pack.PackElements, 18,
                     CreatePackElement, DrawPackElement);
 
-                UpdateItemIndices(true);
+                UpdateItemPopupDrawers();
             }
         }
 
@@ -61,12 +62,12 @@ namespace Beetle23
 
         private void OnItemRemoving(object sender, ItemRemovingEventArgs args)
         {
-            UpdateItemIndices(true);
+            UpdateItemPopupDrawers();
         }
 
         private void OnItemInsert(object sender, ItemInsertedEventArgs args)
         {
-            UpdateItemIndices(false);
+            UpdateItemPopupDrawers();
         }
 
         public PackElement DrawPackElement(Rect position, PackElement element, int index)
@@ -76,41 +77,13 @@ namespace Beetle23
             return element;
         }
 
-        public void UpdateItemIndices(bool needWarning)
-        {
-            if (_listAdaptor != null)
-            {
-                _itemIndices = new List<int>();
-
-                for (var i = 0; i < _listAdaptor.Count; i++)
-                {
-                    if (_listAdaptor[i].Item == null && VirtualItemsEditUtil.DisplayedItemIDs.Length > 0)
-                    {
-                        VirtualItem item = GameKit.Config.GetVirtualItemByID(VirtualItemsEditUtil.DisplayedItemIDs[0]);
-                        if (item != null && needWarning)
-                        {
-                            Debug.LogWarning("[" + _currentDisplayedPack.ID + "]'s [" + (i + 1) + 
-                                "] item is null, correct it with default item [" + item.ID + "].");
-                        }
-                        _listAdaptor[i].ItemID = item.ID;
-                    }
-                    _itemIndices.Add(_listAdaptor[i].Item != null ?
-                        VirtualItemsEditUtil.GetItemIndexById(_listAdaptor[i].Item.ID) : 0);
-                }
-            }
-        }
-
         private void DrawVirtualItem(Rect position, PackElement packElement, int index)
         {
-            if (index < _itemIndices.Count)
+            ItemPopupDrawer drawer = index < _itemPopupDrawers.Count ? _itemPopupDrawers[index] : null;
+            if (drawer != null)
             {
-                int newIndex = EditorGUI.Popup(new Rect(position.x, position.y, position.width * 0.5f - 1, position.height),
-                    _itemIndices[index], VirtualItemsEditUtil.DisplayedItemIDs);
-                if (newIndex != _itemIndices[index])
-                {
-                    VirtualItemsEditUtil.UpdatePackElementItemByIndex(packElement, newIndex);
-                }
-                _itemIndices[index] = newIndex;
+                packElement.ItemID = drawer.Draw(new Rect(position.x, position.y, position.width * 0.5f - 1, position.height), 
+                    packElement.ItemID, GUIContent.none);
             }
         }
 
@@ -129,10 +102,23 @@ namespace Beetle23
             }
         }
 
+        private void UpdateItemPopupDrawers()
+        {
+            _itemPopupDrawers.Clear();
+            if (_currentDisplayedPack != null)
+            {
+                for (int i = 0; i < _currentDisplayedPack.PackElements.Count; i++)
+                {
+                    _itemPopupDrawers.Add(new ItemPopupDrawer(ItemType.VirtualItem,
+                        false, VirtualItemType.VirtualCurrency | VirtualItemType.SingleUseItem | VirtualItemType.LifeTimeItem));
+                }
+            }
+        }
+
         private VirtualItemPack _currentDisplayedPack;
         private ReorderableListControl _listControl;
         private GenericClassListAdaptor<PackElement> _listAdaptor;
-        private List<int> _itemIndices;
+        private List<ItemPopupDrawer> _itemPopupDrawers;
         private Vector2 _scrollPosition;
     }
 }

@@ -39,6 +39,97 @@ namespace Beetle23
             _upgradeListControl.ItemRemoving += OnRemoveUpgradeItem;
         }
 
+        public override IItem[] GetAffectedItems(string itemID)
+        {
+            List<IItem> items = new List<IItem>();
+
+            // check virtual currency id in purchase
+            foreach (var item in GameKit.Config.VirtualItems)
+            {
+                if (item is PurchasableItem)
+                {
+                    PurchasableItem purchasableItem = item as PurchasableItem;
+                    foreach (var purchase in purchasableItem.PurchaseInfo)
+                    {
+                        if (!purchase.IsMarketPurchase && purchase.VirtualCurrencyID.Equals(itemID))
+                        {
+                            items.Add(purchasableItem);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // check item id in pack
+            foreach (var pack in GameKit.Config.ItemPacks)
+            {
+                foreach (var packElement in pack.PackElements)
+                {
+                    if (packElement.ItemID.Equals(itemID))
+                    {
+                        items.Add(pack);
+                        break;
+                    }
+                }
+            }
+
+            // check item id in category
+            foreach (var category in GameKit.Config.Categories)
+            {
+                foreach (var id in category.ItemIDs)
+                {
+                    if (id.Equals(itemID))
+                    {
+                        items.Add(category);
+                        break;
+                    }
+                }
+            }
+
+            // check gates && scores & mission/rewards
+            foreach (var world in GameKit.Config.Worlds)
+            {
+                if (world.Gate.IsGroup)
+                {
+                    foreach (var subgate in world.Gate.SubGates)
+                    {
+                        if ((subgate.Type == GateType.VirtualItemGate || subgate.Type == GateType.PurchasableGate) && 
+                            subgate.RelatedItemID.Equals(itemID))
+                        {
+                            items.Add(subgate);
+                        }
+                    }
+                }
+                else if ((world.Gate.Type == GateType.VirtualItemGate || world.Gate.Type == GateType.PurchasableGate) &&
+                         world.Gate.RelatedItemID.Equals(itemID))
+                {
+                    items.Add(world.Gate);
+                }
+
+                foreach (var score in world.Scores)
+                {
+                    if (score.IsVirtualItemScore &&
+                        score.RelatedVirtualItemID.Equals(itemID))
+                    {
+                        items.Add(score);
+                    }
+                }
+
+                foreach (var mission in world.Missions)
+                {
+                    foreach (var reward in mission.Rewards)
+                    {
+                        if (reward.Type == RewardType.VirtualItemReward &&
+                            reward.RelatedItemID.Equals(itemID))
+                        {
+                            items.Add(reward);
+                        }
+                    }
+                }
+            }
+            return items.ToArray();
+        }
+
         protected override void DoOnExplorerSelectionChange(IItem item)
         {
             if (item is VirtualItem)
@@ -204,6 +295,8 @@ namespace Beetle23
                 upgradeIndex < 100 ? "0" + upgradeIndex : upgradeIndex.ToString();
             GenericClassListAdaptor<UpgradeItem> listAdaptor = args.adaptor as GenericClassListAdaptor<UpgradeItem>;
             listAdaptor[args.itemIndex].ID = string.Format("{0}-upgrade{1}", _currentDisplayItem.ID, suffix);
+
+            (_treeExplorer as VirtualItemsTreeExplorer).OnVirtualItemUpgradesChange(_currentDisplayItem as VirtualItem);
         }
 
         private void OnRemoveUpgradeItem(object sender, ItemRemovingEventArgs args)
@@ -216,6 +309,8 @@ namespace Beetle23
                         "Confirm to delete upgrade [" + upgradeItem.ID + "]?", "OK", "Cancel"))
                 {
                     args.Cancel = false;
+
+                    (_treeExplorer as VirtualItemsTreeExplorer).OnVirtualItemUpgradesChange(_currentDisplayItem as VirtualItem);
                 }
                 else
                 {

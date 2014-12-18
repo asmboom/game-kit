@@ -2,16 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
+using Rotorz.ReorderableList;
 
 namespace Beetle23
 {
-	public class MissionTreeExplorer : ItemTreeExplorer
-	{
-        public MissionTreeExplorer(GameKitConfig config)
-            : base(config)
+    public class MissionTreeExplorer : ItemTreeExplorer
+    {
+        public MissionTreeExplorer()
         {
             _worldToExpanded = new Dictionary<World, bool>();
-            InitWorldToExpanded(config.RootWorld);
+            InitWorldToExpanded(GameKit.Config.RootWorld);
         }
 
         public void AddWorld(World world)
@@ -39,9 +39,9 @@ namespace Beetle23
             }
         }
 
-        protected override void DoOnSelectItem(IItem item) 
+        protected override void DoOnSelectItem(IItem item)
         {
-            World w = _config.FindWorldThatMissionBelongsTo(item as Mission);
+            World w = GameKit.Config.FindWorldThatMissionBelongsTo(item as Mission);
             while (w != null)
             {
                 if (_worldToExpanded.ContainsKey(w))
@@ -56,25 +56,25 @@ namespace Beetle23
             }
         }
 
-        protected override void DoExpandAll() 
-        { 
-            ExpandWorld(_config.RootWorld, true);
+        protected override void DoExpandAll()
+        {
+            ExpandWorld(GameKit.Config.RootWorld, true);
         }
 
-        protected override void DoCollapseAll() 
-        { 
-            CollapseWorld(_config.RootWorld, true);
+        protected override void DoCollapseAll()
+        {
+            CollapseWorld(GameKit.Config.RootWorld, true);
         }
 
-        protected override void DoDraw(Rect position, string searchText) 
+        protected override void DoDraw(Rect position, string searchText)
         {
             if (string.IsNullOrEmpty(searchText))
             {
-                DrawWorldMissions(position, _config.RootWorld);
+                DrawWorldMissions(position, GameKit.Config.RootWorld);
             }
             else
             {
-                foreach (var world in _config.Worlds)
+                foreach (var world in GameKit.Config.Worlds)
                 {
                     foreach (var mission in world.Missions)
                     {
@@ -167,6 +167,15 @@ namespace Beetle23
             }
         }
 
+        private Challenge DrawChallenge(Rect position, Challenge item, int index)
+        {
+            if (GUI.Button(position, item.ID, GetItemCenterStyle(item)))
+            {
+                SelectItem(item);
+            }
+            return item;
+        }
+
         private Dictionary<World, bool> _worldToExpanded;
-	}
+    }
 }

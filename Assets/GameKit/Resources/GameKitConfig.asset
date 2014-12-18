@@ -13,290 +13,48 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   VirtualCurrencies:
   - _id: coin
-    _name: 
+    Name: 
     Description: 
-    Icon: {fileID: 2800000, guid: 1ab94778d0f3ff54abaa137b5cbd318b, type: 3}
+    Icon: {fileID: 0}
     Upgrades: []
     Extend: {fileID: 0}
   - _id: gem
-    _name: 
-    Description: 
-    Icon: {fileID: 2800000, guid: dcb7d8ae833ea234889a3480f79cbf8b, type: 3}
-    Upgrades: []
-    Extend: {fileID: 0}
-  SingleUseItems:
-  - _id: energy
-    _name: 
+    Name: 
     Description: 
     Icon: {fileID: 0}
     Upgrades: []
     Extend: {fileID: 0}
-    PurchaseInfo: []
+  SingleUseItems: []
   LifeTimeItems:
-  - _id: coin-magnet
-    _name: 
-    Description: 
-    Icon: {fileID: 2800000, guid: eeb95c17dd31cd24980bbbf489457a46, type: 3}
-    Upgrades:
-    - _id: coin-magnet-upgrade001
-      _name: 
-      Description: Increase duration to 6 seconds
-      Icon: {fileID: 0}
-      Upgrades: []
-      Extend: {fileID: 0}
-      PurchaseInfo: []
-    - _id: coin-magnet-upgrade002
-      _name: 
-      Description: Increase duration to 9 seconds
-      Icon: {fileID: 0}
-      Upgrades: []
-      Extend: {fileID: 0}
-      PurchaseInfo: []
-    - _id: coin-magnet-upgrade003
-      _name: 
-      Description: Increase duration to 12 seconds
-      Icon: {fileID: 0}
-      Upgrades: []
-      Extend: {fileID: 0}
-      PurchaseInfo: []
-    - _id: coin-magnet-upgrade004
-      _name: 
-      Description: Increase duration to 15 seconds
-      Icon: {fileID: 0}
-      Upgrades: []
-      Extend: {fileID: 0}
-      PurchaseInfo: []
-    Extend: {fileID: 0}
-    PurchaseInfo: []
-    IsEquippable: 0
-  - _id: shield
-    _name: 
-    Description: 
-    Icon: {fileID: 2800000, guid: fcceb30cc6f274241be3e2c6ba5e4e09, type: 3}
-    Upgrades:
-    - _id: shield-upgrade001
-      _name: 
-      Description: 
-      Icon: {fileID: 0}
-      Upgrades: []
-      Extend: {fileID: 0}
-      PurchaseInfo: []
-    - _id: shield-upgrade002
-      _name: 
-      Description: 
-      Icon: {fileID: 0}
-      Upgrades: []
-      Extend: {fileID: 0}
-      PurchaseInfo: []
-    - _id: shield-upgrade003
-      _name: 
-      Description: 
-      Icon: {fileID: 0}
-      Upgrades: []
-      Extend: {fileID: 0}
-      PurchaseInfo: []
-    - _id: shield-upgrade004
-      _name: 
-      Description: 
-      Icon: {fileID: 0}
-      Upgrades: []
-      Extend: {fileID: 0}
-      PurchaseInfo: []
-    Extend: {fileID: 0}
-    PurchaseInfo: []
-    IsEquippable: 0
-  - _id: score-multiplier
-    _name: 
-    Description: 
-    Icon: {fileID: 2800000, guid: adbce9686d74ebf4b9098686c01b62dc, type: 3}
-    Upgrades:
-    - _id: score-multiplier-upgrade001
-      _name: 
-      Description: 
-      Icon: {fileID: 0}
-      Upgrades: []
-      Extend: {fileID: 0}
-      PurchaseInfo: []
-    - _id: score-multiplier-upgrade002
-      _name: 
-      Description: 
-      Icon: {fileID: 0}
-      Upgrades: []
-      Extend: {fileID: 0}
-      PurchaseInfo: []
-    - _id: score-multiplier-upgrade003
-      _name: 
-      Description: 
-      Icon: {fileID: 0}
-      Upgrades: []
-      Extend: {fileID: 0}
-      PurchaseInfo: []
-    - _id: score-multiplier-upgrade004
-      _name: 
-      Description: 
-      Icon: {fileID: 0}
-      Upgrades: []
-      Extend: {fileID: 0}
-      PurchaseInfo: []
-    Extend: {fileID: 0}
-    PurchaseInfo: []
-    IsEquippable: 0
-  - _id: health
-    _name: 
-    Description: 
-    Icon: {fileID: 2800000, guid: a7297878f46849e4b8268ffedc390762, type: 3}
-    Upgrades:
-    - _id: health-upgrade001
-      _name: 
-      Description: 
-      Icon: {fileID: 0}
-      Upgrades: []
-      Extend: {fileID: 0}
-      PurchaseInfo: []
-    - _id: health-upgrade002
-      _name: 
-      Description: 
-      Icon: {fileID: 0}
-      Upgrades: []
-      Extend: {fileID: 0}
-      PurchaseInfo: []
-    - _id: health-upgrade003
-      _name: 
-      Description: 
-      Icon: {fileID: 0}
-      Upgrades: []
-      Extend: {fileID: 0}
-      PurchaseInfo: []
-    - _id: health-upgrade004
-      _name: 
-      Description: 
-      Icon: {fileID: 0}
-      Upgrades: []
-      Extend: {fileID: 0}
-      PurchaseInfo: []
-    Extend: {fileID: 0}
-    PurchaseInfo: []
-    IsEquippable: 0
-  - _id: infinite-energy
-    _name: 
+  - _id: wuzheng
+    Name: 
     Description: 
     Icon: {fileID: 0}
     Upgrades: []
     Extend: {fileID: 0}
     PurchaseInfo: []
     IsEquippable: 0
-  ItemPacks:
-  - _id: coin-pack
-    _name: 
+  - _id: wuxing
+    Name: 
     Description: 
     Icon: {fileID: 0}
     Upgrades: []
     Extend: {fileID: 0}
     PurchaseInfo: []
-    PackElements: []
-  - _id: '@3QyajaihlE'
-    _name: 
-    Description: 
-    Icon: {fileID: 0}
-    Upgrades: []
-    Extend: {fileID: 0}
-    PurchaseInfo: []
-    PackElements: []
-  Categories:
-  - _id: powerups
-    _name: 
-    ItemIDs:
-    - coin-magnet
-    - shield
-    - score-multiplier
-    - health
+    IsEquippable: 0
+  ItemPacks: []
+  Categories: []
   RootWorld:
     _id: root
-    _name: 
+    Name: 
     Description: 
-    GateID: 
-    SubWorlds:
-    - _id: chapter-01
-      _name: 
-      Description: 
-      GateID: 
-      SubWorlds: []
-      Scores: []
-      Missions: []
-      Extend: {fileID: 0}
-    - _id: chapter-02
-      _name: 
-      Description: 
-      GateID: 
-      SubWorlds: []
-      Scores: []
-      Missions: []
-      Extend: {fileID: 0}
-    - _id: chapter-03
-      _name: 
-      Description: 
-      GateID: 
-      SubWorlds: []
-      Scores: []
-      Missions: []
-      Extend: {fileID: 0}
-    Scores:
-    - _id: best-distance
-      _name: 
-      DefaultValue: 0
-      IsHigherBetter: 1
-      EnableClamp: 0
-      Min: 0
-      Max: 999999
-      RelatedVirtualItemID: 
-    - _id: test
-      _name: 
-      DefaultValue: 0
-      IsHigherBetter: 1
-      EnableClamp: 1
-      Min: 0
-      Max: 20
-      RelatedVirtualItemID: 
-    - _id: test2
-      _name: 
-      DefaultValue: 0
-      IsHigherBetter: 1
-      EnableClamp: 1
-      Min: 0
-      Max: 10
-      RelatedVirtualItemID: 
-    Missions:
-    - _id: '@3O9Zjd@kC'
-      _name: 
-      Description: 
-      BadgeIcon: {fileID: 0}
-      Rewards: []
-      RelatedGateID: score-gate
+    Gate:
+      _id: -3SieKhc3ic5
+      Type: 0
+      RelatedItemID: 
+      RelatedNumber: 0
+      SubGates: []
+    SubWorlds: []
+    Scores: []
+    Missions: []
     Extend: {fileID: 0}
-  Gates:
-  - _id: score-gate
-    _name: 
-    Type: 0
-    RelatedItemID: best-distance
-    RelatedNumber: 100
-    SubGateIDs: []
-  - _id: virtual-item-gate
-    _name: 
-    Type: 1
-    RelatedItemID: coin
-    RelatedNumber: 100
-    SubGateIDs: []
-  - _id: world-gate
-    _name: 
-    Type: 2
-    RelatedItemID: chapter-01
-    RelatedNumber: 0
-    SubGateIDs: []
-  - _id: list
-    _name: 
-    Type: 4
-    RelatedItemID: best-distance
-    RelatedNumber: 0
-    SubGateIDs:
-    - score-gate
-  Challenges: []

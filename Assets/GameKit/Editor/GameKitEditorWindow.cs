@@ -18,7 +18,6 @@ namespace Beetle23
             Worlds = 1,
             Scores = 2,
             Missions = 3,
-            Gates = 4,
         }
 
         public static GameKitEditorWindow GetInstance()
@@ -34,6 +33,10 @@ namespace Beetle23
         {
             get
             {
+                if (GetInstance()._serializedConfig == null)
+                {
+                    GetInstance()._serializedConfig = new SerializedObject(GameKit.Config);
+                }
                 return GetInstance()._serializedConfig;
             }
         }
@@ -45,6 +48,18 @@ namespace Beetle23
             if (_treeExplorers.ContainsKey(tabtype))
             {
                 return _treeExplorers[tabtype];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public ItemPropertyInspector GetPropertyInsepctor(TabType tabtype)
+        {
+            if (_propertyInspectors.ContainsKey(tabtype))
+            {
+                return _propertyInspectors[tabtype];
             }
             else
             {
@@ -96,116 +111,19 @@ namespace Beetle23
             return string.Empty;
         }
 
-        public string FindGatePropertyPath(Gate gate)
-        {
-            for (int i = 0; i < _config.Gates.Count; i++)
-            {
-                if (_config.Gates[i] == gate)
-                {
-                    return string.Format("Gates.Array.data[{0}]", i);
-                }
-            }
-
-            Debug.LogError("FindGatePropertyPath::Code shoul never run here.");
-            return string.Empty;
-        }
-
-        public string FindVirtualItemPropertyPath(VirtualItem item)
-        {
-            if (item is VirtualCurrency)
-            {
-                for (int i = 0; i < _config.VirtualCurrencies.Count; i++)
-                {
-                    if (_config.VirtualCurrencies[i] == item)
-                    {
-                        return string.Format("VirtualCurrencies.Array.data[{0}]", i);
-                    }
-                }
-            }
-            else if (item is SingleUseItem)
-            {
-                for (int i = 0; i < _config.SingleUseItems.Count; i++)
-                {
-                    if (_config.SingleUseItems[i] == item)
-                    {
-                        return string.Format("SingleUseItems.Array.data[{0}]", i);
-                    }
-                }
-            }
-            else if (item is LifeTimeItem)
-            {
-                for (int i = 0; i < _config.LifeTimeItems.Count; i++)
-                {
-                    if (_config.LifeTimeItems[i] == item)
-                    {
-                        return string.Format("LifeTimeItems.Array.data[{0}]", i);
-                    }
-                }
-            }
-            else if (item is VirtualItemPack)
-            {
-                for (int i = 0; i < _config.ItemPacks.Count; i++)
-                {
-                    if (_config.ItemPacks[i] == item)
-                    {
-                        return string.Format("ItemPacks.Array.data[{0}]", i);
-                    }
-                }
-            }
-            else if (item is UpgradeItem)
-            {
-                VirtualItem relatedItem = (item as UpgradeItem).RelatedItem;
-                string path = FindVirtualItemPropertyPath(relatedItem);
-                for (int i = 0; i < relatedItem.Upgrades.Count; i++)
-                {
-                    if (relatedItem.Upgrades[i] == item)
-                    {
-                        return path + string.Format(".Upgrades.Array.data[{0}]", i);
-                    }
-                }
-            }
-
-            Debug.LogError("FindVirtualItemPropertyPath::Code shoul never run here.");
-            return string.Empty;
-        }
-
-        public string FindPurchasePropertyPath(PurchasableItem purchasableItem, Purchase purchase)
-        {
-            string path = FindVirtualItemPropertyPath(purchasableItem);
-            for (int i = 0; i < purchasableItem.PurchaseInfo.Count; i++)
-            {
-                if (purchasableItem.PurchaseInfo[i] == purchase)
-                {
-                    return path + string.Format(".PurchaseInfo.Array.data[{0}]", i);
-                }
-            }
-
-            Debug.LogError("FindPurchasePropertyPath::Code shoul never run here.");
-            return string.Empty;
-        }
-
         private void OnEnable()
         {
-            _sections = new string[] { "Virtual Items", "Worlds", "Scores", "Missions", "Gates" };
+            _sections = new string[] { "Virtual Items", "Worlds", "Scores", "Missions" };
 
             GetConfigAndCreateIfNonExist();
 
-            if (_config == null)
-            {
-                _config = GameKit.Config;
-            }
-            if (_serializedConfig == null)
-            {
-                _serializedConfig = new SerializedObject(_config);
-            }
             if (_treeExplorers == null)
             {
                 _treeExplorers = new Dictionary<TabType, ItemTreeExplorer>();
-                _treeExplorers.Add(TabType.VirtualItems, new VirtualItemsTreeExplorer(_config));
-                _treeExplorers.Add(TabType.Worlds, new WorldTreeExplorer(_config));
-                _treeExplorers.Add(TabType.Scores, new ScoreTreeExplorer(_config));
-                _treeExplorers.Add(TabType.Missions, new MissionTreeExplorer(_config));
-                _treeExplorers.Add(TabType.Gates, new GateTreeExplorer(_config));
+                _treeExplorers.Add(TabType.VirtualItems, new VirtualItemsTreeExplorer());
+                _treeExplorers.Add(TabType.Worlds, new WorldTreeExplorer());
+                _treeExplorers.Add(TabType.Scores, new ScoreTreeExplorer());
+                _treeExplorers.Add(TabType.Missions, new MissionTreeExplorer());
             }
             if (_propertyInspectors == null)
             {
@@ -218,23 +136,19 @@ namespace Beetle23
                     new ScorePropertyInspector(_treeExplorers[TabType.Scores] as ScoreTreeExplorer));
                 _propertyInspectors.Add(TabType.Missions, 
                     new MissionPropertyInspector(_treeExplorers[TabType.Missions] as MissionTreeExplorer));
-                _propertyInspectors.Add(TabType.Gates,
-                    new GatePropertyInspector(_treeExplorers[TabType.Gates] as GateTreeExplorer));
             }
 
-            for (TabType type = TabType.VirtualItems; type <= TabType.Gates; type++)
+            for (TabType type = TabType.VirtualItems; type <= TabType.Missions; type++)
             {
                 _treeExplorers[type].OnSelectionChange += _propertyInspectors[type].OnExplorerSelectionChange;
             }
-
-            VirtualItemsEditUtil.UpdateDisplayedOptions();
         }
 
         private void OnDisable()
         {
             if (_treeExplorers != null)
             {
-                for (TabType type = TabType.VirtualItems; type <= TabType.Gates; type++)
+                for (TabType type = TabType.VirtualItems; type <= TabType.Missions; type++)
                 {
                     _treeExplorers[type].OnSelectionChange -= _propertyInspectors[type].OnExplorerSelectionChange;
                 }
@@ -243,12 +157,11 @@ namespace Beetle23
 
         private void OnFocus()
         {
-            if (_config != null)
+            if (GameKit.Config != null)
             {
-                _config.RemoveNullRefs();
-                _config.UpdateMapsAndTree();
+                GameKit.Config.RemoveNullRefs();
+                GameKit.Config.UpdateMapsAndTree();
             }
-            VirtualItemsEditUtil.UpdateDisplayedOptions();
         }
 
         private static GameKitConfig GetConfigAndCreateIfNonExist()
@@ -257,13 +170,23 @@ namespace Beetle23
             GameKitConfig virtualItemsConfig = AssetDatabase.LoadAssetAtPath(configFilePath, typeof(GameKitConfig)) as GameKitConfig;
             if (virtualItemsConfig == null)
             {
-                virtualItemsConfig = VirtualItemsEditUtil.CreateAsset<GameKitConfig>(configFilePath);
+                virtualItemsConfig = CreateAsset<GameKitConfig>(configFilePath);
             }
             return virtualItemsConfig;
         }
 
+        private static T CreateAsset<T>(string path) where T : ScriptableObject
+        {
+            T asset = ScriptableObject.CreateInstance<T>();
+            AssetDatabase.CreateAsset(asset, path);
+            AssetDatabase.SaveAssets();
+            return asset;
+        }
+
         private void OnGUI()
         {
+            if (GameKit.Config == null) return;
+
             EditorGUI.BeginChangeCheck();
 
             float y = 5;
@@ -276,7 +199,7 @@ namespace Beetle23
             GUI.EndGroup();
 
             float treeRatio = 0.35f;
-            if (_currentSection >= 0 && _currentSection <= (int)TabType.Gates)
+            if (_currentSection >= 0 && _currentSection <= (int)TabType.Missions)
             {
                 _treeExplorers[(TabType)_currentSection].Draw(new Rect(10, y, position.width * treeRatio, position.height - y - 5));
                 _propertyInspectors[(TabType)_currentSection].Draw(new Rect(position.width * treeRatio + 20, y, position.width * (1 - treeRatio) - 30, position.height - y - 5));
@@ -284,12 +207,11 @@ namespace Beetle23
 
             if (EditorGUI.EndChangeCheck())
             {
-                EditorUtility.SetDirty(_config);
-                _serializedConfig.Update();
+                EditorUtility.SetDirty(GameKit.Config);
+                SerializedConfig.Update();
             }
         }
 
-        private GameKitConfig _config;
         private SerializedObject _serializedConfig;
         private Dictionary<TabType, ItemTreeExplorer> _treeExplorers;
         private Dictionary<TabType, ItemPropertyInspector> _propertyInspectors;

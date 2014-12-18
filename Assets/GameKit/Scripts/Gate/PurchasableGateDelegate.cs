@@ -19,7 +19,7 @@ namespace Beetle23
             }
             else
             {
-                Debug.LogError("Purchasable gate [" + gate.Name + "] isn't connected with a purchasable lifetime item!!!");
+                Debug.LogError("Purchasable gate [" + gate.ID + "] isn't connected with a purchasable lifetime item!!!");
             }
         }
 
@@ -28,7 +28,7 @@ namespace Beetle23
             return GameKit.Config.GetVirtualItemByID(itemID);
         }
 
-        public override bool CanOpenNow
+        public override bool IsOpened
         {
             get
             {
@@ -48,10 +48,7 @@ namespace Beetle23
 
         private void OnPurchasedItem()
         {
-            if (Gate.AutoSave)
-            {
-                _context.ForceOpen(true);
-            }
+            _context.OnOpened();
         }
 
         private LifeTimeItem _lifetimeItem;

@@ -21,7 +21,7 @@ namespace Beetle23
             }
             else
             {
-                Debug.LogError("Score gate [" + gate.Name + "] isn't connected with a score!!!");
+                Debug.LogError("Score gate [" + gate.ID + "] isn't connected with a score!!!");
             }
         }
 
@@ -30,7 +30,7 @@ namespace Beetle23
             return GameKit.Config.GetScoreByID(itemID); 
         }
 
-        public override bool CanOpenNow
+        public override bool IsOpened
         {
             get
             {
@@ -51,9 +51,9 @@ namespace Beetle23
 
         private void OnBeatRecord()
         {
-            if (Gate.AutoSave && _context.CanOpenNow)
+            if (_context.IsOpened)
             {
-                _context.ForceOpen(true);
+                _context.OnOpened();
             }
         }
 

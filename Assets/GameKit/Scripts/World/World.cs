@@ -8,14 +8,17 @@ namespace Beetle23
     [System.Serializable]
     public class World : SerializableItem
     {
+        public Action OnUnlocked = delegate { };
         public Action OnCompleted = delegate { };
 
         [SerializeField]
+        public string Name;
+        
+        [SerializeField]
         public string Description;
         
-    	[SerializeField]
-        [GatePopup(true, true)]
-    	public string GateID;
+        [SerializeField]
+        public Gate Gate;
 
         [SerializeField]
         public List<World> SubWorlds;
@@ -31,20 +34,18 @@ namespace Beetle23
 
         public World()
         {
+            Gate = new Gate();
             SubWorlds = new List<World>();
             Scores = new List<Score>();
             Missions = new List<Mission>();
+
+            if (Application.isPlaying && !IsUnlocked)
+            {
+                Gate.OnOpened += OnUnlocked;
+            }
         }
 
         public World Parent { get; internal set; }
-
-        public Gate Gate
-        {
-            get
-            {
-                return string.IsNullOrEmpty(GateID) ? null : GameKit.Config.GetGateByID(GateID);
-            }
-        }
 
     	public bool IsCompleted
     	{
@@ -58,7 +59,29 @@ namespace Beetle23
         {
             get
             {
+                return WorldStorage.IsUnlocked(ID);
+            }
+        }
+
+        public bool CanUnlockNow
+        {
+            get
+            {
                 return Gate == null || Gate.IsOpened;
+            }
+        }
+
+        public void ForceUnlocked(bool unlocked)
+        {
+            WorldStorage.SetUnlocked(ID, unlocked);
+            if (unlocked)
+            {
+                Gate.OnOpened -= OnUnlocked;
+                OnUnlocked();
+            }
+            else
+            {
+                Gate.OnOpened += OnUnlocked;
             }
         }
 

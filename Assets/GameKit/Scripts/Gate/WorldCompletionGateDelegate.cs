@@ -18,7 +18,7 @@ namespace Beetle23
             }
             else
             {
-                Debug.LogError("World completion gate [" + gate.Name + "] isn't connected with a gate!!!");
+                Debug.LogError("World completion gate [" + gate.ID + "] isn't connected with a gate!!!");
             }
         }
 
@@ -27,7 +27,7 @@ namespace Beetle23
             return GameKit.Config.GetWorldByID(itemID);
         }
 
-        public override bool CanOpenNow
+        public override bool IsOpened
         {
             get { return _world != null && _world.IsCompleted; }
         }
@@ -44,10 +44,7 @@ namespace Beetle23
 
         private void OnWorldCompleted()
         {
-            if (Gate.AutoSave)
-            {
-                _context.ForceOpen(true);
-            }
+            _context.OnOpened();
         }
 
         private World _world;

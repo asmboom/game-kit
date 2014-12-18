@@ -7,6 +7,9 @@ namespace Beetle23
     public class VirtualCategory : SerializableItem
     {
         [SerializeField]
+        public string Name;
+
+        [SerializeField]
         public List<string> ItemIDs;
 
         public VirtualItem this[int idx]
@@ -20,6 +23,11 @@ namespace Beetle23
 
         public List<VirtualItem> GetItems(bool refresh)
         {
+            if (_items == null)
+            {
+                _items = new List<VirtualItem>();
+                refresh = true;
+            }
             if (refresh)
             {
                 RefreshItemsList();
@@ -30,8 +38,6 @@ namespace Beetle23
         public VirtualCategory()
         {
             ItemIDs = new List<string>();
-            _items = new List<VirtualItem>();
-            RefreshItemsList();
         }
 
         private void RefreshItemsList()

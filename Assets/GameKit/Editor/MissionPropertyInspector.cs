@@ -15,7 +15,14 @@ namespace Beetle23
             _listControl.ItemInserted += OnItemInsert;
             _listControl.ItemRemoving += OnItemRemoving;
 
-            _rewardItemDrawers = new List<ItemPopupDrawer>();
+            Gate currentGate = treeExplorer.CurrentSelectedItem != null ?
+                (treeExplorer.CurrentSelectedItem as Mission).Gate : null;
+            _gateDrawer = new GatePropertyView(currentGate, true);
+        }
+
+        public override IItem[] GetAffectedItems(string itemID)
+        {
+            return new IItem[] { };
         }
 
         protected override void DoOnExplorerSelectionChange(IItem item)
@@ -24,17 +31,25 @@ namespace Beetle23
             {
                 _currentWorldOfMission = null;
             }
-            else
+            else if (item is Mission)
             {
-                _currentWorldOfMission = GameKit.Config.FindWorldThatMissionBelongsTo(item as Mission);
-                _gatePopupDrawer = new ItemPopupDrawer(ItemType.Gate, false, true);
+                Mission mission = item as Mission;
+                _currentWorldOfMission = GameKit.Config.FindWorldThatMissionBelongsTo(mission);
+                _gateDrawer.UpdateDisplayItem(mission.Gate);
                 _listAdaptor = new GenericClassListAdaptor<Reward>((item as Mission).Rewards, 18,
                     () =>
                     {
                         return new Reward();
-                    }, DrawOneReward);
-
-                UpdateRewardItemPopupDrawers();
+                    },
+                    (rect, reward, index) =>
+                    {
+                        RewardPropertyView.Draw(rect, reward);
+                        return reward;
+                    },
+                    (reward) =>
+                    {
+                        return RewardPropertyView.CalculateHeight(reward);
+                    });
             }
         }
 
@@ -55,7 +70,7 @@ namespace Beetle23
                 yOffset += 20;
                 mission.Description = EditorGUI.TextField(new Rect(0, yOffset, width, 20), "Desription", mission.Description);
                 yOffset += 20;
-                mission.BadgeIcon = EditorGUI.ObjectField(new Rect(0, yOffset, width, 50), "Badge Icon", 
+                mission.BadgeIcon = EditorGUI.ObjectField(new Rect(0, yOffset, width, 50), "Badge Icon",
                     mission.BadgeIcon, typeof(Texture2D), false) as Texture2D;
                 yOffset += 55;
             }
@@ -63,7 +78,7 @@ namespace Beetle23
 
             if (_currentWorldOfMission != null)
             {
-                EditorGUI.LabelField(new Rect(0, yOffset, 250, 20), "Belong to World", 
+                EditorGUI.LabelField(new Rect(0, yOffset, 250, 20), "Belong to World",
                     _currentWorldOfMission == null ? "NULL" : _currentWorldOfMission.ID);
                 if (GUI.Button(new Rect(255, yOffset, 50, 20), "Edit"))
                 {
@@ -76,17 +91,23 @@ namespace Beetle23
             }
             yOffset += 20;
 
-            _isMissionPropertiesExpanded = EditorGUI.Foldout(new Rect(0, yOffset, width, 20),
-                _isMissionPropertiesExpanded, "Mission Property");
+            UpdateGateID(mission.Gate);
+            _isGatePropertiesExpanded = EditorGUI.Foldout(new Rect(0, yOffset, width, 20),
+                _isGatePropertiesExpanded, "Gate");
             yOffset += 20;
-            if (_isMissionPropertiesExpanded)
+            if (_isGatePropertiesExpanded)
             {
-                mission.RelatedGateID = _gatePopupDrawer.Draw(new Rect(0, yOffset, width, 20), 
-                    mission.RelatedGateID, new GUIContent("Related Gate"));
+                float height = _gateDrawer.CalculateHeight(mission.Gate);
+                yOffset += _gateDrawer.Draw(new Rect(0, yOffset, width, height), mission.Gate);
                 yOffset += 20;
+            }
 
-                EditorGUI.LabelField(new Rect(0, yOffset, width, yOffset), "Rewards");
-                yOffset += 20;
+            UpdateRewardsID();
+            _isRewardsExpanded = EditorGUI.Foldout(new Rect(0, yOffset, width, 20),
+                _isRewardsExpanded, "Rewards");
+            yOffset += 20;
+            if (_isRewardsExpanded)
+            {
                 float height = _listControl.CalculateListHeight(_listAdaptor);
                 _listControl.Draw(new Rect(0, yOffset, width, height), _listAdaptor);
                 yOffset += height;
@@ -100,58 +121,26 @@ namespace Beetle23
             return GameKit.Config.GetScoreByID(id);
         }
 
-        private Reward DrawOneReward(Rect position, Reward reward, int index)
+        private void UpdateRewardsID()
         {
-            if (reward == null) return null;
-
-            float xOffset = position.x;
-
-            reward.Type = (RewardType)EditorGUI.EnumPopup(new Rect(xOffset, position.y, position.width * RewardTypeWidth - 1, position.height), 
-                reward.Type);
-            xOffset += position.width * RewardTypeWidth;
-
-            reward.RelatedItemID = _rewardItemDrawers[index].Draw(new Rect(xOffset, position.y, 
-                position.width * RewardRelatedItemWidth - 1, position.height), reward.RelatedItemID, GUIContent.none);
-
-            xOffset += position.width * RewardRelatedItemWidth;
-            reward.RewardNumber = Mathf.Max(0, EditorGUI.IntField(new Rect(xOffset, position.y, 
-                position.width * RewardRelatedNumberWidth - 1, position.height), reward.RewardNumber));
-
-            return reward;
-        }
-
-        private void OnItemInsert(object sender, ItemInsertedEventArgs args) 
-        {
-            UpdateRewardItemPopupDrawers();
-        }
-
-        private void OnItemRemoving(object sender, ItemRemovingEventArgs args) 
-        {
-            UpdateRewardItemPopupDrawers();
-        }
-
-        private void UpdateRewardItemPopupDrawers()
-        {
-            _rewardItemDrawers.Clear();
             Mission mission = _currentDisplayItem as Mission;
             for (int i = 0; i < mission.Rewards.Count; i++)
             {
-                _rewardItemDrawers.Add(new ItemPopupDrawer(ItemType.VirtualItem, false, 
-                    VirtualItemType.VirtualCurrency | VirtualItemType.LifeTimeItem | VirtualItemType.SingleUseItem));
+                mission.Rewards[i].ID = string.Format("reward_{0}_{1}", mission.ID, i);
             }
         }
 
+        private void OnItemInsert(object sender, ItemInsertedEventArgs args) { }
+
+        private void OnItemRemoving(object sender, ItemRemovingEventArgs args) { }
+
         private bool _isBasicPropertiesExpanded = true;
-        private bool _isMissionPropertiesExpanded = true;
+        private bool _isGatePropertiesExpanded = true;
+        private bool _isRewardsExpanded = true;
         private World _currentWorldOfMission;
-        private ItemPopupDrawer _gatePopupDrawer;
+        private GatePropertyView _gateDrawer;
 
         private ReorderableListControl _listControl;
         private GenericClassListAdaptor<Reward> _listAdaptor;
-        private List<ItemPopupDrawer> _rewardItemDrawers;
-
-        private const float RewardTypeWidth = 0.4f;
-        private const float RewardRelatedItemWidth = 0.4f;
-        private const float RewardRelatedNumberWidth = 0.2f;
     }
 }

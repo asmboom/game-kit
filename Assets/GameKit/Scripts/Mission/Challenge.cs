@@ -5,60 +5,32 @@ using System.Collections.Generic;
 namespace Beetle23
 {
     [System.Serializable]
-    public class Challenge : Mission
+    public class Challenge : SerializableItem
     {
         [SerializeField]
-        public List<Mission> SubMissions;
+        public Texture2D BadgeIcon;
+        [SerializeField]
+        public List<Reward> Rewards;
+        [SerializeField]
+        public List<Mission> Missions;
 
         public Challenge()
         {
-            SubMissions = new List<Mission>();
-
-            if (!IsCompleted)
-            {
-                for (int i = 0; i < SubMissions.Count; i++)
-                {
-                    SubMissions[i].OnCompleted += OnSubmissionCompleted;
-                }
-            }
+            Missions = new List<Mission>();
         }
 
-        public override bool IsCompleted
+        public bool IsCompleted
         {
             get
             {
-                for (int i = 0; i < SubMissions.Count; i++)
+                for (int i = 0; i < Missions.Count; i++)
                 {
-                    if (!SubMissions[i].IsCompleted)
+                    if (!Missions[i].IsCompleted)
                     {
                         return false;
                     }
                 }
                 return true;
-            }
-        }
-
-        protected override void UnregisterEvents()
-        {
-            for (int i = 0; i < SubMissions.Count; i++)
-            {
-                SubMissions[i].OnCompleted -= OnSubmissionCompleted;
-            }
-        }
-
-        protected override void RegisterEvents()
-        {
-            for (int i = 0; i < SubMissions.Count; i++)
-            {
-                SubMissions[i].OnCompleted += OnSubmissionCompleted;
-            }
-        }
-
-        private void OnSubmissionCompleted()
-        {
-            if (IsCompleted)
-            {
-                Complete();
             }
         }
     }

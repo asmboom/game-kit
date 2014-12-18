@@ -10,8 +10,7 @@ namespace Beetle23
         {
             if (!_context.IsOpened)
             {
-                List<Gate> subGates = _context.GetSubGates(false);
-                foreach (var aGate in subGates)
+                foreach (var aGate in _context.SubGates)
                 {
                     aGate.OnOpened += OnGateOpened;
                 }
@@ -23,14 +22,13 @@ namespace Beetle23
             return null;
         }
 
-        public override bool CanOpenNow
+        public override bool IsOpened
         {
             get
             {
-                List<Gate> subGates = _context.GetSubGates(false);
                 if (_context.Type == GateType.GateListAnd)
                 {
-                    foreach (Gate gate in subGates)
+                    foreach (Gate gate in _context.SubGates)
                     {
                         if (!gate.IsOpened)
                         {
@@ -41,7 +39,7 @@ namespace Beetle23
                 }
                 else
                 {
-                    foreach (Gate gate in subGates)
+                    foreach (Gate gate in _context.SubGates)
                     {
                         if (gate.IsOpened)
                         {
@@ -55,8 +53,7 @@ namespace Beetle23
 
         public override void RegisterEvents()
         {
-            List<Gate> subGates = _context.GetSubGates(false);
-            foreach (var gate in subGates)
+            foreach (var gate in _context.SubGates)
             {
                 gate.OnOpened += OnGateOpened;
             }
@@ -64,8 +61,7 @@ namespace Beetle23
 
         public override void UnregisterEvents()
         {
-            List<Gate> subGates = _context.GetSubGates(false);
-            foreach (var gate in subGates)
+            foreach (var gate in _context.SubGates)
             {
                 gate.OnOpened -= OnGateOpened;
             }
@@ -73,9 +69,9 @@ namespace Beetle23
 
         private void OnGateOpened()
         {
-            if (Gate.AutoSave && _context.CanOpenNow)
+            if (_context.IsOpened)
             {
-                _context.ForceOpen(true);
+                _context.OnOpened();
             }
         }
     }

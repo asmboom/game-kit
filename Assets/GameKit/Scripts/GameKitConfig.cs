@@ -24,43 +24,37 @@ namespace Beetle23
         [SerializeField]
         public World RootWorld;
 
-        [SerializeField]
-        public List<Gate> Gates;
-
-        [SerializeField]
-        public List<Challenge> Challenges;
-
         public IEnumerable<VirtualItem> VirtualItems
         {
             get
             {
-                return _idToVirtualItem.Values;
+                return IdToVirtualItem.Values;
             }
         }
 
         public int VirtualItemsCount
         {
-            get { return _idToVirtualItem.Count; }
+            get { return IdToVirtualItem.Count; }
         }
 
         public IEnumerable<World> Worlds
         {
             get
             {
-                return _idToWorld.Values;
+                return IdToWorld.Values;
             }
         }
 
         public bool TryGetVirtualItemByID(string id, out VirtualItem item)
         {
-            return _idToVirtualItem.TryGetValue(id, out item);
+            return IdToVirtualItem.TryGetValue(id, out item);
         }
 
         public VirtualItem GetVirtualItemByID(string id)
         {
-            if (_idToVirtualItem.ContainsKey(id))
+            if (IdToVirtualItem.ContainsKey(id))
             {
-                return _idToVirtualItem[id];
+                return IdToVirtualItem[id];
             }
             else
             {
@@ -94,17 +88,12 @@ namespace Beetle23
 
         public Score GetScoreByID(string id)
         {
-            return _idToScore.ContainsKey(id) ? _idToScore[id] : null;
+            return IdToScore.ContainsKey(id) ? IdToScore[id] : null;
         }
 
         public VirtualCategory GetItemCategory(string id)
         {
-            return _idToCategory.ContainsKey(id) ? _idToCategory[id] : null;
-        }
-
-        public Gate GetGateByID(string id)
-        {
-            return _idToGate.ContainsKey(id) ? _idToGate[id] : null;
+            return IdToCategory.ContainsKey(id) ? IdToCategory[id] : null;
         }
 
         public World FindWorldThatScoreBelongsTo(Score score)
@@ -152,32 +141,11 @@ namespace Beetle23
             return null;
         }
 
-        public Gate[] FindGateListThatGateBelongsTo(Gate gate)
-        {
-            List<Gate> list = new List<Gate>();
-            foreach (var aGate in Gates)
-            {
-                if (aGate.IsGroup)
-                {
-                    foreach (var subGateID in aGate.SubGateIDs)
-                    {
-                        if (subGateID.Equals(gate.ID))
-                        {
-                            list.Add(aGate);
-                            break;
-                        }
-                    }
-                }
-            }
-            return list.ToArray();
-        }
-
         public void UpdateMapsAndTree()
         {
-            UpdateIdToItemMap();
+            UpdateIdToVirtualItemMap();
             UpdateIdToCategoryMap();
             UpdateIdToWorldAndScoreMap();
-            UpdateIdToGate();
             UpdateWorldTree();
         }
 
@@ -251,7 +219,7 @@ namespace Beetle23
             UpdateMapsAndTree();
         }
 
-        private void UpdateIdToItemMap()
+        private void UpdateIdToVirtualItemMap()
         {
             _idToVirtualItem = new Dictionary<string, VirtualItem>();
             for (int i = 0; i < VirtualCurrencies.Count; i++)
@@ -336,23 +304,51 @@ namespace Beetle23
             }
         }
 
-        private void UpdateIdToGate()
+        private Dictionary<string, VirtualItem> IdToVirtualItem
         {
-            _idToGate = new Dictionary<string, Gate>();
-            for (int i = 0; i < Gates.Count; i++)
+            get
             {
-                Gate gate = Gates[i];
-                if (!string.IsNullOrEmpty(gate.ID))
+                if (_idToVirtualItem == null)
                 {
-                    if (!_idToGate.ContainsKey(gate.ID))
-                    {
-                        _idToGate.Add(gate.ID, gate);
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Found duplicated id " + gate.ID + " for gate."); ;
-                    }
+                    UpdateIdToVirtualItemMap();
                 }
+                return _idToVirtualItem;
+            }
+        }
+
+        private Dictionary<string, VirtualCategory> IdToCategory
+        {
+            get
+            {
+                if (_idToCategory == null)
+                {
+                    UpdateIdToCategoryMap();
+                }
+                return _idToCategory;
+            }
+        }
+
+        private Dictionary<string, World> IdToWorld
+        {
+            get
+            {
+                if (_idToWorld == null)
+                {
+                    UpdateIdToWorldAndScoreMap();
+                }
+                return _idToWorld;
+            }
+        }
+
+        private Dictionary<string, Score> IdToScore
+        {
+            get
+            {
+                if (_idToScore == null)
+                {
+                    UpdateIdToWorldAndScoreMap();
+                }
+                return _idToScore;
             }
         }
 
@@ -360,6 +356,5 @@ namespace Beetle23
         private Dictionary<string, VirtualCategory> _idToCategory;
         private Dictionary<string, World> _idToWorld;
         private Dictionary<string, Score> _idToScore;
-        private Dictionary<string, Gate> _idToGate;
     }
 }

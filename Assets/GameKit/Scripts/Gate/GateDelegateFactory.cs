@@ -21,7 +21,7 @@ namespace Beetle23
                 case GateType.GateListOr:
                     return new GateListDelegate(gate);
                 default:
-                    return null;
+                    return new NullableGateDelegate(gate);
             }
         }
     }

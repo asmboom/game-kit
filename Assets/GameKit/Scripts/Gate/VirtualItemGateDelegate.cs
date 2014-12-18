@@ -19,7 +19,7 @@ namespace Beetle23
             }
             else
             {
-                Debug.LogError("Virtual item gate [" + gate.Name + "] isn't connected with a virtual item!!!");
+                Debug.LogError("Virtual item gate [" + gate.ID + "] isn't connected with a virtual item!!!");
             }
         }
 
@@ -28,7 +28,7 @@ namespace Beetle23
             return GameKit.Config.GetVirtualItemByID(itemID);
         }
 
-        public override bool CanOpenNow
+        public override bool IsOpened
         {
             get
             {
@@ -54,9 +54,9 @@ namespace Beetle23
 
         private void OnItemBalanceChanged(int oldCount, int newCount)
         {
-            if (Gate.AutoSave && _context.CanOpenNow)
+            if (_context.IsOpened)
             {
-                _context.ForceOpen(true);
+                _context.OnOpened();
             }
         }
 

@@ -5,18 +5,6 @@ namespace Beetle23
     [System.Serializable]
     public class SerializableItem : IItem
     {
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                _name = value;
-            }
-        }
-
         public string ID
         {
             get
@@ -37,7 +25,7 @@ namespace Beetle23
         // the below code is referenced from https://gist.github.com/tracend/8203090
         private string GetUniqueCode()
         {
-            string characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#";
+            string characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!-_";
             string ticks = System.DateTime.UtcNow.Ticks.ToString();
             var code = "";
             for (var i = 0; i < characters.Length; i += 2)
@@ -63,8 +51,5 @@ namespace Beetle23
 
         [SerializeField]
         private string _id;
-
-        [SerializeField]
-        private string _name;
     }
 }

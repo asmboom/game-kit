@@ -8,11 +8,10 @@ namespace Beetle23
 {
     public class WorldTreeExplorer : ItemTreeExplorer
     {
-        public WorldTreeExplorer(GameKitConfig config)
-            : base(config)
+        public WorldTreeExplorer()
         {
             _worldToExpanded = new Dictionary<World, bool>();
-            InitWorldToExpanded(_config.RootWorld);
+            InitWorldToExpanded(GameKit.Config.RootWorld);
         }
 
         public void AddWorld(World world)
@@ -137,23 +136,23 @@ namespace Beetle23
 
         protected override void DoExpandAll()
         {
-            ExpandWorld(_config.RootWorld, true);
+            ExpandWorld(GameKit.Config.RootWorld, true);
         }
 
         protected override void DoCollapseAll()
         {
-            CollapseWorld(_config.RootWorld, true);
+            CollapseWorld(GameKit.Config.RootWorld, true);
         }
 
         protected override void DoDraw(Rect position, string searchText)
         {
             if (string.IsNullOrEmpty(searchText))
             {
-                DrawWorld(position, _config.RootWorld);
+                DrawWorld(position, GameKit.Config.RootWorld);
             }
             else
             {
-                foreach (var world in _config.Worlds)
+                foreach (var world in GameKit.Config.Worlds)
                 {
                     DrawItemIfMathSearch(searchText, world, position.width);
                 }

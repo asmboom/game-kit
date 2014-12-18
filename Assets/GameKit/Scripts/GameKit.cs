@@ -23,7 +23,7 @@ namespace Beetle23
                     _config = Resources.Load<GameKitConfig>("GameKitConfig");
                     if (_config == null)
                     {
-                        Debug.LogWarning("Create empty GameKitConfig at runtime");
+                        Debug.LogWarning("Cannot find GameKitConfig, create an empty one.");
                         _config = ScriptableObject.CreateInstance<GameKitConfig>();
 #if UNITY_EDITOR
                         string fullPath = DefaultConfigDataPath + "/GameKitConfig.asset";

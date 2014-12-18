@@ -2,7 +2,6 @@
 {
     public interface IItem
     {
-        string Name { get; set; }
         string ID { get; set; }
     }
 }

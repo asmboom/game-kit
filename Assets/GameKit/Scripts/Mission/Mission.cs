@@ -11,43 +11,45 @@ namespace Beetle23
         public Action OnCompleted = delegate { };
 
         [SerializeField]
+        public string Name;
+        [SerializeField]
         public string Description;
         [SerializeField]
         public Texture2D BadgeIcon;
         [SerializeField]
         public List<Reward> Rewards;
         [SerializeField]
-        [GatePopup(true, true)]
-        public string RelatedGateID;
+        public Gate Gate;
 
         public Mission()
         {
             Rewards = new List<Reward>();
-            if (RelatedGate != null && !IsCompleted)
+            Gate = new Gate();
+            if (Application.isPlaying && !IsCompleted)
             {
-                RelatedGate.OnOpened += Complete;
+                Gate.OnOpened += Complete;
             }
         }
 
-        public Gate RelatedGate
+        public bool IsCompleted
         {
             get
             {
-                return string.IsNullOrEmpty(RelatedGateID) ? null : GameKit.Config.GetGateByID(RelatedGateID);
+                return MissionStorage.IsCompleted(ID);
             }
         }
 
-        public virtual bool IsCompleted
+        public virtual bool CanCompleteNow
         {
             get
             {
-                return RelatedGate != null && RelatedGate.IsOpened;
+                return Gate != null && Gate.IsOpened;
             }
         }
 
         public void ForceCompleted(bool completed)
         {
-            RelatedGate.ForceOpen(completed);
+            MissionStorage.SetCompleted(ID, completed);
             if (completed)
             {
                 Complete();
@@ -69,17 +71,16 @@ namespace Beetle23
         {
             TakeRewards();
             RegisterEvents();
-            RelatedGate.OnOpened += Complete;
         }
 
         protected virtual void UnregisterEvents()
         {
-            RelatedGate.OnOpened -= Complete;
+            Gate.OnOpened -= Complete;
         }
 
         protected virtual void RegisterEvents()
         {
-            RelatedGate.OnOpened += Complete;
+            Gate.OnOpened += Complete;
         }
 
         private void TakeRewards()
