@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace Beetle23
+namespace Codeplay
 {
     public static class GameKitEditorDrawUtil
     {

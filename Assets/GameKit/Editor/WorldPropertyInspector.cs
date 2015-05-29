@@ -3,7 +3,7 @@ using UnityEditor;
 using Rotorz.ReorderableList;
 using System.Collections.Generic;
 
-namespace Beetle23
+namespace Codeplay
 {
     public class WorldPropertyInspector : ItemPropertyInspector
     {

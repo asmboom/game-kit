@@ -4,7 +4,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace Beetle23
+namespace Codeplay
 {
     [CustomEditor(typeof(GameKitConfig))]
     public class GameKitConfigEditor : Editor

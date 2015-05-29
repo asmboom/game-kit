@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Beetle23
+namespace Codeplay
 {
     public class Storage : IStorage
     {

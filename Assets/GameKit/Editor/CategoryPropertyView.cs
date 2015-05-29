@@ -3,7 +3,7 @@ using UnityEditor;
 using System.Collections.Generic;
 using Rotorz.ReorderableList;
 
-namespace Beetle23
+namespace Codeplay
 {
     public class CategoryPropertyView
     {

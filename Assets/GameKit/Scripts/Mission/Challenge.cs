@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Beetle23
+namespace Codeplay
 {
     [System.Serializable]
     public class Challenge : SerializableItem

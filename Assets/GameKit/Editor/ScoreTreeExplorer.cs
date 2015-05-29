@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Beetle23
+namespace Codeplay
 {
     public class ScoreTreeExplorer : ItemTreeExplorer
     {

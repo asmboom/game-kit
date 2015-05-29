@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Beetle23;
+using Codeplay;
 
 public class GameKitDemo : MonoBehaviour
 {

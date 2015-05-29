@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using UnityEngine;
 
-namespace Beetle23
+namespace Codeplay
 {
     public class GameKitConfig : ScriptableObject
     {

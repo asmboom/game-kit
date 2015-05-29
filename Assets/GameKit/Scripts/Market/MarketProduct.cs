@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Beetle23
+namespace Codeplay
 {
     public class MarketProduct
     {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Rotorz.ReorderableList;
 using System;
 
-namespace Beetle23
+namespace Codeplay
 {
     public class WorldTreeExplorer : ItemTreeExplorer
     {

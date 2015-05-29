@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 
-namespace Beetle23
+namespace Codeplay
 {
     public class GameKitEditorWindow : EditorWindow
     {

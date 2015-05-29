@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System;
 
-namespace Beetle23
+namespace Codeplay
 {
     public interface IStorage
     {

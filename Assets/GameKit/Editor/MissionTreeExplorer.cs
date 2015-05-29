@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using Rotorz.ReorderableList;
 
-namespace Beetle23
+namespace Codeplay
 {
     public class MissionTreeExplorer : ItemTreeExplorer
     {

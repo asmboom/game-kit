@@ -3,7 +3,7 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 
-namespace Beetle23
+namespace Codeplay
 {
     [System.Serializable]
     public class Gate : SerializableItem

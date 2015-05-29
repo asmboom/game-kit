@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 
-namespace Beetle23
+namespace Codeplay
 {
     public abstract class ItemPopupDrawerDelegate
     {

@@ -1,5 +1,5 @@
 using UnityEngine;
-using Beetle23;
+using Codeplay;
 
 public class GameKitDemoFactory : IGameKitFactory
 {

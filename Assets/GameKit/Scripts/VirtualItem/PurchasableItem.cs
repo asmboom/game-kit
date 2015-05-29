@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 
-namespace Beetle23
+namespace Codeplay
 {
     public abstract class PurchasableItem : VirtualItem
     {

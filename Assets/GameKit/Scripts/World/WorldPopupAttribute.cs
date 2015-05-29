@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Beetle23
+namespace Codeplay
 {
     public class WorldPopupAttribute : PropertyAttribute
     {

@@ -1,4 +1,4 @@
-﻿namespace Beetle23
+﻿namespace Codeplay
 {
     public class VirtualItemRewardDelegate : IRewardDelegate
     {

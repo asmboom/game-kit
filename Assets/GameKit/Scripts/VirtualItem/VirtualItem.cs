@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Beetle23
+namespace Codeplay
 {
     [System.Serializable]
     public abstract class VirtualItem : SerializableItem

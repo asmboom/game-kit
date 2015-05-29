@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Beetle23
+namespace Codeplay
 {
     public class GateListDelegate : GateDelegate
     {
