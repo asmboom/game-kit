@@ -5,17 +5,16 @@ namespace Codeplay
     [System.Serializable]
     public class UpgradeItem : PurchasableItem
     {
-        public VirtualItem RelatedItem
-        {
-            get
-            {
-                if (_relatedItem == null)
-                {
-                    _relatedItem = GameKit.Config.FindVirtualItemThatUpgradeBelongsTo(this);
-                }
-                return _relatedItem;
-            }
-        }
+		[SerializeField]
+		public string RelatedItemID;
+
+		public VirtualItem RelatedItem
+		{
+			get
+			{
+				return GameKit.Config.GetVirtualItemByID(RelatedItemID);
+			}
+		}
 
         public override bool CanPurchaseNow()
         {
@@ -26,16 +25,14 @@ namespace Codeplay
 
         protected override void DoTake(int amount)
         {
-            VirtualItemStorage.SetGoodCurrentLevel(RelatedItem.ID,
-                VirtualItemStorage.GetGoodCurrentLevel(RelatedItem.ID) - 1);
+			VirtualItemStorage.SetGoodCurrentLevel(RelatedItemID,
+                VirtualItemStorage.GetGoodCurrentLevel(RelatedItemID) - 1);
         }
 
         protected override void DoGive(int amount)
         {
-            VirtualItemStorage.SetGoodCurrentLevel(RelatedItem.ID,
-                VirtualItemStorage.GetGoodCurrentLevel(RelatedItem.ID) + 1);
+			VirtualItemStorage.SetGoodCurrentLevel(RelatedItemID,
+                VirtualItemStorage.GetGoodCurrentLevel(RelatedItemID) + 1);
         }
-
-        private VirtualItem _relatedItem;
     }
 }

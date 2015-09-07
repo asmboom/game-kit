@@ -43,6 +43,15 @@ namespace Codeplay
         {
             List<IItem> items = new List<IItem>();
 
+			//check item id in upgradeItem
+			foreach (var item in GameKit.Config.Upgrades)
+			{
+				if (item.RelatedItemID.Equals(itemID))
+				{
+					items.Add(item);
+				}
+			}
+
             // check virtual currency id in purchase
             foreach (var item in GameKit.Config.VirtualItems)
             {
@@ -91,12 +100,13 @@ namespace Codeplay
             {
                 if (world.Gate.IsGroup)
                 {
-                    foreach (var subgate in world.Gate.SubGates)
+					foreach (var subGateID in world.Gate.SubGatesID)
                     {
-                        if ((subgate.Type == GateType.VirtualItemGate || subgate.Type == GateType.PurchasableGate) && 
-                            subgate.RelatedItemID.Equals(itemID))
+						Gate subGate = GameKit.Config.GetSubGateByID(subGateID);
+						if ((subGate.Type == GateType.VirtualItemGate || subGate.Type == GateType.PurchasableGate) && 
+							subGate.RelatedItemID.Equals(itemID))
                         {
-                            items.Add(subgate);
+							items.Add(subGate);
                         }
                     }
                 }
@@ -138,6 +148,7 @@ namespace Codeplay
 
                 if (item is SingleUseItem || item is LifeTimeItem)
                 {
+					(item as VirtualItem).RefreshUpgrades();
                     _upgradeListAdaptor = new UpgradeItemListAdaptor((item as VirtualItem).Upgrades, 20,
                         () => { return new UpgradeItem(); },
                         (position, theItem, index) =>
@@ -276,7 +287,7 @@ namespace Codeplay
             if (item is UpgradeItem)
             {
                 yOffset += 20;
-                VirtualItem relatedItem = (item as UpgradeItem).RelatedItem;
+				VirtualItem relatedItem = (item as UpgradeItem).RelatedItem;
                 EditorGUI.LabelField(new Rect(0, yOffset, 250, 20), "Related Item",
                     relatedItem == null ? "NULL" : relatedItem.ID);
                 if (GUI.Button(new Rect(255, yOffset, 50, 20), "Edit"))
@@ -293,9 +304,12 @@ namespace Codeplay
             int upgradeIndex = args.itemIndex + 1;
             string suffix = upgradeIndex < 10 ? "00" + upgradeIndex :
                 upgradeIndex < 100 ? "0" + upgradeIndex : upgradeIndex.ToString();
-            GenericClassListAdaptor<UpgradeItem> listAdaptor = args.adaptor as GenericClassListAdaptor<UpgradeItem>;
-            listAdaptor[args.itemIndex].ID = string.Format("{0}-upgrade{1}", _currentDisplayItem.ID, suffix);
-
+			GenericClassListAdaptor<UpgradeItem> listAdaptor = args.adaptor as GenericClassListAdaptor<UpgradeItem>;
+			UpgradeItem upgradeItem = listAdaptor[args.itemIndex];
+			upgradeItem.ID = string.Format("{0}-upgrade{1}", _currentDisplayItem.ID, suffix);
+			upgradeItem.RelatedItemID = _currentDisplayItem.ID;
+			GameKit.Config.Upgrades.Add(upgradeItem);
+			GameKit.Config.UpdateMapsAndTree();
             (_treeExplorer as VirtualItemsTreeExplorer).OnVirtualItemUpgradesChange(_currentDisplayItem as VirtualItem);
         }
 
@@ -309,7 +323,8 @@ namespace Codeplay
                         "Confirm to delete upgrade [" + upgradeItem.ID + "]?", "OK", "Cancel"))
                 {
                     args.Cancel = false;
-
+					GameKit.Config.Upgrades.Remove(upgradeItem);
+					GameKit.Config.UpdateMapsAndTree();
                     (_treeExplorer as VirtualItemsTreeExplorer).OnVirtualItemUpgradesChange(_currentDisplayItem as VirtualItem);
                 }
                 else

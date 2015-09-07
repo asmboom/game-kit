@@ -19,12 +19,13 @@ namespace Codeplay
             {
                 if (world.Gate.IsGroup)
                 {
-                    foreach (var subgate in world.Gate.SubGates)
+					foreach (var subGateID in world.Gate.SubGatesID)
                     {
-                        if (subgate.Type == GateType.ScoreGate && 
-                            subgate.RelatedItemID.Equals(itemID))
+						Gate subGate = GameKit.Config.GetSubGateByID(subGateID);
+						if (subGate.Type == GateType.ScoreGate && 
+							subGate.RelatedItemID.Equals(itemID))
                         {
-                            items.Add(subgate);
+							items.Add(subGate);
                         }
                     }
                 }

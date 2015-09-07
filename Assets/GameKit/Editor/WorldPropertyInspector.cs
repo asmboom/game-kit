@@ -37,12 +37,13 @@ namespace Codeplay
             {
                 if (world.Gate.IsGroup)
                 {
-                    foreach (var subgate in world.Gate.SubGates)
+					foreach (var subGateID in world.Gate.SubGatesID)
                     {
-                        if (subgate.Type == GateType.WorldCompletionGate && 
-                            subgate.RelatedItemID.Equals(itemID))
+						Gate subGate = GameKit.Config.GetSubGateByID(subGateID);
+						if (subGate.Type == GateType.WorldCompletionGate && 
+							subGate.RelatedItemID.Equals(itemID))
                         {
-                            items.Add(subgate);
+							items.Add(subGate);
                         }
                     }
                 }
@@ -63,7 +64,8 @@ namespace Codeplay
 
             _gateView.UpdateDisplayItem(world.Gate);
 
-            _subWorldListAdaptor = new GenericClassListAdaptor<World>(world.SubWorlds, 20,
+			world.RefreshSubWorlds();
+			_subWorldListAdaptor = new GenericClassListAdaptor<World>(world.SubWorlds, 20,
                 () => { return new World(); },
                 (position, theItem, index) =>
                 {
@@ -117,7 +119,12 @@ namespace Codeplay
             yOffset += 20;
             if (_isBasicPropertiesExpanded)
             {
-                DrawIDField(new Rect(0, yOffset, width, 20), world, world.Parent != null, true);
+				DrawIDField(new Rect(0, yOffset, width, 20), world, world.Parent != null, true, 
+					(newID) => 
+					{
+						world.Parent.SubWorldsID.Remove(world.ID);
+						world.Parent.SubWorldsID.Add(newID);
+					} );
                 yOffset += 20;
                 world.Name = EditorGUI.TextField(new Rect(0, yOffset, width, 20), "Name", world.Name);
                 yOffset += 20;
@@ -190,9 +197,11 @@ namespace Codeplay
 
         private void OnInsertSubworld(object sender, ItemInsertedEventArgs args)
         {
+			GenericClassListAdaptor<World> listAdaptor = args.adaptor as GenericClassListAdaptor<World>;
+			World world = listAdaptor[args.itemIndex];
+			(_currentDisplayItem as World).SubWorldsID.Add(world.ID);
+			GameKit.Config.Worlds.Add(world);
             GameKit.Config.UpdateMapsAndTree();
-            GenericClassListAdaptor<World> listAdaptor = args.adaptor as GenericClassListAdaptor<World>;
-            World world = listAdaptor[args.itemIndex];
             (_treeExplorer as WorldTreeExplorer).AddWorld(world);
             ScoreTreeExplorer scoreTreeExplorer = (GameKitEditorWindow.GetInstance().GetTreeExplorer(
                 GameKitEditorWindow.TabType.Scores) as ScoreTreeExplorer);
@@ -203,6 +212,7 @@ namespace Codeplay
         {
             GenericClassListAdaptor<World> listAdaptor = args.adaptor as GenericClassListAdaptor<World>;
             World world = listAdaptor[args.itemIndex];
+
             if (listAdaptor != null)
             {
                 IItem[] items = GetAffectedItems(world.ID);
@@ -218,6 +228,10 @@ namespace Codeplay
                             "Confirm to delete world [" + world.ID + "]?", "OK", "Cancel"))
                     {
                         args.Cancel = false;
+
+						(_currentDisplayItem as World).SubWorldsID.Remove(world.ID);
+						RemoveSubWorldAndSubGateRecursivity(world);
+
                         (_treeExplorer as WorldTreeExplorer).RemoveWorld(world);
                         ScoreTreeExplorer scoreTreeExplorer = (GameKitEditorWindow.GetInstance().GetTreeExplorer(
                             GameKitEditorWindow.TabType.Scores) as ScoreTreeExplorer);
@@ -232,6 +246,19 @@ namespace Codeplay
                 }
             }
         }
+
+		private void RemoveSubWorldAndSubGateRecursivity(World subWorld)
+		{
+			for (int i = 0; i < subWorld.SubWorldsID.Count; i++)
+			{
+				RemoveSubWorldAndSubGateRecursivity(GameKit.Config.GetWorldByID(subWorld.SubWorldsID[i]));
+			}
+			for (int i = 0; i < subWorld.Gate.SubGatesID.Count; i++)
+			{
+				GameKit.Config.SubGates.Remove(GameKit.Config.GetSubGateByID(subWorld.Gate.SubGatesID[i]));
+			}
+			GameKit.Config.Worlds.Remove(subWorld);
+		}
 
         private void OnInsertScore(object sender, ItemInsertedEventArgs args)
         {

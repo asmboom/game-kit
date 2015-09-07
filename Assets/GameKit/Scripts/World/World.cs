@@ -20,25 +20,28 @@ namespace Codeplay
         [SerializeField]
         public Gate Gate;
 
-        [SerializeField]
-        public List<World> SubWorlds;
+		[SerializeField]
+		public List<string> SubWorldsID;
 
-        [SerializeField]
+		[SerializeField]
         public List<Score> Scores;
 
-        [SerializeField]
+		[SerializeField]
         public List<Mission> Missions;
 
         [SerializeField]
         public ScriptableObject Extend;
 
-        public World()
-        {
-            Gate = new Gate();
-            SubWorlds = new List<World>();
-            Scores = new List<Score>();
-            Missions = new List<Mission>();
+		[NonSerialized]
+		public List<World> SubWorlds;
 
+        public World()
+		{
+			Scores = new List<Score>();
+			Missions = new List<Mission>();
+			SubWorldsID = new List<string>();
+			SubWorlds = new List<World>();
+            Gate = new Gate();
             if (Application.isPlaying && !IsUnlocked)
             {
                 Gate.OnOpened += OnUnlocked;
@@ -46,6 +49,15 @@ namespace Codeplay
         }
 
         public World Parent { get; internal set; }
+
+		public void RefreshSubWorlds()
+		{
+			SubWorlds.Clear();
+			for (int i = 0; i < SubWorldsID.Count; i++)
+			{
+				SubWorlds.Add(GameKit.Config.GetWorldByID(SubWorldsID[i]));
+			}
+		}
 
     	public bool IsCompleted
     	{
@@ -112,9 +124,9 @@ namespace Codeplay
         {
             if (recursive) 
             {
-                foreach (World world in SubWorlds) 
+				foreach (var subWorldID in SubWorldsID) 
                 {
-                    world.SetCompleted(completed, true);
+					GameKit.Config.GetWorldByID(subWorldID).SetCompleted(completed, true);
                 }
             }
             WorldStorage.SetCompleted(ID, completed);

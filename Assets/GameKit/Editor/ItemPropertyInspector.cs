@@ -66,7 +66,7 @@ namespace Codeplay
                         (GUI.GetNameOfFocusedControl() != IDInputControlName &&
                          _currentItemID != item.ID))
                     {
-                        OnGetNewIDFromTextField(item);
+                        UpdateItemIDFromTextField(item);
                     }
                 }
                 else
@@ -80,7 +80,7 @@ namespace Codeplay
             }
         }
 
-        public void DrawIDField(Rect position, IItem item, bool isEditable, bool isUnique)
+		public void DrawIDField(Rect position, IItem item, bool isEditable, bool isUnique, System.Action<string> OnGetNewID = null)
         {
             RestrictID();
             if (isEditable)
@@ -94,7 +94,7 @@ namespace Codeplay
                          GUI.GetNameOfFocusedControl() != IDInputControlName &&
                          _currentItemID != item.ID))
                     {
-                        OnGetNewIDFromTextField(item);
+						UpdateItemIDFromTextField(item, OnGetNewID);
                     }
                 }
                 else
@@ -120,9 +120,11 @@ namespace Codeplay
                 gate.ID = string.Format("gate_{0}", _currentDisplayItem.ID);
                 if (gate.IsGroup)
                 {
-                    for (int i = 0; i < gate.SubGates.Count; i++)
+					GameKit.Config.UpdateMapsAndTree();
+					for (int i = 0; i < gate.SubGatesID.Count; i++)
                     {
-                        gate.SubGates[i].ID = string.Format("{0}_{1}", gate.ID, i);
+						GameKit.Config.GetSubGateByID(gate.SubGatesID[i]).ID = string.Format("{0}_{1}", gate.ID, i);
+						gate.SubGatesID[i] = string.Format("{0}_{1}", gate.ID, i);
                     }
                 }
             }
@@ -130,10 +132,10 @@ namespace Codeplay
 
         private void RestrictID()
         {
-            _currentItemID = System.Text.RegularExpressions.Regex.Replace(_currentItemID.Trim(), @"[^a-zA-Z0-9_]", "");
+            _currentItemID = System.Text.RegularExpressions.Regex.Replace(_currentItemID.Trim(), @"[^a-zA-Z0-9!-_]", "");
         }
 
-        private void OnGetNewIDFromTextField(IItem item)
+		private void UpdateItemIDFromTextField(IItem item, System.Action<string> OnGetNewID = null)
         {
             _currentItemID = _currentItemID.Trim();
             if (string.IsNullOrEmpty(_currentItemID))
@@ -159,6 +161,10 @@ namespace Codeplay
                     EditorUtility.DisplayDialog("Renaming ID will affect the following items, are you sure to change?",
                         "Affected items: " + GetAffectedItemsWarningString(affectedItems), "OK", "Cancel"))
                 {
+					if (OnGetNewID != null)
+					{
+						OnGetNewID(_currentItemID);
+					}
                     UpdateRelatedIDOfItems(affectedItems, item.ID, _currentItemID);
                     item.ID = _currentItemID;
                     GameKit.Config.UpdateMapsAndTree();
@@ -183,6 +189,15 @@ namespace Codeplay
                         gate.RelatedItemID = newID;
                     }
                 }
+				else if (item is UpgradeItem)
+				{
+					UpgradeItem upgrade = item as UpgradeItem;
+					if (upgrade.RelatedItemID.Equals(oldID))
+					{
+						upgrade.RelatedItemID = newID;
+						upgrade.ID = upgrade.ID.Replace(oldID, newID);
+					}
+				}
                 else if (item is Reward)
                 {
                     Reward reward = item as Reward;

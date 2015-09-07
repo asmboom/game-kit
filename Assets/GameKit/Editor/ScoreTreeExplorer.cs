@@ -31,9 +31,9 @@ namespace Codeplay
         private void InitWorldToExpanded(World world)
         {
             _worldToExpanded.Add(world, true);
-            foreach (var subworld in world.SubWorlds)
+			foreach (var subWorldID in world.SubWorldsID)
             {
-                InitWorldToExpanded(subworld);
+				InitWorldToExpanded(GameKit.Config.GetWorldByID(subWorldID));
             }
         }
 
@@ -120,12 +120,12 @@ namespace Codeplay
 
                     x += 20;
 
-                    if (world.SubWorlds.Count > 0)
+					if (world.SubWorldsID.Count > 0)
                     {
-                        foreach (var subworld in world.SubWorlds)
+						foreach (var subWorldID in world.SubWorldsID)
                         {
                             y += DrawWorldScores(new Rect(x, y,
-                                    position.width - 20, position.height), subworld);
+								position.width - 20, position.height), GameKit.Config.GetWorldByID(subWorldID));
                         }
                     }
                 }
@@ -142,9 +142,9 @@ namespace Codeplay
                 _worldToExpanded[world] = true;
                 if (resursive)
                 {
-                    foreach (var subworld in world.SubWorlds)
+					foreach (var subWorldID in world.SubWorldsID)
                     {
-                        ExpandWorld(subworld, true);
+						ExpandWorld(GameKit.Config.GetWorldByID(subWorldID), true);
                     }
                 }
             }
@@ -157,9 +157,9 @@ namespace Codeplay
                 _worldToExpanded[world] = false;
                 if (resursive)
                 {
-                    foreach (var subworld in world.SubWorlds)
+					foreach (var subWorldID in world.SubWorldsID)
                     {
-                        ExpandWorld(subworld, false);
+						ExpandWorld(GameKit.Config.GetWorldByID(subWorldID), false);
                     }
                 }
             }

@@ -67,9 +67,9 @@ namespace Codeplay
         private void InsertWorld(List<string> itemIDs, World world)
         {
             itemIDs.Add(world.ID);
-            foreach (var subworld in world.SubWorlds)
+			foreach (var subWorldID in world.SubWorldsID)
             {
-                InsertWorld(itemIDs, subworld);
+				InsertWorld(itemIDs, GameKit.Config.GetWorldByID(subWorldID));
             }
         }
     }
@@ -91,9 +91,9 @@ namespace Codeplay
             {
                 itemIDs.Add(score.ID);
             }
-            foreach (var subworld in world.SubWorlds)
+			foreach (var subWorldID in world.SubWorldsID)
             {
-                InsertScore(itemIDs, subworld);
+				InsertScore(itemIDs, GameKit.Config.GetWorldByID(subWorldID));
             }
         }
     }

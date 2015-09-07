@@ -16,9 +16,9 @@ namespace Codeplay
         public string Description;
         [SerializeField]
         public Texture2D BadgeIcon;
-        [SerializeField]
+		[SerializeField]
         public List<Reward> Rewards;
-        [SerializeField]
+		[SerializeField]
         public Gate Gate;
 
         public Mission()

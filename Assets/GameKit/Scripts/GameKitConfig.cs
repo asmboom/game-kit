@@ -21,8 +21,32 @@ namespace Codeplay
         [SerializeField]
         public List<VirtualCategory> Categories;
 
-        [SerializeField]
-        public World RootWorld;
+		[SerializeField]
+		public List<UpgradeItem> Upgrades;
+
+		[SerializeField]
+		public List<World> Worlds;
+
+		[SerializeField]
+		public List<Gate> SubGates;
+
+        public World RootWorld
+		{
+			get
+			{
+				if (Worlds == null)
+				{
+					Worlds = new List<World>();
+				}
+				if (Worlds.Count == 0)
+				{
+					Worlds.Add(new World());
+					Worlds[0].ID = "root";
+				}
+
+				return Worlds[0];
+			}
+		}
 
         public IEnumerable<VirtualItem> VirtualItems
         {
@@ -37,13 +61,34 @@ namespace Codeplay
             get { return IdToVirtualItem.Count; }
         }
 
-        public IEnumerable<World> Worlds
-        {
-            get
-            {
-                return IdToWorld.Values;
-            }
-        }
+		public void ClearVirtualItems()
+		{
+			ItemPacks.Clear();
+			Categories.Clear();
+			LifeTimeItems.Clear();
+			SingleUseItems.Clear();
+			VirtualCurrencies.Clear();
+			Upgrades.Clear();
+		}
+
+		public bool TryGetCategoryByCategoryID(string id, out VirtualCategory cateroty)
+		{
+			for (int i = 0; i < Categories.Count; i++)
+			{
+				if (Categories[i].ID.Equals(id))
+				{
+					cateroty = Categories[i];
+					return true;
+				}
+			}
+			cateroty = null;
+			return false;
+		}
+
+		public bool TryGetCategoryByID(string id, out VirtualCategory category)
+		{
+			return IdToCategory.TryGetValue(id, out category);
+		}
 
         public bool TryGetVirtualItemByID(string id, out VirtualItem item)
         {
@@ -76,20 +121,18 @@ namespace Codeplay
 
         public World GetWorldByID(string id)
         {
-            foreach (var world in Worlds)
-            {
-                if (world.ID.Equals(id))
-                {
-                    return world;
-                }
-            }
-            return null;
+			return IdToWorld.ContainsKey(id) ? IdToWorld[id] : null;
         }
 
         public Score GetScoreByID(string id)
         {
             return IdToScore.ContainsKey(id) ? IdToScore[id] : null;
         }
+
+		public Gate GetSubGateByID(string id)
+		{
+			return IdToSubGate.ContainsKey(id) ? IdToSubGate[id] : null;
+		}
 
         public VirtualCategory GetItemCategory(string id)
         {
@@ -126,27 +169,13 @@ namespace Codeplay
             return null;
         }
 
-        public VirtualItem FindVirtualItemThatUpgradeBelongsTo(UpgradeItem upgrade)
-        {
-            foreach (var item in VirtualItems)
-            {
-                foreach (var oneUpgrade in item.Upgrades)
-                {
-                    if (oneUpgrade == upgrade)
-                    {
-                        return item;
-                    }
-                }
-            }
-            return null;
-        }
-
         public void UpdateMapsAndTree()
         {
             UpdateIdToVirtualItemMap();
             UpdateIdToCategoryMap();
             UpdateIdToWorldAndScoreMap();
             UpdateWorldTree();
+			UpdateIdToGateMap();
         }
 
         public void RemoveNullRefs()
@@ -210,12 +239,19 @@ namespace Codeplay
             {
                 Categories = new List<VirtualCategory>();
             }
-            if (RootWorld == null)
+			if (Upgrades == null)
+			{
+				Upgrades = new List<UpgradeItem>();
+			}
+			if (Worlds == null)
             {
-                RootWorld = new World();
+				Worlds = new List<World>();
             }
+			if (SubGates == null)
+			{
+				SubGates = new List<Gate>();
+			}
 
-            RootWorld.ID = "root";
             UpdateMapsAndTree();
         }
 
@@ -244,23 +280,24 @@ namespace Codeplay
         {
             _idToWorld = new Dictionary<string, World>();
             _idToScore = new Dictionary<string, Score>();
-            LoopThroughWorld(RootWorld, (world) =>
-            {
-                _idToWorld.Add(world.ID, world);
-                foreach (var score in world.Scores)
-                {
-                    _idToScore.Add(score.ID, score);
-                }
-            });
+
+			for (int i = 0; i < Worlds.Count; i++)
+			{
+				_idToWorld.Add(Worlds[i].ID, Worlds[i]);
+				foreach (var score in Worlds[i].Scores)
+				{
+					_idToScore.Add(score.ID, score);
+				}
+			}
         }
 
         private void UpdateWorldTree()
         {
-            LoopThroughWorld(RootWorld, (world) =>
-            {
-                foreach (var subworld in world.SubWorlds)
+			LoopThroughWorld(RootWorld, (world) =>
+            {	
+				foreach (var subWorldID in world.SubWorldsID)
                 {
-                    subworld.Parent = world;
+					GetWorldByID(subWorldID).Parent = world;
                 }
             });
         }
@@ -280,12 +317,21 @@ namespace Codeplay
             }
         }
 
+		private void UpdateIdToGateMap()
+		{
+			_idToSubGate = new Dictionary<string, Gate>();
+			for (int i = 0; i < SubGates.Count; i++)
+			{
+				_idToSubGate.Add(SubGates[i].ID, SubGates[i]);
+			}
+		}
+
         private void LoopThroughWorld(World world, System.Action<World> action)
         {
             action(world);
-            foreach (var subworld in world.SubWorlds)
+			foreach (var subWorldID in world.SubWorldsID)
             {
-                LoopThroughWorld(subworld, action);
+				LoopThroughWorld(GetWorldByID(subWorldID), action);
             }
         }
 
@@ -352,9 +398,22 @@ namespace Codeplay
             }
         }
 
+		private Dictionary<string, Gate> IdToSubGate
+		{
+			get
+			{
+				if (_idToSubGate == null)
+				{
+					UpdateIdToGateMap();
+				}
+				return _idToSubGate;
+			}
+		}
+
         private Dictionary<string, VirtualItem> _idToVirtualItem;
         private Dictionary<string, VirtualCategory> _idToCategory;
         private Dictionary<string, World> _idToWorld;
         private Dictionary<string, Score> _idToScore;
+		private Dictionary<string, Gate> _idToSubGate;
     }
 }

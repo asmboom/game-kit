@@ -16,13 +16,25 @@ namespace Codeplay
         public string RelatedItemID;
         [SerializeField]
         public float RelatedNumber;
-        [SerializeField]
+		[SerializeField]
+		public List<string> SubGatesID;
+		[NonSerialized]
         public List<Gate> SubGates;
 
         public Gate()
         {
+			SubGatesID = new List<string>();
             SubGates = new List<Gate>();
         }
+
+		public void RefreshSubGates()
+		{
+			SubGates.Clear();
+			for (int i = 0; i < SubGatesID.Count; i++)
+			{
+				SubGates.Add(GameKit.Config.GetSubGateByID(SubGatesID[i]));
+			}
+		}
 
         public bool IsGroup
         {
@@ -33,7 +45,7 @@ namespace Codeplay
         {
             get
             {
-                return idx >= 0 && idx < SubGates.Count ? SubGates[idx] : null;
+				return idx >= 0 && idx < SubGatesID.Count ? GameKit.Config.GetSubGateByID(SubGatesID[idx]) : null;
             }
         }
 

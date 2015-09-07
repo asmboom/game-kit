@@ -35,6 +35,7 @@ namespace Codeplay
 
             if (_allowSubgates)
             {
+				gate.RefreshSubGates();
                 _subGateListAdaptor = new GenericClassListAdaptor<Gate>(gate.SubGates, 20,
                     () => { return new Gate(); },
                     (position, subGate, index) =>
@@ -191,11 +192,21 @@ namespace Codeplay
 
         private void OnInsertSubGate(object sender, ItemInsertedEventArgs args)
         {
+			GenericClassListAdaptor<Gate> listAdaptor = args.adaptor as GenericClassListAdaptor<Gate>;
+			Gate gate = listAdaptor[args.itemIndex];
+			(_currentGate as Gate).SubGatesID.Add(gate.ID);
+			GameKit.Config.SubGates.Add(gate);
+			GameKit.Config.UpdateMapsAndTree();
             UpdateSubGatesPopupDrawers();
         }
 
         private void OnRemoveSubGate(object sender, ItemRemovingEventArgs args)
         {
+			GenericClassListAdaptor<Gate> listAdaptor = args.adaptor as GenericClassListAdaptor<Gate>;
+			Gate gate = listAdaptor[args.itemIndex];
+			(_currentGate as Gate).SubGatesID.Remove(gate.ID);
+			GameKit.Config.SubGates.Remove(gate);
+			GameKit.Config.UpdateMapsAndTree();
             UpdateSubGatesPopupDrawers();
         }
 
@@ -207,9 +218,9 @@ namespace Codeplay
                 if (_currentGate != null &&
                     _currentGate.IsGroup)
                 {
-                    for (int i = 0; i < _currentGate.SubGates.Count; i++)
+					for (int i = 0; i < _currentGate.SubGatesID.Count; i++)
                     {
-                        _subGatesDrawers.Add(new GatePropertyView(_currentGate.SubGates[i], false));
+						_subGatesDrawers.Add(new GatePropertyView(GameKit.Config.GetSubGateByID(_currentGate.SubGatesID[i]), false));
                     }
                 }
             }

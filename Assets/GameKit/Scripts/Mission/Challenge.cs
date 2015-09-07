@@ -9,9 +9,9 @@ namespace Codeplay
     {
         [SerializeField]
         public Texture2D BadgeIcon;
-        [SerializeField]
+		[SerializeField]
         public List<Reward> Rewards;
-        [SerializeField]
+		[SerializeField]
         public List<Mission> Missions;
 
         public Challenge()

@@ -80,9 +80,9 @@ namespace Codeplay
             string path = string.Empty;
             while (world.Parent != null)
             {
-                for (int i = 0; i < world.Parent.SubWorlds.Count; i++)
+				for (int i = 0; i < world.Parent.SubWorldsID.Count; i++)
                 {
-                    if (world.Parent.SubWorlds[i] == world)
+					if (GameKit.Config.GetWorldByID(world.Parent.SubWorldsID[i]) == world)
                     {
                         path = string.Format(".SubWorlds.Array.data[{0}]", i) + path;
                         break;

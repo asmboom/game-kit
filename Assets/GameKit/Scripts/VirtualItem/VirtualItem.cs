@@ -18,7 +18,7 @@ namespace Codeplay
         [SerializeField]
         public Texture2D Icon;
 
-        [SerializeField]
+		[NonSerialized]
         public List<UpgradeItem> Upgrades;
 
         [SerializeField]
@@ -38,6 +38,18 @@ namespace Codeplay
         {
             Upgrades = new List<UpgradeItem>();
         }
+
+		public void RefreshUpgrades()
+		{
+			Upgrades.Clear();
+			for (int i = 0; i < GameKit.Config.Upgrades.Count; i++)
+			{
+				if (GameKit.Config.Upgrades[i].RelatedItemID == ID)
+				{
+					Upgrades.Add(GameKit.Config.Upgrades[i]);
+				}
+			}
+		}
 
         public void ResetBalance()
         {

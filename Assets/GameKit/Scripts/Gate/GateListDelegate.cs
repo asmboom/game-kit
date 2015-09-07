@@ -10,9 +10,9 @@ namespace Codeplay
         {
             if (!_context.IsOpened)
             {
-                foreach (var aGate in _context.SubGates)
+				foreach (var subGateID in _context.SubGatesID)
                 {
-                    aGate.OnOpened += OnGateOpened;
+					GameKit.Config.GetSubGateByID(subGateID).OnOpened += OnGateOpened;
                 }
             }
         }
@@ -28,9 +28,9 @@ namespace Codeplay
             {
                 if (_context.Type == GateType.GateListAnd)
                 {
-                    foreach (Gate gate in _context.SubGates)
+					foreach (string subGateID in _context.SubGatesID)
                     {
-                        if (!gate.IsOpened)
+						if (!GameKit.Config.GetSubGateByID(subGateID).IsOpened)
                         {
                             return false;
                         }
@@ -39,9 +39,9 @@ namespace Codeplay
                 }
                 else
                 {
-                    foreach (Gate gate in _context.SubGates)
+					foreach (string subGateID in _context.SubGatesID)
                     {
-                        if (gate.IsOpened)
+						if (GameKit.Config.GetSubGateByID(subGateID).IsOpened)
                         {
                             return true;
                         }
@@ -53,17 +53,17 @@ namespace Codeplay
 
         public override void RegisterEvents()
         {
-            foreach (var gate in _context.SubGates)
+			foreach (var subGateID in _context.SubGatesID)
             {
-                gate.OnOpened += OnGateOpened;
+				GameKit.Config.GetSubGateByID(subGateID).OnOpened += OnGateOpened;
             }
         }
 
         public override void UnregisterEvents()
         {
-            foreach (var gate in _context.SubGates)
+			foreach (var subGateID in _context.SubGatesID)
             {
-                gate.OnOpened -= OnGateOpened;
+				GameKit.Config.GetSubGateByID(subGateID).OnOpened -= OnGateOpened;
             }
         }
 

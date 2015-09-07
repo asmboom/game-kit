@@ -45,12 +45,12 @@ namespace Codeplay
             _categoryListControl.ItemInserted += OnItemInsert<VirtualCategory>;
             _categoryListControl.ItemRemoving += OnItemRemoving<VirtualCategory>;
 
-            _upgradesListAdaptors = new Dictionary<VirtualItem, UpgradeItemListAdaptor>();
-            _upgradesListControls = new Dictionary<VirtualItem, ReorderableListControl>();
-            foreach (var item in GameKit.Config.VirtualItems)
-            {
-                AddUpgradeListForItem(item);
-            }
+			_upgradesListAdaptors = new Dictionary<VirtualItem, UpgradeItemListAdaptor>();
+			_upgradesListControls = new Dictionary<VirtualItem, ReorderableListControl>();
+			foreach (var item in GameKit.Config.VirtualItems)
+			{
+				AddUpgradeListForItem(item);
+			}
         }
 
         public void OnVirtualItemUpgradesChange(VirtualItem item)
@@ -177,21 +177,21 @@ namespace Codeplay
             {
                 _packListControl.Draw(_packListAdaptor);
             }
-            _isUpgradeItemExpanded = EditorGUILayout.Foldout(_isUpgradeItemExpanded,
-                new GUIContent(" Upgrade Items", Resources.Load("UpgradeIcon") as Texture),
-                GameKitEditorDrawUtil.FoldoutStyle);
-            if (_isUpgradeItemExpanded)
-            {
-                foreach (var item in GameKit.Config.VirtualItems)
-                {
-                    if (item.HasUpgrades && _upgradesListAdaptors.ContainsKey(item))
-                    {
-                        GUILayout.Label(item.ID, GameKitEditorDrawUtil.ItemCenterLabelStyle);
-                        _upgradesListControls[item].Draw(_upgradesListAdaptors[item]);
-                    }
-                }
-                EditorGUILayout.Space();
-            }
+			_isUpgradeItemExpanded = EditorGUILayout.Foldout(_isUpgradeItemExpanded,
+				new GUIContent(" Upgrade Items", Resources.Load("UpgradeIcon") as Texture),
+				GameKitEditorDrawUtil.FoldoutStyle);
+			if (_isUpgradeItemExpanded)
+			{
+				foreach (var item in GameKit.Config.VirtualItems)
+				{
+					if (item.HasUpgrades && _upgradesListAdaptors.ContainsKey(item))
+					{
+						GUILayout.Label(item.ID, GameKitEditorDrawUtil.ItemCenterLabelStyle);
+						_upgradesListControls[item].Draw(_upgradesListAdaptors[item]);
+					}
+				}
+				EditorGUILayout.Space();
+			}
             _isCategoryExpanded = EditorGUILayout.Foldout(_isCategoryExpanded,
                 new GUIContent(" Categories", Resources.Load("CategoryIcon") as Texture),
                 GameKitEditorDrawUtil.FoldoutStyle);
@@ -223,6 +223,16 @@ namespace Codeplay
             GenericClassListAdaptor<T> listAdaptor = args.adaptor as GenericClassListAdaptor<T>;
             if (listAdaptor != null)
             {
+				if (listAdaptor[args.itemIndex] is UpgradeItem)
+				{
+					int upgradeIndex = args.itemIndex + 1;
+					string suffix = upgradeIndex < 10 ? "00" + upgradeIndex :
+						upgradeIndex < 100 ? "0" + upgradeIndex : upgradeIndex.ToString();
+					UpgradeItem upgradeItem = (listAdaptor[args.itemIndex] as UpgradeItem);
+					upgradeItem.RelatedItemID = (listAdaptor[0] as UpgradeItem).RelatedItemID;
+					upgradeItem.ID = string.Format("{0}-upgrade{1}", upgradeItem.RelatedItemID, suffix);
+					GameKit.Config.Upgrades.Add(upgradeItem);
+				}
                 SelectItem(listAdaptor[args.itemIndex]);
                 GameKitEditorWindow.GetInstance().Repaint();
             }
@@ -249,6 +259,12 @@ namespace Codeplay
                             "Confirm to delete item [" + item.ID + "]?", "OK", "Cancel"))
                     {
                         args.Cancel = false;
+
+						if (item is UpgradeItem)
+						{
+							GameKit.Config.Upgrades.Remove((item as UpgradeItem));
+						}
+
                         SelectItem(null);
                         GameKitEditorWindow.GetInstance().Repaint();
                     }
@@ -260,30 +276,30 @@ namespace Codeplay
             }
         }
 
-        private void AddUpgradeListForItem(VirtualItem item)
-        {
-            if (item.HasUpgrades)
-            {
-                ReorderableListControl listControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand);
-                listControl.ItemInserted += OnItemInsert<UpgradeItem>;
-                listControl.ItemRemoving += OnItemRemoving<UpgradeItem>;
-                UpgradeItemListAdaptor listAdaptor = new UpgradeItemListAdaptor(item.Upgrades, 20,
-                                () => { return new UpgradeItem(); },
-                                DrawItem<UpgradeItem>);
+		private void AddUpgradeListForItem(VirtualItem item)
+		{
+			if (item.HasUpgrades)
+			{
+				ReorderableListControl listControl = new ReorderableListControl(ReorderableListFlags.DisableDuplicateCommand);
+				listControl.ItemInserted += OnItemInsert<UpgradeItem>;
+				listControl.ItemRemoving += OnItemRemoving<UpgradeItem>;
+				UpgradeItemListAdaptor listAdaptor = new UpgradeItemListAdaptor(item.Upgrades, 20,
+					() => { return new UpgradeItem(); },
+					DrawItem<UpgradeItem>);
 
-                _upgradesListAdaptors.Add(item, listAdaptor);
-                _upgradesListControls.Add(item, listControl);
-            }
-        }
+				_upgradesListAdaptors.Add(item, listAdaptor);
+				_upgradesListControls.Add(item, listControl);
+			}
+		}
 
-        private void RemoveUpgradeListForItem(VirtualItem item)
-        {
-            if (_upgradesListAdaptors.ContainsKey(item))
-            {
-                _upgradesListAdaptors.Remove(item);
-                _upgradesListControls.Remove(item);
-            }
-        }
+		private void RemoveUpgradeListForItem(VirtualItem item)
+		{
+			if (_upgradesListAdaptors.ContainsKey(item))
+			{
+				_upgradesListAdaptors.Remove(item);
+				_upgradesListControls.Remove(item);
+			}
+		}
 
         private bool _isVirtualCurrencyExpanded = true;
         private bool _isSingleUseItemExpanded = true;
@@ -303,8 +319,8 @@ namespace Codeplay
         private ReorderableListControl _categoryListControl;
         private GenericClassListAdaptor<VirtualCategory> _categoryListAdaptor;
 
-        private Dictionary<VirtualItem, ReorderableListControl> _upgradesListControls;
-        private Dictionary<VirtualItem, UpgradeItemListAdaptor> _upgradesListAdaptors;
+		private Dictionary<VirtualItem, ReorderableListControl> _upgradesListControls;
+		private Dictionary<VirtualItem, UpgradeItemListAdaptor> _upgradesListAdaptors;
 
         private Vector2 _scrollPosition;
     }

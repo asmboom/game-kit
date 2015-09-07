@@ -11,58 +11,289 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 460e5bccbacdeae47a0de50350efe9ad, type: 3}
   m_Name: GameKitConfig
   m_EditorClassIdentifier: 
-  VirtualCurrencies:
-  - _id: coin
-    Name: 
-    Description: 
-    Icon: {fileID: 0}
-    Upgrades: []
-    Extend: {fileID: 0}
-  - _id: gem
-    Name: 
-    Description: 
-    Icon: {fileID: 0}
-    Upgrades: []
-    Extend: {fileID: 0}
+  VirtualCurrencies: []
   SingleUseItems: []
   LifeTimeItems:
-  - _id: wuzheng
-    Name: 
+  - _id: LiftTimeItem1
+    Name: "\u54C6\u5566A\u68A6"
     Description: 
     Icon: {fileID: 0}
-    Upgrades: []
     Extend: {fileID: 0}
     PurchaseInfo: []
     IsEquippable: 0
-  - _id: wuxing
+  - _id: LiftTimeItem2
+    Name: "\u5927\u96C4"
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem3
+    Name: "\u80D6\u864E"
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem4
+    Name: "\u9759\u9999"
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem5
+    Name: "\u5C0F\u592B"
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem6
+    Name: "\u591A\u5566\u7F8E"
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem101
     Name: 
     Description: 
     Icon: {fileID: 0}
-    Upgrades: []
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem102
+    Name: 
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem103
+    Name: 
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem104
+    Name: 
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem105
+    Name: 
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem106
+    Name: 
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem201
+    Name: 
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem202
+    Name: 
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem203
+    Name: 
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem204
+    Name: 
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem205
+    Name: 
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem206
+    Name: 
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem207
+    Name: 
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem208
+    Name: 
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem209
+    Name: 
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem210
+    Name: 
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem211
+    Name: 
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem212
+    Name: 
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem1001
+    Name: 
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem1002
+    Name: 
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem1003
+    Name: 
+    Description: 
+    Icon: {fileID: 0}
+    Extend: {fileID: 0}
+    PurchaseInfo: []
+    IsEquippable: 0
+  - _id: LiftTimeItem1004
+    Name: 
+    Description: 
+    Icon: {fileID: 0}
     Extend: {fileID: 0}
     PurchaseInfo: []
     IsEquippable: 0
   ItemPacks: []
-  Categories: []
-  RootWorld:
-    _id: root
+  Categories:
+  - _id: Character
+    Name: "\u89D2\u8272"
+    ItemIDs:
+    - LiftTimeItem1
+    - LiftTimeItem2
+    - LiftTimeItem3
+    - LiftTimeItem4
+    - LiftTimeItem5
+    - LiftTimeItem6
+  - _id: Vehicle
+    Name: "\u8D5B\u8F66"
+    ItemIDs:
+    - LiftTimeItem101
+    - LiftTimeItem102
+    - LiftTimeItem103
+    - LiftTimeItem104
+    - LiftTimeItem105
+    - LiftTimeItem106
+  - _id: Weapon
+    Name: "\u6B66\u5668"
+    ItemIDs:
+    - LiftTimeItem201
+    - LiftTimeItem202
+    - LiftTimeItem203
+    - LiftTimeItem204
+    - LiftTimeItem205
+  - _id: Item
+    Name: "\u9053\u5177"
+    ItemIDs:
+    - LiftTimeItem206
+    - LiftTimeItem207
+    - LiftTimeItem208
+    - LiftTimeItem209
+    - LiftTimeItem210
+    - LiftTimeItem211
+    - LiftTimeItem212
+  - _id: AssemblyPart
+    Name: "\u90E8\u4EF6"
+    ItemIDs:
+    - LiftTimeItem1001
+    - LiftTimeItem1002
+    - LiftTimeItem1003
+    - LiftTimeItem1004
+  Upgrades: []
+  Worlds:
+  - _id: root
     Name: 
     Description: 
     Gate:
       _id: gate_root
-      Type: 1
-      RelatedItemID: score_001
+      Type: 0
+      RelatedItemID: root
       RelatedNumber: 0
-      SubGates: []
-    SubWorlds: []
-    Scores:
-    - _id: score_001
-      Name: 
-      DefaultValue: 0
-      IsHigherBetter: 1
-      EnableClamp: 0
-      Min: 0
-      Max: 999999
-      RelatedVirtualItemID: 
+      SubGatesID:
+      - gate_root_0
+      - gate_root_1
+    SubWorldsID:
+    - Map_01
+    Scores: []
     Missions: []
     Extend: {fileID: 0}
+  - _id: Map_01
+    Name: 
+    Description: 
+    Gate:
+      _id: gate_Map_01
+      Type: 5
+      RelatedItemID: root
+      RelatedNumber: 0
+      SubGatesID: []
+    SubWorldsID: []
+    Scores: []
+    Missions: []
+    Extend: {fileID: 0}
+  SubGates:
+  - _id: gate_root_0
+    Type: 2
+    RelatedItemID: coin
+    RelatedNumber: 0
+    SubGatesID: []
+  - _id: gate_root_1
+    Type: 2
+    RelatedItemID: coin
+    RelatedNumber: 0
+    SubGatesID: []
