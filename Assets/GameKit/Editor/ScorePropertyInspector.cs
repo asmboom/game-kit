@@ -58,7 +58,7 @@ namespace Codeplay
                 else
                 {
                     _relatedVirtualItemIDProperty = null;
-                    Debug.LogError("Couldn't find score property from config, maybe the change is not applied yet.");
+                    Debug.LogError("Couldn't find score property from config [" + path + "], maybe the change is not applied yet.");
                 }
             }
         }
