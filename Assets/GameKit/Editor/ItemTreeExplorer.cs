@@ -55,7 +55,6 @@ namespace Codeplay
 
             GUILayout.Space(5);
 
-            /*
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("+Expand All", GUILayout.Width(90)))
             {
@@ -66,7 +65,6 @@ namespace Codeplay
                 DoCollapseAll();
             }
             GUILayout.EndHorizontal();
-            */
 
             _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, false, true);
             DoDraw(new Rect(0, 0, position.width - 15, position.height - 50), _searchText);
