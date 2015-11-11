@@ -53,7 +53,7 @@ namespace Codeplay
         {
             get
             {
-                return string.IsNullOrEmpty(RelatedItemID) ? null : GameKit.Config.GetScoreByID(RelatedItemID);
+				return string.IsNullOrEmpty(RelatedItemID) ? null : Delegate.GetRelatedItem(RelatedItemID);
             }
         }
 
