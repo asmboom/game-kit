@@ -76,21 +76,15 @@ namespace Codeplay
         {
             if (worldToFind == null) return string.Empty;
 
-            World world = worldToFind;
-            string path = string.Empty;
-            while (world.Parent != null)
+            for (int i = 0; i < GameKit.Config.Worlds.Count; i++)
             {
-				for (int i = 0; i < world.Parent.SubWorldsID.Count; i++)
+                if (GameKit.Config.Worlds[i] == worldToFind)
                 {
-					if (GameKit.Config.GetWorldByID(world.Parent.SubWorldsID[i]) == world)
-                    {
-                        path = string.Format(".SubWorlds.Array.data[{0}]", i) + path;
-                        break;
-                    }
+                    return string.Format("Worlds.Array.data[{0}]", i);
                 }
-                world = world.Parent;
             }
-            return "RootWorld" + path;
+            Debug.LogError("FindWorldPropertyPath::Couldn't find a world called [" + worldToFind.Name + "].");
+            return string.Empty;
         }
 
         public string FindScorePropertyPath(Score score)
